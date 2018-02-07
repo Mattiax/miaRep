@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Tris</string>
+    <string name="result">Risultato della partita</string>
+    <string name="new_game">Nuova partita</string>
+    <string name="exit">Esci</string>
+    <string name="victory">Ha vinto il giocatore:</string>
+    <string name="no_victory">Non ha vinto nessun giocatore \nRiprova </string>
+    <string name="no_player_name">Inserisci i nomi dei giocatori</string>
+    <string name="player_x">Giocatore X</string>
+    <string name="player_o">Giocatore O</string>
+    <string name="button_start">OK</string>
+</resources>
