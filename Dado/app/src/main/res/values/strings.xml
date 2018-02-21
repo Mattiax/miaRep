@@ -1,7 +1,6 @@
 <resources>
-    <string name="app_name">AM012_Fragment</string>
-    <string name="frag1_txt">Così discesi del cerchio primaio\ngiù nel secondo, che men loco cinghia, \ne tanto più dolor, che punge a guaio.
-    </string>
-    <string name="frag2_txt">Amor, ch’a nullo amato amar perdona, \n mi prese del costui piacer sì forte,\nche, come vedi, ancor non m’abbandona.
-    </string>
+    <string name="app_name">Flat Dice</string>
+    <string name="audio_error">Ops, qualcosa è andato storto…tocca lo schermo e riprova</string>
+    <string name="audio_guide">Pronuncia la parola: Dado, Lancia o Tira per poter girare il dado vocalmente!</string>
+    <string name="title">Benvenuto nell\'applicazione Flat Dice! \nScrolla lo schermo per girare il tuo dado virtuale, mentre tieni premuto lo schermo per uscire dall\'applicazione!\n</string>
 </resources>

@@ -1,15 +1,18 @@
 package com.example.genji.am012_fragment;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.speech.RecognitionListener;
+import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
-import android.widget.Toast;
+import java.util.ArrayList;
+import java.util.Random;
 
 /* see
  *
@@ -18,105 +21,165 @@ import android.widget.Toast;
  *
  */
 
-public class MainActivity extends AppCompatActivity implements GestureDetector.OnGestureListener {
+public class MainActivity extends AppCompatActivity implements GestureDetector.OnGestureListener, RecognitionListener {
 
-    float x1,x2;
-    final static float MIN_DISTANCE = 150.0f;
     private GestureDetectorCompat mDetector;
-
+    private SpeechRecognizer voice;
+    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mDetector = new GestureDetectorCompat(this,this);
-        // portrait mode
-        if(findViewById(R.id.fragment) != null){
-            Fragment1 f1 = new Fragment1();
-            Bundle b= new Bundle();
-            b.putInt("valore",2);
-            f1.setArguments(b);
-            FragmentTransaction ft = getFragmentManager().beginTransaction();
-            ft.replace(R.id.fragment, f1);
-            ft.commit();
+        mDetector = new GestureDetectorCompat(this, this);
+        try {
+            voice = SpeechRecognizer.createSpeechRecognizer(this);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, "voice.recognition.test");
+        intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
+        startListening();
+        voice.setRecognitionListener(this);
+        getFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment, Fragment1.newInstance())
+                .commit();
     }
 
-    public boolean onTouchEvent(MotionEvent event) {
-        mDetector.onTouchEvent(event);
-        /*switch(event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                x1 = event.getX();
-                break;
-            case MotionEvent.ACTION_UP:
-                x2 = event.getX();
-                float deltaX = x2 - x1;
-
-                if (Math.abs(deltaX) > MIN_DISTANCE) {
-                    // Left to Right swipe action
-                    if (x2 > x1) {
-                        changeFragment();
-                    }
-
-                    // Right to left swipe action
-                    else {
-                        changeFragment();
-                    }
-                }
-                else {
-                    Toast.makeText(this, "TAP", Toast.LENGTH_SHORT).show ();
-                }
-                break;
-        }*/
-        return super.onTouchEvent(event);
+    private void changeFragment(int in, int out) {
+        voice.stopListening();
+        getFragmentManager()
+                .beginTransaction()
+                .setCustomAnimations(in, out)
+                .replace(R.id.fragment, Dado.newInstance(new Random().nextInt(6) + 1))
+                .commit();
+        startListening();
     }
 
-    public void changeFragment() {
-        // act only in portrait mode
-        if(findViewById(R.id.fragment) != null){
-            FragmentManager fm = getFragmentManager();
-            FragmentTransaction ft = fm.beginTransaction();
-            ft.setCustomAnimations(R.animator.slide_in_left, R.animator.fade);
-            ft.replace(R.id.fragment, Fragment1.getFragment());
-            ft.commit();
-        } else {
-            Toast.makeText(this, "LANDSCAPE", Toast.LENGTH_SHORT).show ();
-        }
+    private void startListening() {
+        voice.startListening(intent);
+    }
+
+    @Override
+    public void onReadyForSpeech(Bundle bundle) {
+    }
+
+    @Override
+    public void onBeginningOfSpeech() {
+    }
+
+    @Override
+    public void onRmsChanged(float v) {
 
     }
 
     @Override
+    public void onBufferReceived(byte[] bytes) {
+    }
+
+    @Override
+    public void onEndOfSpeech() {
+    }
+
+    @Override
+    public void onError(int i) {
+        //Log.d("error", "" + i);
+        if (i == SpeechRecognizer.ERROR_NO_MATCH) {
+            startListening();
+        } else if (i != SpeechRecognizer.ERROR_CLIENT && i != SpeechRecognizer.ERROR_RECOGNIZER_BUSY) {
+            Snackbar snackbar = Snackbar
+                    .make(findViewById(R.id.linearLayout), getResources().getString(R.string.audio_error), Snackbar.LENGTH_LONG);
+            snackbar.setDuration(Snackbar.LENGTH_LONG);
+            snackbar.show();
+        }
+    }
+
+    @Override
+    public void onResults(Bundle bundle) {
+        ArrayList<String> data = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+        if (data != null) {
+            String ris = data.get(0).toLowerCase();
+            if (ris.contains("lancia") || ris.contains("tira") || ris.contains("dado") || ris.contains("gira")) {
+                changeFragment(R.animator.fade_in, R.animator.fade_out);
+            } else {
+                startListening();
+            }
+        }
+    }
+
+    @Override
+    public void onPartialResults(Bundle bundle) {
+    }
+
+    @Override
+    public void onEvent(int i, Bundle bundle) {
+
+    }
+
+    public boolean onTouchEvent(MotionEvent event) {
+        mDetector.onTouchEvent(event);
+        return super.onTouchEvent(event);
+    }
+
+
+    @Override
     public boolean onDown(MotionEvent motionEvent) {
-        Toast.makeText(this, "onDown", Toast.LENGTH_SHORT).show();
         return false;
     }
 
     @Override
     public void onShowPress(MotionEvent motionEvent) {
-        Toast.makeText(this, "onShowPress", Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
     public boolean onSingleTapUp(MotionEvent motionEvent) {
-        Toast.makeText(this, "onSingleTapUp", Toast.LENGTH_SHORT).show();
+        startListening();
         return false;
     }
 
     @Override
     public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
-        Toast.makeText(this, "onScroll", Toast.LENGTH_SHORT).show();
         return false;
     }
 
     @Override
     public void onLongPress(MotionEvent motionEvent) {
-        Toast.makeText(this, "onLongPress", Toast.LENGTH_SHORT).show();
+        voice.stopListening();
+        voice.destroy();
+        finish();
     }
 
     @Override
-    public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
-        Toast.makeText(this, "onFling", Toast.LENGTH_SHORT).show();
-        changeFragment();
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float v, float v1) {
+        float angle = (float) Math.toDegrees(Math.atan2(e1.getY() - e2.getY(), e2.getX() - e1.getX()));
+        //Log.d("SCROLL: ", "x " + v + "  y  " + v1 + " e1 " + e1.getX() + " e2 " + e2.getY() + " angolo " + angle);
+        if (angle > -45 && angle <= 45) {
+            Log.d("SCROLL", "Right to Left swipe performed");
+            changeFragment(R.animator.flip1_dx, R.animator.flip2_dx);
+            return true;
+        }
+
+        if (angle >= 135 && angle < 180 || angle < -135 && angle > -180) {
+            Log.d("SCROLL", "Left to Right swipe performed");
+            changeFragment(R.animator.flip1_sx, R.animator.flip2_sx);
+            return true;
+        }
+
+        if (angle < -45 && angle >= -135) {
+            Log.d("SCROLL", "Up to Down swipe performed");
+            changeFragment(R.animator.flip1_down, R.animator.flip2_down);
+            return true;
+        }
+
+        if (angle > 45 && angle <= 135) {
+            Log.d("SCROLL", "Down to Up swipe performed");
+            changeFragment(R.animator.flip1_up, R.animator.flip2_up);
+            return true;
+        }
         return false;
     }
 }
