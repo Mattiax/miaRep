@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.genji.am003_receiver.MainActivity"
+    android:id="@+id/relativeLayout">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="A BroadCast Receviver"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title">
+
+        <RadioButton
+            android:id="@+id/oneShot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="FLAG_ONE_SHOT" />
+
+        <RadioButton
+            android:id="@+id/noCreate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="FLAG_NO_CREATE" />
+
+        <RadioButton
+            android:id="@+id/immutable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="FLAG_IMMUTABLE" />
+
+        <RadioButton
+            android:id="@+id/updateCurrent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:text="FLAG_UPDATE_CURRENT" />
+
+        <RadioButton
+            android:id="@+id/cancelCurrent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="FLAG_CANCEL_CURRENT" />
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/launch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="launch"
+        android:visibility="invisible"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
+
+    <TextView
+        android:id="@+id/error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/launch" />
+
+</android.support.constraint.ConstraintLayout>
