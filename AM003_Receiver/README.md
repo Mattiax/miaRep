@@ -1,26 +1,20 @@
-# AM003_Receiver
+# Musone Mattia 5IA
 
-In questo esercizio vediamo il secondo (in ordine di esposizione) dei componenti: il `BoradcastReceiver`. Invitiamo subito alla lettura della documentazione: [qui](https://developer.android.com/guide/components/broadcasts.html). Per le API: [qui](https://developer.android.com/reference/android/content/BroadcastReceiver.html).
+# PendingIntent
 
-## Publish-Subscribe pattern
+Applicazione che mostra e spiega le differenze tra i 5 differenti flag del pendingintent
 
-E' il modello di riferimento per questa particolare gestione dei messaggi; una sua descrizione tratta da Wikipedia (en): [qui](https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern).
+Premessa: il progetto non è stato completato, come avvisato, ma sono state aggiunte delle descrizioni per far capire la funzione dei vari flag
 
-## Manifest-declared receivers
+  - FLAG_CANCEL_CURRENT
+  - FLAG_IMMUTABLE
+  - FLAG_NO_CREATE
+  - FLAG_ONE_SHOT
+  - FLAG_UPDATE_CURRENT
 
-E' la prima tipologia, esemplificata in questo esempio ([qui](https://developer.android.com/guide/components/broadcasts.html)). Nel nostro caso chiameremo il broadcast addirittura in modo esplicito con un Intent di siffatta specie.
+# Struttura
 
-## Context-registered receivers
+  - MainActivity
+  - MyBroadcastReceiver
 
-In caso si voglia procedere con una maggiore flessibilitÃ  si procede in modo programmatico ([qui](https://developer.android.com/guide/components/broadcasts.html)).
-
-Nel nostro esempio il `BoradcastReceiver` si trova all'interno della stessa app, comunque la comunicazione avviene in questo senso
-```
-i) creazione dell'intent esplicito ---> 
-ii) l'Intent viene consegnato al service di allarme come PendingIntent ---> 
-iii) Android con il suo servizio di allarme rilancia l'intent ed il nostro Broadcast (e non altri) lo riceve.
-```
-
-## Wrapping di un Intent
-
-Viene utilizzato un `PendingIntent`; per la API: [qui](https://developer.android.com/reference/android/app/PendingIntent.html).
+MainActivity gestice dei radiobutton che permettono di scegliere il tipo di flag per il pendingintent, mentre la seconda classe gestisce semplicemente un Toast che viene chiamato dal pendingintent a seguito del click di un bottone nella MainActivity.

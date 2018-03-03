@@ -11,6 +11,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.widget.CompoundButton;
+import android.widget.Switch;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -26,11 +29,14 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
     private GestureDetectorCompat mDetector;
     private SpeechRecognizer voice;
     private Intent intent;
+    private boolean isListening;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Switch listening = findViewById(R.id.listen);
+        isListening=false;
         mDetector = new GestureDetectorCompat(this, this);
         try {
             voice = SpeechRecognizer.createSpeechRecognizer(this);
@@ -47,10 +53,16 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
                 .beginTransaction()
                 .replace(R.id.fragment, Fragment1.newInstance())
                 .commit();
+        listening.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                isListening=b;
+                startListening();
+            }
+        });
     }
 
     private void changeFragment(int in, int out) {
-        voice.stopListening();
         getFragmentManager()
                 .beginTransaction()
                 .setCustomAnimations(in, out)
@@ -60,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
     }
 
     private void startListening() {
-        voice.startListening(intent);
+        if(isListening)voice.startListening(intent);
     }
 
     @Override
@@ -137,7 +149,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
     @Override
     public boolean onSingleTapUp(MotionEvent motionEvent) {
-        startListening();
+        voice.startListening(intent);
         return false;
     }
 
@@ -149,6 +161,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
     @Override
     public void onLongPress(MotionEvent motionEvent) {
         voice.stopListening();
+        voice.cancel();
         voice.destroy();
         finish();
     }
@@ -158,28 +171,38 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         float angle = (float) Math.toDegrees(Math.atan2(e1.getY() - e2.getY(), e2.getX() - e1.getX()));
         //Log.d("SCROLL: ", "x " + v + "  y  " + v1 + " e1 " + e1.getX() + " e2 " + e2.getY() + " angolo " + angle);
         if (angle > -45 && angle <= 45) {
-            Log.d("SCROLL", "Right to Left swipe performed");
             changeFragment(R.animator.flip1_dx, R.animator.flip2_dx);
             return true;
         }
 
         if (angle >= 135 && angle < 180 || angle < -135 && angle > -180) {
-            Log.d("SCROLL", "Left to Right swipe performed");
             changeFragment(R.animator.flip1_sx, R.animator.flip2_sx);
             return true;
         }
 
         if (angle < -45 && angle >= -135) {
-            Log.d("SCROLL", "Up to Down swipe performed");
             changeFragment(R.animator.flip1_down, R.animator.flip2_down);
             return true;
         }
 
         if (angle > 45 && angle <= 135) {
-            Log.d("SCROLL", "Down to Up swipe performed");
             changeFragment(R.animator.flip1_up, R.animator.flip2_up);
             return true;
         }
         return false;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        voice.stopListening();
+        voice.cancel();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        voice.setRecognitionListener(this);
+        startListening();
     }
 }

@@ -31,27 +31,32 @@ public class MainActivity extends AppCompatActivity {
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-
+                errore.setText("");
                 switch (checkedId) {
                     //questo intent può essere usato una volta sola poi viene assegnato un valore nullo
                     case R.id.oneShot:
+                        errore.setText("Viene eseguito solo una volta");
                         pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 234324243, intent, PendingIntent.FLAG_ONE_SHOT);
                         break;
-                        //questo non crea nessun intent
+                        //questo non crea nessun pendingintent se quello attuale non esiste
                     case R.id.noCreate:
+                        errore.setText("Se precedentemente non è stato creato nessun pendingintent, questo non verrà creato.");
                         pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 234324243, intent, PendingIntent.FLAG_NO_CREATE);
                         break;
-                        //questo non cambia l'inte e rimane sempre uguale
+                        //questo non passa i nuovi argomenti e rimane sempre uguale
                     case R.id.immutable:
+                        errore.setText("Eventuali argomenti passati all'intnt non verranno passati");
                         pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 234324243, intent, PendingIntent.FLAG_IMMUTABLE);
                         break;
                         //questo elimina l'attuale intent per poi dare la possibilità di creare uin altro
                     case R.id.cancelCurrent:
+                        errore.setText("Se precedentemente è stato creato un pendingintent, questo verrà cancellato e si dovrà richiamare un altro pending con getActivity()");
                         pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 234324243, intent, PendingIntent.FLAG_CANCEL_CURRENT);
                         break;
                         //aggiorna l'attuale intent
                     case R.id.updateCurrent:
-                        pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 234324243, intent , PendingIntent.FLAG_UPDATE_CURRENT);
+                        errore.setText("Se precedentemente è stato creato un pendingintent, a quello attuale verranno passate le nuove informazioni");
+                        pendingIntent = PendingIntent.getActivity(MainActivity.this, 234324243, intent,PendingIntent.FLAG_UPDATE_CURRENT);
                         break;
                 }
                 launch.setVisibility(View.VISIBLE);
