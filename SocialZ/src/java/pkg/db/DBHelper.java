@@ -20,10 +20,14 @@ import pkg.oggetti.Utente;
  *
  * @author mattia.musone
  */
-public class DBHelper {
+public class DBHelper implements DB{
 
 	private DataSource dataSource;
 	private JdbcTemplate jdbcTemplate;
+        
+        public DBHelper(){
+            
+        }
 
 	public void setDataSource(DataSource dataSource) {
 		this.dataSource = dataSource;
