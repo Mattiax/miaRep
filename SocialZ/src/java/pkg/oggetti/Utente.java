@@ -5,6 +5,7 @@
  */
 package pkg.oggetti;
 
+import java.awt.Image;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -19,10 +20,11 @@ import org.springframework.stereotype.Component;
  */
 public class Utente {
 	
-	private String nome,cognome,telefono,email,password;
+	private String nome,cognome,telefono,email,password,indirizzo;
 	private Date dataNascita;
 	private char sesso;
 	private String[] hobbies;
+        private Image image;
 
 	public Utente() {
 		this.nome = "";
@@ -36,10 +38,11 @@ public class Utente {
 	}
 	
 
-	public Utente(String nome, String cognome, char sesso,String telefono, String email, String password, String dataNascita, String[] hobbies) {
+	public Utente(String nome, String cognome,String indirizzo, char sesso,String telefono, String email, String password, String dataNascita, String[] hobbies, Image image) {
 		this.nome = nome;
 		this.cognome = cognome;
 		this.sesso=sesso;
+                this.indirizzo = indirizzo;
 		this.telefono = telefono;
 		this.email = email;
 		this.password = password;
@@ -49,8 +52,13 @@ public class Utente {
 			ex.printStackTrace();
 		}
 		this.hobbies = hobbies;
+                this.image = image;
 	}
 
+        public void setIndirizzo(String indirizzo) {
+		this.indirizzo = indirizzo;
+	}
+        
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
@@ -119,5 +127,7 @@ public class Utente {
 		return hobbies;
 	}
 	
-	
+	public String getIndirizzo() {
+        return indirizzo;
+    }
 }

@@ -48,7 +48,12 @@
                 <label for="confPassword">Conferma password</label>
                 <input type="text">
             </div>
-            <p><input type="submit" value="REGISTRATI"></p>
+            <div>
+                <p>Acconsento l'applicazione ad utilizzare dati non sensibili</p>
+                <input type="radio" name="privacy" value="true" checked="true"> Acconsento<br>
+                <input type="radio" name="privacy" value="false"> Non acconsento
+            </div>
+            <input id="registratiBtn" type="submit" value="REGISTRATI">
         </form>
     </body>
 </html>
