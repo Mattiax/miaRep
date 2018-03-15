@@ -10,19 +10,22 @@ $(document).ready(function(){
 			nome: {
 				required: true,
 			},
+                        cognome: {
+				required: true,
+			},
 			password: {
 				required: true,
 				minlength: 6
 			},
 			password2: {
 				required: true,
-				equalTo: "#password"
+				//equalTo: "#password"
 			},
 			email: {
 				email: true,
 			},
-			cognome: {
-				cognome: true,
+			telefono: {
+				telefonoValido: true,
 			},
 			dataNascita: {
 				dataGGMMAAAA: true,
@@ -43,17 +46,17 @@ $(document).ready(function(){
 	});
 });
 
-jQuery.validator.addMethod("codiceFiscale",
-	function(valore, elem) {
-		return this.optional(elem) || codFiscValido(valore); 
-	},
-	"Inserire un Codice Fiscale corretto"
-);
-
 jQuery.validator.addMethod("dataGGMMAAAA",
 	function(valore, elem) {
 		return this.optional(elem) || dataValidaGGMMAAAA(valore); 
 	},
 	"Inserire una data valida nel formato GG/MM/AAAA"
+);
+
+jQuery.validator.addMethod("telefonoValido",
+	function(valore, elem) {
+		return this.optional(elem) || telefonoValid(valore); 
+	},
+	"Inserire un numero di telefono valido"
 );
 

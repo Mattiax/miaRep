@@ -13,8 +13,8 @@ function emailValido(email) {
 function dataValidaGGMMAAAA(strData){
 	var gg, mm, aaaa, data;
 	var rexDataGGMMAAAA = /^[0-9]{2}\/[0-9]{2}\/[0-9]{4}$/;
-	//NB: bisogna togliere lo "0" in testa, perché è l'indicatore di n° ottale!
-   // oppure: sul parseInt si specifica (come 2° parametro) base 10
+	//NB: bisogna togliere lo "0" in testa, perchï¿½ ï¿½ l'indicatore di nï¿½ ottale!
+   // oppure: sul parseInt si specifica (come 2ï¿½ parametro) base 10
    if (!rexDataGGMMAAAA.test(strData)) {
 	    return false;
 	} else {
@@ -26,6 +26,10 @@ function dataValidaGGMMAAAA(strData){
 	}
 }
 
+function telefonoValid(tel){
+    var rexTel= /^[0-9]+$/;
+    return rexTel.test(tel);
+}
 /*function dataValida(strData){
 	var objData = Date.parse(strData);
 	return objData;

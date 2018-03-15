@@ -11,6 +11,10 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/signin.css"/>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-1.6.1.min.js"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery.validate.min.js"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery.validate.messages_it.js"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/js/formJQvalid.js"></script>
         <title>Registrazione</title>
     </head>
     <body>
@@ -18,35 +22,43 @@
         <form id="signIn" action="doSignin">
             <div>
                 <label for="nome">Nome</label>
-                <input type="text">
+                <input type="text" name="nome">
             </div>
             <div>
                 <label for="cognome">Cognome</label>
-                <input type="text">
+                <input type="text" name="cognome">
             </div>
             <div>
                 <label for="dataNascita">Data di nascita</label>
-                <input type="text">
+                <input type="date" name="dataNascita">
             </div>
             <div>
                 <label for="telefono">Telefono</label>
-                <input type="text">
+                <input type="text" name="telefono">
+            </div>
+            <div>
+                <label for="indirizzo">Indirizzo</label>
+                <input type="text" name="indirizzo">
             </div>
             <div>
                 <label for="hobbies">Hobbies</label>
-                <input type="text">
+                <input type="text" name="hobbies">
             </div>
             <div>
                 <label for="email">E-mail</label>
-                <input type="text">
+                <input type="text" name="email">
             </div>
             <div>
                 <label for="password">Password</label>
-                <input type="text">
+                <input type="text" name="password">
             </div>
             <div>
                 <label for="confPassword">Conferma password</label>
-                <input type="text">
+                <input type="text" name="password2">
+            </div>
+            <div>
+                <input type="radio" name="sesso" value="M" checked="true">Maschio<br>
+                <input type="radio" name="sesso" value="F">Femmina
             </div>
             <div>
                 <p>Acconsento l'applicazione ad utilizzare dati non sensibili</p>

@@ -15,6 +15,7 @@
     <bean class="org.springframework.web.servlet.mvc.support.ControllerClassNameHandlerMapping"/>
     <context:component-scan base-package="pkg" />       
    <mvc:resources mapping="/css/**" location="/css/" />
+   <mvc:resources mapping="/js/**" location="/js/" />
    
     <mvc:annotation-driven />
   

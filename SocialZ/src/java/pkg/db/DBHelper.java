@@ -39,9 +39,9 @@ public class DBHelper implements DB {
     }
 
     public void sigIn(Utente u) {
-        String sql = "INSERT () "
-                + " VALUES (?,?,?,?,?,?,?,?);";
-        jdbcTemplate.update(u.getEmail(), u.getPassword(), sql, u.getNome(), u.getCognome(), u.getIndirizzo(), u.getSesso(), u.getDataNascita(), u.getTelefono());
+        String sql = "INSERT INTO PERSONA(email,password,nome,cognome,indirizzo,sesso,dataNascita,foto,telefono,permesso) "
+                + " VALUES (?,?,?,?,?,?,?,?,?,?);";
+        jdbcTemplate.update(sql,u.getEmail(), u.getPassword(), u.getNome(), u.getCognome(), u.getIndirizzo(), u.getSesso(), u.getDataNascitaSql(), null, u.getTelefono(), u.getPermesso());
     }
 
     public Utente getUser() {
@@ -49,15 +49,16 @@ public class DBHelper implements DB {
                 + " VALUES (?,?,?,?,?,?,?,?);";
         Utente ris = jdbcTemplate.query(sql, (ResultSet rs) -> rs.next()
                 ? new Utente(
-                        rs.getString("Nome"),
-                        rs.getString("Cognome"),
-                        rs.getString("Telefono"),
-                        rs.getString("Sesso").charAt(0),
-                        rs.getString("Nome"),
-                        rs.getString("Nome"),
-                        rs.getString("Nome"),
-                        rs.getString("Nome"),
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getString("nome"),
+                        rs.getString("cognome"),
+                        rs.getString("indirizzo"),
+                        rs.getString("sesso").charAt(0),
+                        rs.getString("dataNascita"),
                         null,
+                        rs.getString("telefono"),
+                        rs.getBoolean("permesso"),
                         null) : null);
         return ris;
     }

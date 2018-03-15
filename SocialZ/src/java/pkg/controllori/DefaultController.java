@@ -43,7 +43,9 @@ public class DefaultController {
     @RequestMapping(value = "/doSignin", method = RequestMethod.GET)
     public String signIn(HttpServletRequest request, ModelMap map) {
         System.out.println("reg");
-        Utente temp = new Utente(request.getParameter("nome"), request.getParameter("cognome"),request.getParameter("cognome"), request.getParameter("nome").charAt(0), request.getParameter("nome"), request.getParameter("nome"), request.getParameter("nome"), request.getParameter("nome"),null, null);
+        Utente temp = new Utente(request.getParameter("email"), request.getParameter("password"),
+                request.getParameter("nome"), request.getParameter("cognome"), request.getParameter("indirizzo"), 
+                request.getParameter("sesso").charAt(0), request.getParameter("dataNascita"),null,request.getParameter("telefono"),(request.getParameter("privacy").equals("true")?true:false),  null);
         db.sigIn(temp);
         return "signin";
     }
