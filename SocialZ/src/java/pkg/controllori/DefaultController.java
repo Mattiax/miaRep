@@ -33,16 +33,16 @@ public class DefaultController {
     @RequestMapping(value = "/doLogin", method = RequestMethod.GET)
     public String logIn(HttpServletRequest request, ModelMap map) {
         System.out.println("login");
-            Utente u=db.getUser(request.getParameter("email"), request.getParameter("password"));
-            if(u==null){
-                return "signin";
-            }
-            map.addAttribute("nome", u.getNome());
-            map.addAttribute("cognome", u.getCognome());
-            map.addAttribute("dataNascita", u.getDataNascita());
-            map.addAttribute("email", u.getEmail());
-            map.addAttribute("password", u.getPassword());
-            map.addAttribute("sesso", u.getSesso());
+        Utente u = db.getUser(request.getParameter("email"), request.getParameter("password"));
+        if (u == null) {
+            return "signin";
+        }
+        map.addAttribute("nome", u.getNome());
+        map.addAttribute("cognome", u.getCognome());
+        map.addAttribute("dataNascita", u.getDataNascita());
+        map.addAttribute("email", u.getEmail());
+        map.addAttribute("password", u.getPassword());
+        map.addAttribute("sesso", u.getSesso());
         return "personalArea";
     }
 
@@ -54,6 +54,14 @@ public class DefaultController {
     @RequestMapping(value = "/login")
     public String logIn(ModelMap map) {
         return "login";
+    }
+
+    @RequestMapping(value = "/messages")
+    public String message(ModelMap map) {
+        List<Utente> lst = db.getAllUsers();
+        System.out.println(lst.size());
+        map.addAttribute("listaUtenti", lst);
+        return "messages";
     }
 
     @RequestMapping(value = "/doSignin", method = RequestMethod.GET)

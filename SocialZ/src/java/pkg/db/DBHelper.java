@@ -62,4 +62,25 @@ public class DBHelper implements DB {
                         null) : null);
         return ris;
     }
+    
+    public List<Utente> getAllUsers() {
+        String sql = "SELECT * FROM PERSONA;";
+        List<Utente> ris = jdbcTemplate.query(sql, new RowMapper<Utente>() {
+            @Override
+            public Utente mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new Utente(
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getString("nome"),
+                        rs.getString("cognome"),
+                        rs.getString("indirizzo"),
+                        rs.getString("sesso").charAt(0),
+                        rs.getString("dataNascita"),
+                        null,
+                        rs.getString("telefono"),
+                        rs.getBoolean("permesso"),
+                        null);}
+        });
+        return ris;
+    }
 }

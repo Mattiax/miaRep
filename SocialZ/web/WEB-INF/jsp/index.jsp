@@ -12,5 +12,6 @@
          <h1> Benvenuto nel social network dell'ITIS C. Zuccante </h1>
         <p> <a href="login">Accesso</a></p>
         <p> <a href="signin">Registrati</a></p>
+        <p> <a href="messages">test message</a></p>
     </body>
 </html>

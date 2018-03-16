@@ -5,6 +5,7 @@
  */
 package pkg.db;
 
+import java.util.List;
 import pkg.oggetti.Utente;
 
 /**
@@ -16,4 +17,6 @@ public interface DB {
 	public void sigIn(Utente u);
 
 	public Utente getUser(String email,String password);
+        
+        public List<Utente> getAllUsers();
 }
