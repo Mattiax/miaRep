@@ -13,5 +13,12 @@
     </head>
     <body>
         <h1>Area personale</h1>
+        <br> nome : ${nome};
+        <br> cognome : ${cognome};
+        <br> data : ${dataNascita};
+        <br> indirizzo : ${indirizzo};
+        <br> email : ${email};
+        <br> password : ${password};
+        <br> sesso : ${sesso};
     </body>
 </html>

@@ -32,35 +32,9 @@ h3 {
     border-radius: 10px;
 }
 
-#eliminazione{
-    border: 2px solid grey;
-    border-radius: 10px;
-}
-
 input{
     border: none;
     border-bottom: 1px solid blue;
-}
-
-button {
-    background-color: #008CBA;
-    border: none;
-    color: white;
-    padding: 15px 32px;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin-left: 40%;
-}
-#eliminaBtn{
-    background-color: #cc0000;
-    border: none;
-    color: white;
-    padding: 15px 32px;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin-left: 70%;
 }
 
 #registratiBtn {
@@ -102,8 +76,13 @@ span.error {
     color: red;
     font: italic 0.9em "Times New Roman", Times, serif;
 }
-label.radio {
-    margin-right: 5%;
-    display: inline;
-    float: none;
+
+
+input[type='radio'] {
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 22px;
+    background-color: blue;
 }

@@ -16,36 +16,52 @@ import pkg.oggetti.Utente;
 
 @Controller
 public class DefaultController {
-    
+
     @Autowired
     private DBHelper db;
-    
+
     @RequestMapping(value = "/")
     public String index(ModelMap map) {
         return "redirect:/index"; //reindirizza alla Home Page
     }
-    
+
     @RequestMapping(value = "/index")
     public String home(ModelMap map) {
         return "index";
     }
-    
+
+    @RequestMapping(value = "/doLogin", method = RequestMethod.GET)
+    public String logIn(HttpServletRequest request, ModelMap map) {
+        System.out.println("login");
+            Utente u=db.getUser(request.getParameter("email"), request.getParameter("password"));
+            if(u==null){
+                return "signin";
+            }
+            map.addAttribute("nome", u.getNome());
+            map.addAttribute("cognome", u.getCognome());
+            map.addAttribute("dataNascita", u.getDataNascita());
+            map.addAttribute("email", u.getEmail());
+            map.addAttribute("password", u.getPassword());
+            map.addAttribute("sesso", u.getSesso());
+        return "personalArea";
+    }
+
+    @RequestMapping(value = "/signin")
+    public String signIn(ModelMap map) {
+        return "signin";
+    }
+
     @RequestMapping(value = "/login")
     public String logIn(ModelMap map) {
         return "login";
     }
-    
-    @RequestMapping(value = "/signin")
-    public String signIn( ModelMap map) {
-        return "signin";
-    }
-    
+
     @RequestMapping(value = "/doSignin", method = RequestMethod.GET)
     public String signIn(HttpServletRequest request, ModelMap map) {
         System.out.println("reg");
         Utente temp = new Utente(request.getParameter("email"), request.getParameter("password"),
-                request.getParameter("nome"), request.getParameter("cognome"), request.getParameter("indirizzo"), 
-                request.getParameter("sesso").charAt(0), request.getParameter("dataNascita"),null,request.getParameter("telefono"),(request.getParameter("privacy").equals("true")?true:false),  null);
+                request.getParameter("nome"), request.getParameter("cognome"), request.getParameter("indirizzo"),
+                request.getParameter("sesso").charAt(0), request.getParameter("dataNascita"), null, request.getParameter("telefono"), (request.getParameter("privacy").equals("true") ? true : false), null);
         db.sigIn(temp);
         return "signin";
     }

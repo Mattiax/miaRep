@@ -15,5 +15,5 @@ public interface DB {
 
 	public void sigIn(Utente u);
 
-	public Utente getUser();
+	public Utente getUser(String email,String password);
 }

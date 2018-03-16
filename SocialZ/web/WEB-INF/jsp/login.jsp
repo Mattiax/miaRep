@@ -13,10 +13,10 @@
     </head>
     <body>
         <h1>Accedi</h1>
-		<form action="action">
-			<p><input type="text"></p>
-			<p><input type="text"></p>
-			<p><input type="button" value="ACCEDI"></p>
-		</form>
+        <form action="doLogin">
+            <p><input type="text" name="email"></p>
+            <p><input type="text" name="password"></p>
+            <p><input type="submit" value="ACCEDI"></p>
+        </form>
     </body>
 </html>

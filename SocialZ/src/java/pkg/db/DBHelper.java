@@ -37,16 +37,16 @@ public class DBHelper implements DB {
     public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
-
+    
     public void sigIn(Utente u) {
         String sql = "INSERT INTO PERSONA(email,password,nome,cognome,indirizzo,sesso,dataNascita,foto,telefono,permesso) "
                 + " VALUES (?,?,?,?,?,?,?,?,?,?);";
-        jdbcTemplate.update(sql,u.getEmail(), u.getPassword(), u.getNome(), u.getCognome(), u.getIndirizzo(), u.getSesso(), u.getDataNascitaSql(), null, u.getTelefono(), u.getPermesso());
+        jdbcTemplate.update(sql,u.getEmail(), u.getPassword(), u.getNome(), u.getCognome(), u.getIndirizzo(), u.getSesso(), u.getDataNascita(), null, u.getTelefono(), u.getPermesso());
     }
 
-    public Utente getUser() {
-        String sql = "INSERT () "
-                + " VALUES (?,?,?,?,?,?,?,?);";
+    public Utente getUser(String email,String password) {
+        System.out.println(email+"   "+password);
+        String sql = "SELECT * FROM PERSONA WHERE email = '"+email+"' AND password = '"+password+"';";
         Utente ris = jdbcTemplate.query(sql, (ResultSet rs) -> rs.next()
                 ? new Utente(
                         rs.getString("email"),

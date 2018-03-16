@@ -21,8 +21,7 @@ import org.springframework.stereotype.Component;
  */
 public class Utente {
 
-    private String nome, cognome, telefono, email, password, indirizzo;
-    private Date dataNascita;
+    private String nome, cognome, telefono, email, password, indirizzo,dataNascita;
     private char sesso;
     private String[] hobbies;
     private Image image;
@@ -34,7 +33,7 @@ public class Utente {
         this.telefono = "";
         this.email = "";
         this.password = "";
-        this.dataNascita = null;
+        this.dataNascita = "";
         this.sesso = 'x';
         this.hobbies = null;
     }
@@ -47,18 +46,7 @@ public class Utente {
         this.telefono = telefono;
         this.email = email;
         this.password = password;
-        System.out.println(dataNascita);
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-
-        try {
-
-            Date date = formatter.parse(dataNascita);
-            System.out.println(date);
-            this.dataNascita=date;
-        } catch (Exception ex) {
-            System.out.println("errore data");
-            ex.printStackTrace();
-        }
+        this.dataNascita=dataNascita;
         this.acc = acc;
         this.hobbies = hobbies;
         this.image = image;
@@ -93,11 +81,7 @@ public class Utente {
     }
 
     public void setDataNascita(String dataNascita) {
-        try {
-            this.dataNascita = new SimpleDateFormat("MM, dd, yyyy", Locale.ITALY).parse(dataNascita);
-        } catch (ParseException ex) {
-            ex.printStackTrace();
-        }
+            this.dataNascita = dataNascita;
     }
 
     public void setHobbies(String[] hobbies) {
@@ -128,12 +112,8 @@ public class Utente {
         return password;
     }
 
-    public Date getDataNascita() {
+    public String getDataNascita() {
         return dataNascita;
-    }
-    
-    public Date getDataNascitaSql(){
-       return new java.sql.Timestamp(dataNascita.getTime());
     }
 
     public String[] getHobbies() {

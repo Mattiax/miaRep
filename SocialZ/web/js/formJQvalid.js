@@ -10,6 +10,12 @@ $(document).ready(function(){
 			nome: {
 				required: true,
 			},
+                        sesso: {
+				required: true,
+			},
+                        privacy: {
+				required: true,
+			},
                         cognome: {
 				required: true,
 			},
@@ -17,7 +23,7 @@ $(document).ready(function(){
 				required: true,
 				minlength: 6
 			},
-			password2: {
+			passwordRip: {
 				required: true,
 				//equalTo: "#password"
 			},
@@ -28,6 +34,7 @@ $(document).ready(function(){
 				telefonoValido: true,
 			},
 			dataNascita: {
+                            required: true,
 				dataGGMMAAAA: true,
 			},
 			accCond: {
@@ -35,7 +42,7 @@ $(document).ready(function(){
 			}
 		},
 		messages: {
-			password2: {
+			passwordRip: {
 				equalTo: "Le due password devono essere uguali."
 			},
 			accCond: {
