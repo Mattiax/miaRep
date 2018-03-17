@@ -4,14 +4,19 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/D:/Windows/Desktop/miaRep/SocialZ/web/WEB-INF/jsp/login.jsp</file>
-            <file>file:/D:/Windows/Desktop/miaRep/SocialZ/src/java/pkg/db/DB.java</file>
             <file>file:/D:/Windows/Desktop/miaRep/SocialZ/web/WEB-INF/jsp/messages.jsp</file>
+            <file>file:/D:/Windows/Desktop/miaRep/SocialZ/web/WEB-INF/web.xml</file>
             <file>file:/D:/Windows/Desktop/miaRep/SocialZ/src/java/pkg/controllori/DefaultController.java</file>
-            <file>file:/D:/Windows/Desktop/miaRep/SocialZ/web/WEB-INF/jsp/signin.jsp</file>
-            <file>file:/D:/Windows/Desktop/miaRep/SocialZ/web/css/signin.css</file>
+            <file>file:/D:/Windows/Desktop/miaRep/SocialZ/web/WEB-INF/dispatcher-servlet.xml</file>
             <file>file:/D:/Windows/Desktop/miaRep/SocialZ/web/WEB-INF/jsp/personalArea.jsp</file>
             <file>file:/D:/Windows/Desktop/miaRep/SocialZ/web/css/messages.css</file>
+            <file>file:/D:/Windows/Desktop/miaRep/SocialZ/src/java/pkg/oggetti/Messaggio.java</file>
+            <file>file:/D:/Windows/Desktop/miaRep/SocialZ/web/js/script.js</file>
+            <file>file:/D:/Windows/Desktop/miaRep/SocialZ/src/java/pkg/db/DB.java</file>
+            <file>file:/D:/Windows/Desktop/miaRep/SocialZ/web/WEB-INF/jsp/signin.jsp</file>
+            <file>file:/D:/Windows/Desktop/miaRep/SocialZ/web/css/signin.css</file>
             <file>file:/D:/Windows/Desktop/miaRep/SocialZ/src/java/pkg/db/DBHelper.java</file>
+            <file>file:/D:/Windows/Desktop/miaRep/SocialZ/web/WEB-INF/applicationContext.xml</file>
         </group>
     </open-files>
 </project-private>

@@ -1,7 +1,11 @@
 package pkg.controllori;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -12,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import pkg.db.DBHelper;
+import pkg.oggetti.Messaggio;
 import pkg.oggetti.Utente;
 
 @Controller
@@ -62,6 +67,29 @@ public class DefaultController {
         System.out.println(lst.size());
         map.addAttribute("listaUtenti", lst);
         return "messages";
+    }
+
+    @RequestMapping(value = "/provaa")
+    public JSONObject prova(String mittente, String mittenteG, String destinatario, String destinatarioG) {
+        System.out.println("andata   " + mittente + " " + destinatario);
+        //List<Utente> lst = db.getAllUsers();
+        List<Messaggio> msg = db.getConversazione(mittente, mittenteG, destinatario, destinatarioG);
+        //System.out.println(lst.size());
+       // map.addAttribute("listaMessaggi", msg);
+        //map.addAttribute("listaUtenti", lst);
+        JSONObject js = new JSONObject();
+        try {
+            for (int i = 0; i < msg.size(); i++) {
+                System.out.println(msg.get(i).getMessaggio());
+                js.put("mittente", msg.get(i).getMittente());
+                js.put("destinatario", msg.get(i).getDestinatario());
+                js.put("messaggio", msg.get(i).getMessaggio());
+                js.put("dataORa", msg.get(i).getDataOra());
+            }
+        } catch (JSONException ex) {
+            Logger.getLogger(DefaultController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return js;
     }
 
     @RequestMapping(value = "/doSignin", method = RequestMethod.GET)
