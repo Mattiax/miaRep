@@ -19,7 +19,7 @@ function addRowHandlers() {
                     return function () {
                         var cell = row.getElementsByTagName("td")[3];
                         var id = cell.innerHTML;
-                        
+
                         showMessages(id);
                     };
                 };
@@ -28,29 +28,35 @@ function addRowHandlers() {
     }
 }
 
-function showMessages(email){
-    alert(email)
-   /* $.get("/SocialZ/provaa", {mittente:'cane@cane.it',mittenteG:'Deepak', destinatario:email,destinatarioG:'Deepak'}, function (data) {  
-         alert(data);
+function showMessages(email) {
+    alert(email);
+    /* $.get("/SocialZ/provaa", {mittente:'cane@cane.it',mittenteG:'Deepak', destinatario:email,destinatarioG:'Deepak'}, function (data) {  
+     alert(data);
      }); */
     $.ajax({
-    // edit to add steve's suggestion.
-    //url: "/ControllerName/ActionName",
-    url: 'provaa',
-    data: {mittente:'cane@cane.it',mittenteG:'Deepak', destinatario:email,destinatarioG:'Deepak'},
-    success: function(data) {
-         // your data could be a View or Json or what ever you returned in your action method 
-         // parse your data here
-         alert(data);
-    },
-    statusCode : {
-             404: function(content) { alert('cannot find resource'); },
-             500: function(content) { alert('internal server error'); }
+        // edit to add steve's suggestion.
+        //url: "/ControllerName/ActionName",
+        url: 'provaa',
+        dataType: "json",
+        contentType: "application/json",
+        data: {mittente: 'cane@cane.it', mittenteG: 'Deepak', destinatario: email, destinatarioG: 'Deepak'},
+        success: function (data) {
+            // your data could be a View or Json or what ever you returned in your action method 
+            // parse your data here
+            alert(data)
+            var obj = $.parseJSON(data);
+            alert(obj)
+            alert(obj[0].mittente);
+            
+        },
+         statusCode : {
+         404: function(content) { alert('cannot find resource'); },
+         500: function(content) { alert('internal server error'); }
          }, 
          error: function(req, status, errorObj) {
-               // handle status === "timeout"
-               // handle other errors
-               alert(status)
+         // handle status === "timeout"
+         // handle other errors
+         alert(status+errorObj)
          }
-});
+    });
 }
