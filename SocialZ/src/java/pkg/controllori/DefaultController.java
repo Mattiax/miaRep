@@ -3,7 +3,10 @@ package pkg.controllori;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.json.Json;
+import javax.json.JsonObject;
 import javax.servlet.http.HttpServletRequest;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,23 +78,32 @@ public class DefaultController {
     }
 
     @RequestMapping(value = "/provaa")
-    @ResponseStatus(HttpStatus.OK)
-    public @ResponseBody String prova( String mittente, String mittenteG, String destinatario, String destinatarioG) {
-        System.out.println("andata   " + mittente + " " + destinatario);
-        //List<Utente> lst = db.getAllUsers();
-        List<Messaggio> msg = db.getConversazione(mittente, mittenteG, destinatario, destinatarioG);
-        //System.out.println(lst.size());
-       // map.addAttribute("listaMessaggi", msg);
-        //map.addAttribute("listaUtenti", lst);
+    public @ResponseBody
+    String prova(String mittente, String mittenteG, String destinatario, String destinatarioG) {
+        List<Messaggio> msg = db.getConversazione(mittente, destinatario);
+
         JSONObject js = new JSONObject();
+        JSONArray ja = new JSONArray();
         try {
-            for (int i = 0; i < msg.size(); i++) {
-                System.out.println(msg.get(i).getMessaggio());
-                js.put("mittente", msg.get(i).getMittente());
-                js.put("destinatario", msg.get(i).getDestinatario());
-                js.put("messaggio", msg.get(i).getMessaggio());
-                js.put("dataORa", msg.get(i).getDataOra());
+            if (msg == null || msg.isEmpty()) {
+                js.put("mittente", "Nessun messaggio");
+                js.put("destinatario", "");
+                js.put("messaggio", "");
+                js.put("dataOra", "");
+                ja.put(js);
+            } else {
+                for (int i = 0; i < msg.size(); i++) {
+                    System.out.println(msg.get(i).getMessaggio());
+                    js = new JSONObject();
+                    js.put("mittente", msg.get(i).getMittente());
+                    js.put("destinatario", msg.get(i).getDestinatario());
+                    js.put("messaggio", msg.get(i).getMessaggio());
+                    js.put("dataOra", msg.get(i).getDataOra());
+                    ja.put(js);
+                }
             }
+            js = new JSONObject();
+            js.put("messaggi", ja);
         } catch (JSONException ex) {
             System.out.println("errore json");
             Logger.getLogger(DefaultController.class.getName()).log(Level.SEVERE, null, ex);

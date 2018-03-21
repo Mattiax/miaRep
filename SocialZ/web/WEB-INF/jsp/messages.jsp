@@ -10,12 +10,24 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/messages.css"/>
-        <script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-1.6.1.min.js"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-3.3.1.js"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/script.js"></script>
         <title>JSP Page</title>
     </head>
+
+    <ul id="mainUL">
+        <li id="mainLI"><a class="active">Messaggi</a></li>
+        <li id="mainLI"><a href="#news">Gruppi</a></li>
+        <li id="personalAreaLI">
+            <ul id="subUL">
+                <li id="dropLI"><a id="test" href="personalArea">Account</a></li>
+                <li id="dropLI"><a id="test" href="#">Esci</a></li>
+            </ul>
+        </li>
+    </ul>
+
     <body>
-        
+
         <div class="split left">
             <input name="mittente" value="cane@cane.it">cane
             <table id="tableId">
@@ -35,11 +47,17 @@
             </table>
         </div>
 
-        <div class="split right">
+        <div class="split right" id="rightpanel">
             <h1>Messaggi</h1>  
-
-            <button name="nuovoMessaggio">NUOVO</button>
+            <div id="storicoChat">
+                
+            </div>
+            
+            <div id="componiMessaggio">
+                <textarea id="inputMess" rows="4" cols="50"></textarea>
+                <button type="submit" id="invioMess">></button>
+                <button id="scriviMessaggio" name="nuovoMessaggio">+</button>
+            </div>
         </div>
-        
     </body>
 </html>

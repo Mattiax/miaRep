@@ -11,8 +11,8 @@ and open the template in the editor.
     height: 100%;
     width: 30%;
     position: fixed;
-    z-index: 1;
-    top: 0;
+    z-index: -1;
+    top: 5%;
     overflow-x: hidden;
     padding-top: 20px;
 }
@@ -23,7 +23,7 @@ and open the template in the editor.
 }
 
 .right {
-    right: 0;
+    right: 38%;
 }
 
 .centered {
@@ -32,4 +32,160 @@ and open the template in the editor.
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
+}
+
+#mainUL {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+    position: fixed;
+    top: 0;
+    width: 100%;
+}
+
+#mainLI {
+    float: left;
+}
+
+#mainLI a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+}
+
+.active {
+    background-color: #4CAF50;
+}
+
+#personalAreaLI {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    float: right;
+    border-radius: 20%;
+    margin-right: 1%;
+    cursor: pointer;
+}
+
+
+#mainUL #personalAreaLI {display: inline-block !important;;}
+#mainUL #personalAreaLI:hover {background: #555;}
+#mainUL #personalAreaLI:hover #subUL {display: block !important;;left:88%;}
+#mainUL #personalAreaLI #subUL {
+    position: absolute;
+    width: 200px;
+    display: none !important;;
+    background-color: #4CAF50;
+}
+#mainUL #personalAreaLI #subUL #personalAreaLI { 
+    background: blue; 
+    display: block; 
+}
+#mainUL #personalAreaLI #subUL  #dropLI #test{display:block !important;} 
+#mainUL #personalAreaLI #subUL #dropLI :hover {background: #666;}
+
+#personalAreaLI #test {
+    display: block;
+    color: white;
+    padding: 14px 16px;
+}
+
+
+#tableId {
+    width: 100%;
+    text-align: left;
+}
+#tableId td, #tableId th {
+    padding: 4px 3px;
+}
+#tableId tbody td {
+    font-size: 18px;
+}
+#tableId thead th {
+    font-size: 18px;
+    font-weight: bold;
+    color: #1E9E42;
+}
+#tableId tfoot td {
+    font-size: 20px;
+}
+
+#dataDiv{
+    float: right;
+}
+
+#messaggioDiv{
+    padding-left: 1%;
+}
+
+#storicoChat{
+    height: 60%;    
+}
+
+#componiMessaggio{
+    height: 40%;
+}
+
+#chatDiv{
+    padding-bottom: 1%;
+}
+
+#scriviMessaggio {
+    width: 4%;
+    height: 8%;
+    background-color: #0047b3;
+    border-radius: 50%;
+
+    font-size: 50px;
+    line-height: 70px;
+    color: white;
+    text-align: center;
+
+    position: fixed;
+    right: 5%;
+    bottom: 5%;
+
+}
+
+#invioMess {
+    width: 3%;
+    height: 6%;
+    background-color: #009900;
+    border-radius: 50%;
+
+    font-size: 50px;
+    text-align: center;
+    color: white;
+    text-align: center;
+
+    position: fixed;
+    right: 10%;
+    bottom: 10%;
+}
+
+#scriviMessaggio:hover {
+    transform: scale(1.05);
+}
+
+#inputMess {
+    bottom: 10%;
+    width: 50%;
+    position: fixed;
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+    padding: 10px 20px;
+    border: 1px solid #b7b7b7;
+    -webkit-border-radius: 20px;
+    border-radius: 20px;
+    -o-text-overflow: clip;
+    text-overflow: clip;
 }

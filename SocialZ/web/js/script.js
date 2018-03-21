@@ -37,26 +37,43 @@ function showMessages(email) {
         // edit to add steve's suggestion.
         //url: "/ControllerName/ActionName",
         url: 'provaa',
-        dataType: "json",
-        contentType: "application/json",
+
         data: {mittente: 'cane@cane.it', mittenteG: 'Deepak', destinatario: email, destinatarioG: 'Deepak'},
         success: function (data) {
             // your data could be a View or Json or what ever you returned in your action method 
             // parse your data here
-            alert(data)
-            var obj = $.parseJSON(data);
-            alert(obj)
-            alert(obj[0].mittente);
-            
+
+            //alert("data " + data);
+            var obj = jQuery.parseJSON(data);
+            /*alert("conv " + obj);
+             alert(obj.mittente);*/
+            makeTable(obj);
+
         },
-         statusCode : {
-         404: function(content) { alert('cannot find resource'); },
-         500: function(content) { alert('internal server error'); }
-         }, 
-         error: function(req, status, errorObj) {
-         // handle status === "timeout"
-         // handle other errors
-         alert(status+errorObj)
-         }
+        statusCode: {
+            404: function (content) {
+                alert('cannot find resource');
+            },
+            500: function (content) {
+                alert('internal server error');
+            }
+        },
+        error: function (req, status, errorObj) {
+            alert(status + errorObj)
+        }
     });
+
+    function makeTable(json) {
+        var data = json.messaggi;
+        //var content = "<table> <th>Mittente</th> <th>Destinatario</th> <th>Messaggio</th> <th>Ora</th>";
+        var prova="";
+        for (var i in data)
+        {
+            prova+="<div id=\"chatDiv\"><p>"+ data[i].mittente +":</p><p id=\"messaggioDiv\">"+ data[i].messaggio +"</p><p id=\"dataDiv\">"+ data[i].dataOra +"</p></div>";
+            //content += "<tr> <td>" + data[i].mittente + "</td><td>" + data[i].destinatario + "</td><td>" + data[i].messaggio + "</td><td>" + data[i].dataOra + "</td></tr>";
+        }
+        //content += "</table>";
+        prova+="</div>";
+        $('#storicoChat').append(prova);
+    }
 }

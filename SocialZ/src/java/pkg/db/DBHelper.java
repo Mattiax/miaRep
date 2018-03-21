@@ -86,36 +86,15 @@ public class DBHelper implements DB {
         return ris;
     }
 
-    public List<Messaggio> getConversazione(String mittente, String mittenteG, String destinatario, String destinatarioG) {
+    public List<Messaggio> getConversazione(String mittente, String destinatario) {
         String sql = "SELECT * FROM MESSAGGI "
-                + "WHERE '";
-        if (mittente != null) {
-            sql += mittente + "' = mittente AND '";
-        } else {
-            sql += mittenteG + "' = mittenteGruppo AND '";
-        }
-        if (destinatario != null) {
-            sql += destinatario + "' = destinatario;";
-        } else {
-            sql += destinatarioG + "' = destinatarioGruppo;";
-        }
+                + "WHERE (mittente = '" + mittente + "' AND destinatario ='" + destinatario + "') OR (destinatario = '" + mittente + "' AND mittente ='" + destinatario + "');";
         List<Messaggio> ris = jdbcTemplate.query(sql, new RowMapper<Messaggio>() {
             @Override
             public Messaggio mapRow(ResultSet rs, int rowNum) throws SQLException {
-                String mittente,destinatario;
-                if (rs.getString("mittente") != null) {
-                    mittente =rs.getString("mittente");
-                } else {
-                    mittente =rs.getString("mittenteGruppo");
-                }
-                if (rs.getString("destinatario") != null) {
-                    destinatario =rs.getString("destinatario");
-                } else {
-                    destinatario =rs.getString("destinatarioGruppo");
-                }
                 return new Messaggio(
-                        mittente,
-                        destinatario,
+                        rs.getString("mittente"),
+                        rs.getString("destinatario"),
                         rs.getString("messaggio"),
                         rs.getString("dataOra"));
             }

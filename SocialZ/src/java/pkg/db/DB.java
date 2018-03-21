@@ -21,5 +21,5 @@ public interface DB {
         
         public List<Utente> getAllUsers();
         
-        public List<Messaggio> getConversazione(String mittente, String mittenteG, String destinatario, String destinatarioG);
+        public List<Messaggio> getConversazione(String mittente, String destinatario);
 }
