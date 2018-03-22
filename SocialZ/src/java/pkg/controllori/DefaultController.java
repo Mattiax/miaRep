@@ -46,7 +46,27 @@ public class DefaultController {
     @RequestMapping(value = "/doLogin", method = RequestMethod.GET)
     public String logIn(HttpServletRequest request, ModelMap map) {
         System.out.println("login");
-        Utente u = db.getUser(request.getParameter("email"), request.getParameter("password"));
+        /*Utente u = db.getUser(request.getParameter("email"), request.getParameter("password"));
+        if (u == null) {
+            return "signin";
+        }
+        map.addAttribute("nome", u.getNome());
+        map.addAttribute("cognome", u.getCognome());
+        map.addAttribute("dataNascita", u.getDataNascita());
+        map.addAttribute("email", u.getEmail());
+        map.addAttribute("password", u.getPassword());
+        map.addAttribute("sesso", u.getSesso());*/
+        map.addAttribute("mittente",request.getParameter("email"));
+        List<Utente> lst = db.getAllUsers();
+        System.out.println(lst.size());
+        map.addAttribute("listaUtenti", lst);
+        return "messages";
+    }
+
+    @RequestMapping(value = "/personalArea", method = RequestMethod.GET)
+    public String setData(HttpServletRequest request,ModelMap map) {
+        System.out.println(request.getParameter("mittente"));
+        Utente u = db.getUser(request.getParameter("mittente"), "");
         if (u == null) {
             return "signin";
         }
@@ -58,7 +78,7 @@ public class DefaultController {
         map.addAttribute("sesso", u.getSesso());
         return "personalArea";
     }
-
+    
     @RequestMapping(value = "/signin")
     public String signIn(ModelMap map) {
         return "signin";

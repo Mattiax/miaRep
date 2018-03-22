@@ -47,7 +47,10 @@ public class DBHelper implements DB {
 
     public Utente getUser(String email, String password) {
         System.out.println(email + "   " + password);
-        String sql = "SELECT * FROM PERSONA WHERE email = '" + email + "' AND password = '" + password + "';";
+        String sql = "SELECT * FROM PERSONA WHERE email = '" + email + "' ";
+        if(!password.isEmpty()){
+            sql+="AND password = '" + password + "';";
+        }
         Utente ris = jdbcTemplate.query(sql, (ResultSet rs) -> rs.next()
                 ? new Utente(
                         rs.getString("email"),

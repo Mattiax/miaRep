@@ -9,16 +9,16 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title></title>
+        <title>Area personale</title>
     </head>
     <body>
-        <h1>Area personale</h1>
-        <br> nome : ${nome};
-        <br> cognome : ${cognome};
-        <br> data : ${dataNascita};
-        <br> indirizzo : ${indirizzo};
-        <br> email : ${email};
-        <br> password : ${password};
-        <br> sesso : ${sesso};
+        <legend>Dati personali</legend>
+        <p> nome : ${nome}; </p>
+        <p> cognome : ${cognome};</p>
+        <p> data : ${dataNascita};</p>
+        <p> indirizzo : ${indirizzo};</p>
+        <p> email : ${email};</p>
+        <p> password : ${password};</p>
+        <p> sesso : ${sesso};</p>
     </body>
 </html>

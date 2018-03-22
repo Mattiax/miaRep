@@ -19,17 +19,19 @@
         <li id="mainLI"><a class="active">Messaggi</a></li>
         <li id="mainLI"><a href="#news">Gruppi</a></li>
         <li id="personalAreaLI">
-            <ul id="subUL">
-                <li id="dropLI"><a id="test" href="personalArea">Account</a></li>
-                <li id="dropLI"><a id="test" href="#">Esci</a></li>
-            </ul>
+            <form action="personalArea">
+                <ul id="subUL">
+                    <span name="mittente" value="${mittente}" hidden="true"></span>
+                    <li id="dropLI"><button id="test" type="submit">Account</button></li>
+                    <li id="dropLI"><a id="test" href="#">Esci</a></li>
+                </ul>
+            </form>
         </li>
     </ul>
 
     <body>
 
         <div class="split left">
-            <input name="mittente" value="cane@cane.it">cane
             <table id="tableId">
                 <h1>Contatti</h1>  
                 <th>Numero</th>
@@ -50,9 +52,9 @@
         <div class="split right" id="rightpanel">
             <h1>Messaggi</h1>  
             <div id="storicoChat">
-                
+
             </div>
-            
+
             <div id="componiMessaggio">
                 <textarea id="inputMess" rows="4" cols="50"></textarea>
                 <button type="submit" id="invioMess">></button>

@@ -9,7 +9,7 @@ and open the template in the editor.
 */
 .split {
     height: 100%;
-    width: 30%;
+    width: 100%;
     position: fixed;
     z-index: -1;
     top: 5%;
@@ -20,10 +20,14 @@ and open the template in the editor.
 .left {
     left: 0;
     background-color: #cccccc;
+    width: 29%;
 }
 
 .right {
     right: 38%;
+    width: 70%;
+    height: 100%;
+    left: 30%;
 }
 
 .centered {

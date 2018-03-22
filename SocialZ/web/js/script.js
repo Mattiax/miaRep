@@ -4,8 +4,12 @@
  * and open the template in the editor.
  */
 $(document).ready(function () {
-
     addRowHandlers();
+    $("#invioMess").click(function () {
+        var mess=$("#inputMess").val();
+        if(mess !== ''){
+        }
+    });
 });
 
 function addRowHandlers() {
@@ -29,7 +33,7 @@ function addRowHandlers() {
 }
 
 function showMessages(email) {
-    alert(email);
+    //alert(email);
     /* $.get("/SocialZ/provaa", {mittente:'cane@cane.it',mittenteG:'Deepak', destinatario:email,destinatarioG:'Deepak'}, function (data) {  
      alert(data);
      }); */
@@ -66,14 +70,14 @@ function showMessages(email) {
     function makeTable(json) {
         var data = json.messaggi;
         //var content = "<table> <th>Mittente</th> <th>Destinatario</th> <th>Messaggio</th> <th>Ora</th>";
-        var prova="";
+        var prova = "";
         for (var i in data)
         {
-            prova+="<div id=\"chatDiv\"><p>"+ data[i].mittente +":</p><p id=\"messaggioDiv\">"+ data[i].messaggio +"</p><p id=\"dataDiv\">"+ data[i].dataOra +"</p></div>";
+            prova += "<div id=\"chatDiv\"><p>" + data[i].mittente + ":</p><p id=\"messaggioDiv\">" + data[i].messaggio + "</p><p id=\"dataDiv\">" + data[i].dataOra + "</p></div>";
             //content += "<tr> <td>" + data[i].mittente + "</td><td>" + data[i].destinatario + "</td><td>" + data[i].messaggio + "</td><td>" + data[i].dataOra + "</td></tr>";
         }
         //content += "</table>";
-        prova+="</div>";
+        prova += "</div>";
         $('#storicoChat').append(prova);
     }
 }
