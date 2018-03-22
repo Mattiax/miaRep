@@ -44,6 +44,12 @@ public class DBHelper implements DB {
                 + " VALUES (?,?,?,?,?,?,?,?,?,?);";
         jdbcTemplate.update(sql, u.getEmail(), u.getPassword(), u.getNome(), u.getCognome(), u.getIndirizzo(), u.getSesso(), u.getDataNascita(), null, u.getTelefono(), u.getPermesso());
     }
+    
+    public void salvaMess(Messaggio m) {
+        String sql = "INSERT INTO MESSAGGI(mittente,destinatario,messaggio,allegato,dataOra) "
+                + " VALUES (?,?,?,?,?);";
+        jdbcTemplate.update(sql, m.getMittente(),m.getDestinatario(),m.getMessaggio(),null,m.getDataOra());
+    }
 
     public Utente getUser(String email, String password) {
         System.out.println(email + "   " + password);
@@ -96,6 +102,7 @@ public class DBHelper implements DB {
             @Override
             public Messaggio mapRow(ResultSet rs, int rowNum) throws SQLException {
                 return new Messaggio(
+                        rs.getInt("id"),
                         rs.getString("mittente"),
                         rs.getString("destinatario"),
                         rs.getString("messaggio"),

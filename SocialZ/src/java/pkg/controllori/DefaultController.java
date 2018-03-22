@@ -1,5 +1,7 @@
 package pkg.controllori;
 
+import com.sun.mail.iap.Response;
+import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -10,6 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -83,6 +86,15 @@ public class DefaultController {
     public String signIn(ModelMap map) {
         return "signin";
     }
+    
+    @RequestMapping(value = "/salvaMessaggio", method= RequestMethod.POST)
+    public ResponseEntity<String>  salvaMess(String mittente, String destinatario,String messaggio) {
+        System.out.println("saving"+mittente+destinatario+messaggio);
+        Messaggio m=new Messaggio(mittente,destinatario,messaggio,Calendar.getInstance().getTime().toString());
+        db.salvaMess(m);
+        //return Response.OK;
+        return new ResponseEntity<>("OK", new HttpHeaders(), HttpStatus.OK);
+    }
 
     @RequestMapping(value = "/login")
     public String logIn(ModelMap map) {
@@ -100,6 +112,7 @@ public class DefaultController {
     @RequestMapping(value = "/provaa")
     public @ResponseBody
     String prova(String mittente, String mittenteG, String destinatario, String destinatarioG) {
+        System.out.println(mittente+destinatario);
         List<Messaggio> msg = db.getConversazione(mittente, destinatario);
 
         JSONObject js = new JSONObject();
@@ -119,6 +132,7 @@ public class DefaultController {
                     js.put("destinatario", msg.get(i).getDestinatario());
                     js.put("messaggio", msg.get(i).getMessaggio());
                     js.put("dataOra", msg.get(i).getDataOra());
+                    js.put("pos", i);
                     ja.put(js);
                 }
             }

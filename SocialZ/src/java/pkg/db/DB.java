@@ -22,4 +22,6 @@ public interface DB {
         public List<Utente> getAllUsers();
         
         public List<Messaggio> getConversazione(String mittente, String destinatario);
+        
+        public void salvaMess(Messaggio m);
 }
