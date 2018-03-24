@@ -51,6 +51,23 @@ public class DBHelper implements DB {
         jdbcTemplate.update(sql, m.getMittente(),m.getDestinatario(),m.getMessaggio(),null,m.getDataOra());
     }
 
+    public void eliminaMess(int id) {
+        String sql = "DELETE FROM MESSAGGI "
+                + "WHERE id=?;";
+        jdbcTemplate.update(sql, id);
+    }
+    
+    public List<String> getGruppi() {
+        String sql = "SELECT * FROM GRUPPO;";
+        List<String> ris = jdbcTemplate.query(sql, new RowMapper<String>() {
+            @Override
+            public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getString("nome");
+            }
+        });
+        return ris;
+    }
+    
     public Utente getUser(String email, String password) {
         System.out.println(email + "   " + password);
         String sql = "SELECT * FROM PERSONA WHERE email = '" + email + "' ";

@@ -15,15 +15,32 @@ $(document).ready(function () {
 });
 
 
-$(document).on( "click","#chatDiv","#pos", function() {
-  alert($("#pos").text());
+$(document).on("click", "#chatDiv", "#pos", function () {
+    alert($("#pos").text());
+    $.ajax({
+        url: 'eliminaMessaggio',
+        type: 'POST',
+        data: {id: $("#pos").text()},
+        success: function (data) {
+            //elimina div
+        },
+        statusCode: {
+            404: function (content) {
+                alert('cannot find resource');
+            },
+            500: function (content) {
+                alert('internal server error');
+            }
+        },
+        error: function (req, status, errorObj) {
+            alert(status + errorObj)
+        }
+    });
 });
 
 function mandaMessaggio(msg) {
     var mit = $("#mittente").text(), dest = $("#dest").text();
     $.ajax({
-        // edit to add steve's suggestion.
-        //url: "/ControllerName/ActionName",
         url: 'salvaMessaggio',
         type: 'POST',
         data: {mittente: mit, destinatario: dest, messaggio: msg},
@@ -55,7 +72,7 @@ function addRowHandlers() {
                 function (row)
                 {
                     return function () {
-                        var cell = row.getElementsByTagName("td")[3];
+                        var cell = row.getElementsByTagName("td")[2];
                         var id = cell.innerHTML;
                         $("#dest").text(id);
                         showMessages(id);
@@ -67,26 +84,12 @@ function addRowHandlers() {
 }
 
 function showMessages(email) {
-    //alert(email);
-    /* $.get("/SocialZ/provaa", {mittente:'cane@cane.it',mittenteG:'Deepak', destinatario:email,destinatarioG:'Deepak'}, function (data) {  
-     alert(data);
-     }); */
     $.ajax({
-        // edit to add steve's suggestion.
-        //url: "/ControllerName/ActionName",
         url: 'provaa',
-
-        data: {mittente: $("#mittente").text(), mittenteG: 'Deepak', destinatario: email, destinatarioG: 'Deepak'},
+        data: {mittente: $("#mittente").text(), destinatario: email},
         success: function (data) {
-            // your data could be a View or Json or what ever you returned in your action method 
-            // parse your data here
-
-            //alert("data " + data);
             var obj = jQuery.parseJSON(data);
-            /*alert("conv " + obj);
-             alert(obj.mittente);*/
             makeTable(obj);
-
         },
         statusCode: {
             404: function (content) {
@@ -104,14 +107,11 @@ function showMessages(email) {
 
 function makeTable(json) {
     var data = json.messaggi;
-    //var content = "<table> <th>Mittente</th> <th>Destinatario</th> <th>Messaggio</th> <th>Ora</th>";
     var prova = "";
     for (var i in data)
     {
         prova += "<div id=\"chatDiv\"><p>" + data[i].mittente + ":</p><p id=\"messaggioDiv\">" + data[i].messaggio + "</p><p id=\"dataDiv\">" + data[i].dataOra + "</p><p id=\"pos\" hidden=\"true\">" + data[i].pos + "</p></div>";
-        //content += "<tr> <td>" + data[i].mittente + "</td><td>" + data[i].destinatario + "</td><td>" + data[i].messaggio + "</td><td>" + data[i].dataOra + "</td></tr>";
     }
-    //content += "</table>";
     prova += "</div>";
     $('#storicoChat').append(prova);
 }

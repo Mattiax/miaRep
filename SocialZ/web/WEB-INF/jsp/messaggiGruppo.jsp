@@ -1,23 +1,23 @@
 <%-- 
-    Document   : messages
-    Created on : 16-mar-2018, 18.55.28
+    Document   : messaggiGruppo
+    Created on : 23-mar-2018, 11.41.16
     Author     : MATTI
 --%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/messages.css"/>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-3.3.1.js"></script>
-        <script type="text/javascript" src="${pageContext.request.contextPath}/js/script.js"></script>
+       <!-- <script type="text/javascript" src="${pageContext.request.contextPath}/js/script.js"></script>-->
         <title>JSP Page</title>
     </head>
 
     <ul id="mainUL">
-        <li id="mainLI"><a class="active">Messaggi</a></li>
-        <li id="mainLI"><a href="messaggiGruppo">Gruppi</a></li>
+        <li id="mainLI"><a href="messages">Messaggi</a></li>
+        <li id="mainLI"><a class="active">Gruppi</a></li>
         <li id="personalAreaLI">
             <form action="personalArea">
                 <ul id="subUL">
@@ -28,28 +28,19 @@
             </form>
         </li>
     </ul>
-
     <body>
-        
         <div class="split left">
-           
             <table id="tableId">
                 <h1>Contatti</h1>  
                 <th>Nome</th>
-                <th>Cognome</th>
-                <th>e-mail</th>
-                <th>*</th>
-                    <c:forEach var="u" items="${listaUtenti}" varStatus="status" >
+                <c:forEach var="lst" items="${listaGruppi}" varStatus="status" >
                     <tr>
-                        <td>${u.getNome()}</td>
-                        <td>${u.getCognome()}</td>
-                        <td name="destinatario">${u.getEmail()}</td>
+                        <td name="destinatario">${lst.get()}</td>
                     </tr>
                 </c:forEach>  
             </table>
         </div>
-
-        <div class="split right" id="rightpanel">
+                    <div class="split right" id="rightpanel">
             <h1>Messaggi</h1>  
             <div id="storicoChat">
 

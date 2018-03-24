@@ -92,7 +92,13 @@ public class DefaultController {
         System.out.println("saving"+mittente+destinatario+messaggio);
         Messaggio m=new Messaggio(mittente,destinatario,messaggio,Calendar.getInstance().getTime().toString());
         db.salvaMess(m);
-        //return Response.OK;
+        return new ResponseEntity<>("OK", new HttpHeaders(), HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = "/eliminaMessaggio", method= RequestMethod.POST)
+    public ResponseEntity<String>  eliminaMess(int id) {
+        System.out.println("deleting");
+        db.eliminaMess(id);
         return new ResponseEntity<>("OK", new HttpHeaders(), HttpStatus.OK);
     }
 
@@ -108,10 +114,18 @@ public class DefaultController {
         map.addAttribute("listaUtenti", lst);
         return "messages";
     }
+    
+    @RequestMapping(value = "/messaggiGruppo")
+    public String messGruppo(ModelMap map) {
+        List<String> lst = db.getGruppi();
+        System.out.println(lst.get(0));
+        map.addAttribute("listaGruppi", lst);
+        return "messaggiGruppo";
+    }
 
     @RequestMapping(value = "/provaa")
     public @ResponseBody
-    String prova(String mittente, String mittenteG, String destinatario, String destinatarioG) {
+    String prova(String mittente, String destinatario) {
         System.out.println(mittente+destinatario);
         List<Messaggio> msg = db.getConversazione(mittente, destinatario);
 
@@ -132,7 +146,7 @@ public class DefaultController {
                     js.put("destinatario", msg.get(i).getDestinatario());
                     js.put("messaggio", msg.get(i).getMessaggio());
                     js.put("dataOra", msg.get(i).getDataOra());
-                    js.put("pos", i);
+                    js.put("pos", msg.get(i).getId());
                     ja.put(js);
                 }
             }
