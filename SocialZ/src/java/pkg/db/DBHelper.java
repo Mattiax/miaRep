@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 import javax.sql.DataSource;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
@@ -115,6 +116,41 @@ public class DBHelper implements DB {
     public List<Messaggio> getConversazione(String mittente, String destinatario) {
         String sql = "SELECT * FROM MESSAGGI "
                 + "WHERE (mittente = '" + mittente + "' AND destinatario ='" + destinatario + "') OR (destinatario = '" + mittente + "' AND mittente ='" + destinatario + "');";
+        List<Messaggio> ris = jdbcTemplate.query(sql, new RowMapper<Messaggio>() {
+            @Override
+            public Messaggio mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new Messaggio(
+                        rs.getInt("id"),
+                        rs.getString("mittente"),
+                        rs.getString("destinatario"),
+                        rs.getString("messaggio"),
+                        rs.getString("dataOra"));
+            }
+        });
+        return ris;
+    }
+    
+    public void aggiungiMessaggioGruppo(Messaggio m){
+        String sql = "INSERT INTO MESSAGGIGRUPPI(mittente,destinatario,messaggio,allegato,dataOra) "
+                + " VALUES (?,?,?,?,?);";
+        jdbcTemplate.update(sql, m.getMittente(),m.getDestinatario(),m.getMessaggio(),null,m.getDataOra());
+    }
+    
+    public int isPartecipante(String mittente, String destinatario) {
+        String sql = "SELECT email FROM PARTECIPANTI "
+                + "WHERE email = ? AND nome = ? ;";
+        try{
+         return jdbcTemplate.queryForObject(sql,Integer.class,mittente,destinatario);
+        }catch(EmptyResultDataAccessException e){
+            return-1;
+        }
+    }
+    
+    public List<Messaggio> getConversazioneGruppo(String mittente, String destinatario) {
+        
+        String sql = "SELECT mittente,destinatario,messaggio,dataOra,allegato "
+                + "FROM MESSAGGIGRUPPI,PARTECIPANTI "
+                + "WHERE email = '"+mittente+"' AND PARTECIPANTI.nome='" + destinatario + "';";
         List<Messaggio> ris = jdbcTemplate.query(sql, new RowMapper<Messaggio>() {
             @Override
             public Messaggio mapRow(ResultSet rs, int rowNum) throws SQLException {

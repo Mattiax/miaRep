@@ -26,4 +26,10 @@ public interface DB {
         public void salvaMess(Messaggio m);
         
         public List<String> getGruppi();
+        
+        public List<Messaggio> getConversazioneGruppo(String mittente, String destinatario);
+        
+        public void aggiungiMessaggioGruppo(Messaggio m);
+        
+         public int isPartecipante(String mittente, String destinatario);
 }

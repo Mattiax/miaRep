@@ -5,7 +5,7 @@
  */
 var utente;
 $(document).ready(function () {
-    utente=document.cookie.substr(9);
+    utente = document.cookie.substr(9);
     addRowHandlers();
     $("#invioMess").click(function () {
         var mess = $("#inputMess").val();
@@ -20,7 +20,7 @@ $(document).ready(function () {
 $(document).on("click", "#chatDiv", "#pos", function () {
     alert($("#pos").text());
     $.ajax({
-        url: 'eliminaMessaggio',
+        url: 'eliminaMessaggioGruppo',
         type: 'POST',
         data: {id: $("#pos").text()},
         success: function (data) {
@@ -41,11 +41,11 @@ $(document).on("click", "#chatDiv", "#pos", function () {
 });
 
 function mandaMessaggio(msg) {
-    var dest = $("#dest").text();
+    var mit = $("#mittente").text(), dest = $("#dest").text();
     $.ajax({
         url: 'salvaMessaggio',
         type: 'POST',
-        data: {mittente: utente, destinatario: dest, messaggio: msg},
+        data: {mittente: mit, destinatario: dest, messaggio: msg},
         success: function (data) {
             var prova = "<div id=\"chatDiv\"><p>" + mit + ":</p><p id=\"messaggioDiv\">" + msg + "</p><p id=\"dataDiv\">" + new Date() + "</p></div></div>";
             $('#storicoChat').append(prova);
@@ -66,7 +66,8 @@ function mandaMessaggio(msg) {
 }
 
 function addRowHandlers() {
-    var table = document.getElementById("tableId");
+
+    var table = document.getElementById("tabellaGruppi");
     var rows = table.getElementsByTagName("tr");
     for (i = 0; i < rows.length; i++) {
         var currentRow = table.rows[i];
@@ -74,8 +75,9 @@ function addRowHandlers() {
                 function (row)
                 {
                     return function () {
-                        var cell = row.getElementsByTagName("td")[2];
+                        var cell = row.getElementsByTagName("td")[0];
                         var id = cell.innerHTML;
+                        alert(id);
                         $("#dest").text(id);
                         showMessages(id);
                     };
@@ -86,13 +88,17 @@ function addRowHandlers() {
 }
 
 function showMessages(email) {
-     $("#storicoChat").text("");
+    $("#storicoChat").text("");
     $.ajax({
-        url: 'provaa',
+        url: 'getConvGruppo',
         data: {mittente: utente, destinatario: email},
         success: function (data) {
-            var obj = jQuery.parseJSON(data);
-            makeTable(obj);
+            if (data === "") {
+                $('#storicoChat').append("<p>Non fai parte di questo gruppo</p><p><button id=\"partecipaBtn\">PARTECIPA</button></p>");
+            } else {
+                var obj = jQuery.parseJSON(data);
+                makeTable(obj);
+            }
         },
         statusCode: {
             404: function (content) {

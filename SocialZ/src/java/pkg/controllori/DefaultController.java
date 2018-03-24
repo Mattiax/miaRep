@@ -7,7 +7,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.json.Json;
 import javax.json.JsonObject;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,7 +49,7 @@ public class DefaultController {
     }
 
     @RequestMapping(value = "/doLogin", method = RequestMethod.GET)
-    public String logIn(HttpServletRequest request, ModelMap map) {
+    public String logIn(HttpServletRequest request, ModelMap map,HttpServletResponse response) {
         System.out.println("login");
         /*Utente u = db.getUser(request.getParameter("email"), request.getParameter("password"));
         if (u == null) {
@@ -60,6 +62,7 @@ public class DefaultController {
         map.addAttribute("password", u.getPassword());
         map.addAttribute("sesso", u.getSesso());*/
         map.addAttribute("mittente",request.getParameter("email"));
+        response.addCookie(new Cookie("mittente",request.getParameter("email")));
         List<Utente> lst = db.getAllUsers();
         System.out.println(lst.size());
         map.addAttribute("listaUtenti", lst);
@@ -110,15 +113,17 @@ public class DefaultController {
     @RequestMapping(value = "/messages")
     public String message(ModelMap map) {
         List<Utente> lst = db.getAllUsers();
+        
         System.out.println(lst.size());
         map.addAttribute("listaUtenti", lst);
         return "messages";
     }
     
-    @RequestMapping(value = "/messaggiGruppo")
-    public String messGruppo(ModelMap map) {
+    @RequestMapping(value = "/messaggiGruppo",method= RequestMethod.GET)
+    public String messGruppo(HttpServletRequest request,ModelMap map) {
         List<String> lst = db.getGruppi();
-        System.out.println(lst.get(0));
+        System.out.println(request.getParameter("mittente"));
+        map.addAttribute("mittente",request.getParameter("mittente"));
         map.addAttribute("listaGruppi", lst);
         return "messaggiGruppo";
     }
@@ -128,6 +133,46 @@ public class DefaultController {
     String prova(String mittente, String destinatario) {
         System.out.println(mittente+destinatario);
         List<Messaggio> msg = db.getConversazione(mittente, destinatario);
+
+        JSONObject js = new JSONObject();
+        JSONArray ja = new JSONArray();
+        try {
+            if (msg == null || msg.isEmpty()) {
+                js.put("mittente", "Nessun messaggio");
+                js.put("destinatario", "");
+                js.put("messaggio", "");
+                js.put("dataOra", "");
+                ja.put(js);
+            } else {
+                for (int i = 0; i < msg.size(); i++) {
+                    System.out.println(msg.get(i).getMessaggio());
+                    js = new JSONObject();
+                    js.put("mittente", msg.get(i).getMittente());
+                    js.put("destinatario", msg.get(i).getDestinatario());
+                    js.put("messaggio", msg.get(i).getMessaggio());
+                    js.put("dataOra", msg.get(i).getDataOra());
+                    js.put("pos", msg.get(i).getId());
+                    ja.put(js);
+                }
+            }
+            js = new JSONObject();
+            js.put("messaggi", ja);
+        } catch (JSONException ex) {
+            System.out.println("errore json");
+            Logger.getLogger(DefaultController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        System.out.println(js.toString());
+        return js.toString();
+    }
+    
+    @RequestMapping(value = "/getConvGruppo")
+    public @ResponseBody
+    String getConvGruppo(String mittente, String destinatario) {
+        System.out.println(mittente+destinatario);
+        if(db.isPartecipante(mittente, destinatario)<0){
+            return null;
+        }
+        List<Messaggio> msg = db.getConversazioneGruppo(mittente, destinatario);
 
         JSONObject js = new JSONObject();
         JSONArray ja = new JSONArray();

@@ -3,6 +3,7 @@
     Created on : 16-mar-2018, 18.55.28
     Author     : MATTI
 --%>
+<jsp:useBean   id="ut" scope="session" class="pkg.bean.Utente" />
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -17,11 +18,11 @@
 
     <ul id="mainUL">
         <li id="mainLI"><a class="active">Messaggi</a></li>
-        <li id="mainLI"><a href="messaggiGruppo">Gruppi</a></li>
+        <li id="mainLI"><a href="messaggiGruppo" >Gruppi</a></li>
         <li id="personalAreaLI">
             <form action="personalArea">
                 <ul id="subUL">
-                    <span name="mittente" id="mittente" hidden="true">${mittente}</span>
+                    <span name="mittente" id="mittente" hidden="true"><${mittente}></span>
                     <li id="dropLI"><button id="test" type="submit">Account</button></li>
                     <li id="dropLI"><a id="test" href="#">Esci</a></li>
                 </ul>
@@ -30,7 +31,6 @@
     </ul>
 
     <body>
-        
         <div class="split left">
            
             <table id="tableId">

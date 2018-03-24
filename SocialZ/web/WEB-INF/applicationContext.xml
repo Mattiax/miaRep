@@ -26,7 +26,7 @@
           class="org.springframework.jdbc.datasource.DriverManagerDataSource">
  
         <property name="driverClassName" value="org.sqlite.JDBC" />
-        <property name="url" value="jdbc:sqlite:C:\Users\MATTI\Desktop\miaRep\SocialZ\Database.db" />
+        <property name="url" value="jdbc:sqlite:D:\Windows\Desktop\miaRep\SocialZ\Database.db" />
         <!--
            le proprietà username e password e username vanno eventualmente specificate qui
         -->
@@ -38,6 +38,10 @@
   
     <bean id="db" class="pkg.db.DBHelper">  
         <property name="jdbcTemplate" ref="jt"></property>  
+    </bean> 
+    
+    <bean id="ut" class="pkg.bean.Utente">  
+        
     </bean> 
  
     
