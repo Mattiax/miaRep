@@ -1,0 +1,40 @@
+{
+  "name": "Serie A 2016/17",
+  "rounds": [
+    {
+      "name": "1^ Giornata",
+      "matches": [
+        {
+          "date": "2016-08-20",
+          "team1": {
+            "key": "roma",
+            "name": "Roma",
+            "code": "ROM"
+          },
+          "team2": {
+            "key": "udinese",
+            "name": "Udinese",
+            "code": "UDI"
+          },
+          "score1": 4,
+          "score2": 0
+        },
+        {
+          "date": "2016-08-20",
+          "team1": {
+            "key": "juventus",
+            "name": "Juventus",
+            "code": "JUV"
+          },
+          "team2": {
+            "key": "fiorentina",
+            "name": "Fiorentina",
+            "code": "FIO"
+          },
+          "score1": 2,
+          "score2": 1
+        }
+     ]
+     }
+  ]
+}
