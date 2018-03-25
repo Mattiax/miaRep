@@ -3,7 +3,6 @@
     Created on : 16-mar-2018, 18.55.28
     Author     : MATTI
 --%>
-<jsp:useBean   id="ut" scope="session" class="pkg.bean.Utente" />
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -32,7 +31,7 @@
 
     <body>
         <div class="split left">
-           
+
             <table id="tableId">
                 <h1>Contatti</h1>  
                 <th>Nome</th>
@@ -52,11 +51,10 @@
         <div class="split right" id="rightpanel">
             <h1>Messaggi</h1>  
             <div id="storicoChat">
-
             </div>
 
             <div id="componiMessaggio">
-                
+
                 <span id="dest" value="" hidden="true"></span>
                 <textarea id="inputMess" rows="4" cols="50"></textarea>
                 <button type="submit" id="invioMess">></button>

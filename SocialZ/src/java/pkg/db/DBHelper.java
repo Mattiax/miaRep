@@ -7,6 +7,7 @@ package pkg.db;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.sql.DataSource;
@@ -45,11 +46,11 @@ public class DBHelper implements DB {
                 + " VALUES (?,?,?,?,?,?,?,?,?,?);";
         jdbcTemplate.update(sql, u.getEmail(), u.getPassword(), u.getNome(), u.getCognome(), u.getIndirizzo(), u.getSesso(), u.getDataNascita(), null, u.getTelefono(), u.getPermesso());
     }
-    
+
     public void salvaMess(Messaggio m) {
         String sql = "INSERT INTO MESSAGGI(mittente,destinatario,messaggio,allegato,dataOra) "
                 + " VALUES (?,?,?,?,?);";
-        jdbcTemplate.update(sql, m.getMittente(),m.getDestinatario(),m.getMessaggio(),null,m.getDataOra());
+        jdbcTemplate.update(sql, m.getMittente(), m.getDestinatario(), m.getMessaggio(), null, m.getDataOra());
     }
 
     public void eliminaMess(int id) {
@@ -57,7 +58,7 @@ public class DBHelper implements DB {
                 + "WHERE id=?;";
         jdbcTemplate.update(sql, id);
     }
-    
+
     public List<String> getGruppi() {
         String sql = "SELECT * FROM GRUPPO;";
         List<String> ris = jdbcTemplate.query(sql, new RowMapper<String>() {
@@ -68,12 +69,12 @@ public class DBHelper implements DB {
         });
         return ris;
     }
-    
+
     public Utente getUser(String email, String password) {
         System.out.println(email + "   " + password);
         String sql = "SELECT * FROM PERSONA WHERE email = '" + email + "' ";
-        if(!password.isEmpty()){
-            sql+="AND password = '" + password + "';";
+        if (!password.isEmpty()) {
+            sql += "AND password = '" + password + "';";
         }
         Utente ris = jdbcTemplate.query(sql, (ResultSet rs) -> rs.next()
                 ? new Utente(
@@ -129,28 +130,29 @@ public class DBHelper implements DB {
         });
         return ris;
     }
-    
-    public void aggiungiMessaggioGruppo(Messaggio m){
+
+    public void aggiungiMessaggioGruppo(Messaggio m) {
+        System.out.println(m.getDestinatario());
         String sql = "INSERT INTO MESSAGGIGRUPPI(mittente,destinatario,messaggio,allegato,dataOra) "
                 + " VALUES (?,?,?,?,?);";
-        jdbcTemplate.update(sql, m.getMittente(),m.getDestinatario(),m.getMessaggio(),null,m.getDataOra());
+        jdbcTemplate.update(sql, m.getMittente(), m.getDestinatario(), m.getMessaggio(), null, m.getDataOra());
     }
-    
+
     public int isPartecipante(String mittente, String destinatario) {
         String sql = "SELECT email FROM PARTECIPANTI "
                 + "WHERE email = ? AND nome = ? ;";
-        try{
-         return jdbcTemplate.queryForObject(sql,Integer.class,mittente,destinatario);
-        }catch(EmptyResultDataAccessException e){
-            return-1;
+        try {
+            return jdbcTemplate.queryForObject(sql, Integer.class, mittente, destinatario);
+        } catch (EmptyResultDataAccessException e) {
+            return -1;
         }
     }
-    
+
     public List<Messaggio> getConversazioneGruppo(String mittente, String destinatario) {
-        
-        String sql = "SELECT mittente,destinatario,messaggio,dataOra,allegato "
+
+        String sql = "SELECT id,mittente,destinatario,messaggio,dataOra,allegato "
                 + "FROM MESSAGGIGRUPPI,PARTECIPANTI "
-                + "WHERE email = '"+mittente+"' AND PARTECIPANTI.nome='" + destinatario + "';";
+                + "WHERE email = '" + mittente + "' AND PARTECIPANTI.nome='" + destinatario + "' AND destinatario = '" + destinatario + "';";
         List<Messaggio> ris = jdbcTemplate.query(sql, new RowMapper<Messaggio>() {
             @Override
             public Messaggio mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -163,5 +165,35 @@ public class DBHelper implements DB {
             }
         });
         return ris;
+    }
+
+    /*private String getAmministratore(String gruppo) {
+        String sql = "SELECT email FROM AMMINISTRATORIGRUPPO "
+                + "WHERE nomeGruppo = ? AND nome = ? ;";
+        try{
+         return jdbcTemplate.queryForObject(sql,Integer.class,mittente,destinatario);
+        }catch(EmptyResultDataAccessException e){
+            return-1;
+        }
+    }*/
+    public void richiestaPartecipazioneGruppo(Messaggio m) {
+        System.out.println(m.getDestinatario());
+        String sql = "INSERT INTO RICHIESTA(descrizione,amministratore) "
+                + " VALUES(?, (SELECT email FROM AMMINISTRATORIGRUPPO WHERE nomeGruppo = ?));";
+        jdbcTemplate.update(sql, m.getMessaggio(), m.getDestinatario());
+    }
+
+    public void creaGruppo(String amministratore,String nome, String descrizione, String[] partecipanti) {
+        String sql = "INSERT INTO GRUPPO(nome,descrizione) "
+                + " VALUES (?,?);";
+        jdbcTemplate.update(sql, nome, descrizione);
+        sql = "INSERT INTO PARTECIPANTI(nome,email) "
+                + " VALUES (?,?);";
+        for (int i = 0; i < partecipanti.length; i++) {
+            jdbcTemplate.update(sql, nome, partecipanti[i]);
+        }
+        sql = "INSERT INTO AMMINISTRATORIGRUPPO(nomeGruppo,email) "
+                + " VALUES (?,?);";
+        jdbcTemplate.update(sql, nome, amministratore);
     }
 }

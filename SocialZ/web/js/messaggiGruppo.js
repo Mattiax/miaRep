@@ -16,7 +16,6 @@ $(document).ready(function () {
     });
 });
 
-
 $(document).on("click", "#chatDiv", "#pos", function () {
     alert($("#pos").text());
     $.ajax({
@@ -40,14 +39,41 @@ $(document).on("click", "#chatDiv", "#pos", function () {
     });
 });
 
-function mandaMessaggio(msg) {
-    var mit = $("#mittente").text(), dest = $("#dest").text();
+$(document).on("click", "#partecipaBtn", "#dest", function () {
+    alert($("#dest").text());
+    var dest = $("#dest").text();
+    var msg = "{mittente:" + utente + ", destinatario:" + dest + ", richiesta:\"partecipazione al gruppo\"}"
     $.ajax({
-        url: 'salvaMessaggio',
+        url: 'richiestaPartecipazione',
         type: 'POST',
-        data: {mittente: mit, destinatario: dest, messaggio: msg},
+        data: {mittente: utente, destinatario: dest, messaggio: msg},
         success: function (data) {
-            var prova = "<div id=\"chatDiv\"><p>" + mit + ":</p><p id=\"messaggioDiv\">" + msg + "</p><p id=\"dataDiv\">" + new Date() + "</p></div></div>";
+            //var prova = "<div id=\"chatDiv\"><p>" + utente + ":</p><p id=\"messaggioDiv\">" + msg + "</p><p id=\"dataDiv\">" + new Date() + "</p></div></div>";
+            //$('#storicoChat').append(prova);
+            //$("#inputMess").val("");
+        },
+        statusCode: {
+            404: function (content) {
+                alert('cannot find resource');
+            },
+            500: function (content) {
+                alert('internal server error');
+            }
+        },
+        error: function (req, status, errorObj) {
+            alert(status + errorObj)
+        }
+    });
+});
+
+function mandaMessaggio(msg) {
+    var dest = $("#dest").text();
+    $.ajax({
+        url: 'salvaMessaggioGruppo',
+        type: 'POST',
+        data: {mittente: utente, destinatario: dest, messaggio: msg},
+        success: function (data) {
+            var prova = "<div id=\"chatDiv\"><p>" + utente + ":</p><p id=\"messaggioDiv\">" + msg + "</p><p id=\"dataDiv\">" + new Date() + "</p></div></div>";
             $('#storicoChat').append(prova);
             $("#inputMess").val("");
         },

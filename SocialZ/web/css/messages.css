@@ -142,7 +142,7 @@ and open the template in the editor.
     padding-bottom: 1%;
 }
 
-#scriviMessaggio {
+#nuovoGruppo {
     width: 4%;
     height: 8%;
     background-color: #0047b3;
@@ -192,4 +192,8 @@ and open the template in the editor.
     border-radius: 20px;
     -o-text-overflow: clip;
     text-overflow: clip;
+}
+
+#imgCanc{
+    float:right;
 }

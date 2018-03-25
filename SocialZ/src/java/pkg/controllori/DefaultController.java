@@ -1,6 +1,8 @@
 package pkg.controllori;
 
 import com.sun.mail.iap.Response;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Level;
@@ -49,28 +51,52 @@ public class DefaultController {
     }
 
     @RequestMapping(value = "/doLogin", method = RequestMethod.GET)
-    public String logIn(HttpServletRequest request, ModelMap map,HttpServletResponse response) {
+    public String logIn(HttpServletRequest request, ModelMap map, HttpServletResponse response) {
         System.out.println("login");
-        /*Utente u = db.getUser(request.getParameter("email"), request.getParameter("password"));
-        if (u == null) {
-            return "signin";
-        }
-        map.addAttribute("nome", u.getNome());
-        map.addAttribute("cognome", u.getCognome());
-        map.addAttribute("dataNascita", u.getDataNascita());
-        map.addAttribute("email", u.getEmail());
-        map.addAttribute("password", u.getPassword());
-        map.addAttribute("sesso", u.getSesso());*/
-        map.addAttribute("mittente",request.getParameter("email"));
-        response.addCookie(new Cookie("mittente",request.getParameter("email")));
+        response.addCookie(new Cookie("mittente", request.getParameter("email")));
         List<Utente> lst = db.getAllUsers();
         System.out.println(lst.size());
         map.addAttribute("listaUtenti", lst);
         return "messages";
     }
 
+    @RequestMapping(value = "/nuovoGruppo", method = RequestMethod.GET)
+    public String nuovoGruppo(HttpServletRequest request, ModelMap map) {
+        System.out.println("login");
+        List<Utente> lst = db.getAllUsers();
+        System.out.println(lst.size());
+        map.addAttribute("listaUtenti", lst);
+        return "nuovoGruppo";
+    }
+
+    @RequestMapping(value = "/creaGruppo", method = RequestMethod.POST)
+    public String crea(@RequestBody String partecipanti) {
+        System.out.println(partecipanti);
+        try {
+            JSONObject ob = new JSONObject(partecipanti);
+            String nome=ob.getString("nomeGruppo");
+            String descrizione;
+            try{
+            descrizione=ob.getString("descrizione");
+            }catch(JSONException e){
+                descrizione=null;
+            }
+            String amministratore=ob.getString("amministratore");
+            JSONArray a=ob.getJSONArray("partecipanti");
+            String[] partecipantiList = new String[a.length()];
+            for (int i = 0; i < a.length(); i++) {
+                partecipantiList[i]=a.getString(i);
+            }
+            System.out.println(descrizione);
+            db.creaGruppo(amministratore,nome, descrizione, partecipantiList);
+        } catch (JSONException ex) {
+            Logger.getLogger(DefaultController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return "messaggiGruppo";
+    }
+
     @RequestMapping(value = "/personalArea", method = RequestMethod.GET)
-    public String setData(HttpServletRequest request,ModelMap map) {
+    public String setData(HttpServletRequest request, ModelMap map) {
         System.out.println(request.getParameter("mittente"));
         Utente u = db.getUser(request.getParameter("mittente"), "");
         if (u == null) {
@@ -84,22 +110,38 @@ public class DefaultController {
         map.addAttribute("sesso", u.getSesso());
         return "personalArea";
     }
-    
+
     @RequestMapping(value = "/signin")
     public String signIn(ModelMap map) {
         return "signin";
     }
-    
-    @RequestMapping(value = "/salvaMessaggio", method= RequestMethod.POST)
-    public ResponseEntity<String>  salvaMess(String mittente, String destinatario,String messaggio) {
-        System.out.println("saving"+mittente+destinatario+messaggio);
-        Messaggio m=new Messaggio(mittente,destinatario,messaggio,Calendar.getInstance().getTime().toString());
+
+    @RequestMapping(value = "/salvaMessaggio", method = RequestMethod.POST)
+    public ResponseEntity<String> salvaMess(String mittente, String destinatario, String messaggio) {
+        System.out.println("saving" + mittente + destinatario + messaggio);
+        Messaggio m = new Messaggio(mittente, destinatario, messaggio, Calendar.getInstance().getTime().toString());
         db.salvaMess(m);
         return new ResponseEntity<>("OK", new HttpHeaders(), HttpStatus.OK);
     }
-    
-    @RequestMapping(value = "/eliminaMessaggio", method= RequestMethod.POST)
-    public ResponseEntity<String>  eliminaMess(int id) {
+
+    @RequestMapping(value = "/richiestaPartecipazione", method = RequestMethod.POST)
+    public ResponseEntity<String> richiestaPart(String mittente, String destinatario, String messaggio) {
+        System.out.println("saving" + mittente + destinatario + messaggio);
+        Messaggio m = new Messaggio(mittente, destinatario, messaggio, Calendar.getInstance().getTime().toString());
+        db.richiestaPartecipazioneGruppo(m);
+        return new ResponseEntity<>("OK", new HttpHeaders(), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/salvaMessaggioGruppo", method = RequestMethod.POST)
+    public ResponseEntity<String> salvaMessGruppo(String mittente, String destinatario, String messaggio) {
+        System.out.println("saving" + mittente + destinatario + messaggio);
+        Messaggio m = new Messaggio(mittente, destinatario, messaggio, Calendar.getInstance().getTime().toString());
+        db.aggiungiMessaggioGruppo(m);
+        return new ResponseEntity<>("OK", new HttpHeaders(), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/eliminaMessaggio", method = RequestMethod.POST)
+    public ResponseEntity<String> eliminaMess(int id) {
         System.out.println("deleting");
         db.eliminaMess(id);
         return new ResponseEntity<>("OK", new HttpHeaders(), HttpStatus.OK);
@@ -113,17 +155,17 @@ public class DefaultController {
     @RequestMapping(value = "/messages")
     public String message(ModelMap map) {
         List<Utente> lst = db.getAllUsers();
-        
+
         System.out.println(lst.size());
         map.addAttribute("listaUtenti", lst);
         return "messages";
     }
-    
-    @RequestMapping(value = "/messaggiGruppo",method= RequestMethod.GET)
-    public String messGruppo(HttpServletRequest request,ModelMap map) {
+
+    @RequestMapping(value = "/messaggiGruppo", method = RequestMethod.GET)
+    public String messGruppo(HttpServletRequest request, ModelMap map) {
         List<String> lst = db.getGruppi();
         System.out.println(request.getParameter("mittente"));
-        map.addAttribute("mittente",request.getParameter("mittente"));
+        map.addAttribute("mittente", request.getParameter("mittente"));
         map.addAttribute("listaGruppi", lst);
         return "messaggiGruppo";
     }
@@ -131,7 +173,7 @@ public class DefaultController {
     @RequestMapping(value = "/provaa")
     public @ResponseBody
     String prova(String mittente, String destinatario) {
-        System.out.println(mittente+destinatario);
+        System.out.println(mittente + destinatario);
         List<Messaggio> msg = db.getConversazione(mittente, destinatario);
 
         JSONObject js = new JSONObject();
@@ -164,12 +206,12 @@ public class DefaultController {
         System.out.println(js.toString());
         return js.toString();
     }
-    
+
     @RequestMapping(value = "/getConvGruppo")
     public @ResponseBody
     String getConvGruppo(String mittente, String destinatario) {
-        System.out.println(mittente+destinatario);
-        if(db.isPartecipante(mittente, destinatario)<0){
+        System.out.println(mittente + destinatario);
+        if (db.isPartecipante(mittente, destinatario) < 0) {
             return null;
         }
         List<Messaggio> msg = db.getConversazioneGruppo(mittente, destinatario);

@@ -5,7 +5,7 @@
  */
 var utente;
 $(document).ready(function () {
-    utente=document.cookie.substr(9);
+    utente = document.cookie.substr(9);
     addRowHandlers();
     $("#invioMess").click(function () {
         var mess = $("#inputMess").val();
@@ -17,27 +17,41 @@ $(document).ready(function () {
 });
 
 
-$(document).on("click", "#chatDiv", "#pos", function () {
+$(document).on("click", "#imgCanc", "#pos", function () {
     alert($("#pos").text());
-    $.ajax({
-        url: 'eliminaMessaggio',
-        type: 'POST',
-        data: {id: $("#pos").text()},
-        success: function (data) {
-            //elimina div
-        },
-        statusCode: {
-            404: function (content) {
-                alert('cannot find resource');
+    $("#dialog-confirm").dialog({
+        resizable: false,
+        height: "auto",
+        width: 400,
+        modal: true,
+        buttons: {
+            "Delete all items": function () {
+                $(this).dialog("close");
             },
-            500: function (content) {
-                alert('internal server error');
+            Cancel: function () {
+                $(this).dialog("close");
             }
-        },
-        error: function (req, status, errorObj) {
-            alert(status + errorObj)
         }
-    });
+    });/*
+     $.ajax({
+     url: 'eliminaMessaggio',
+     type: 'POST',
+     data: {id: $("#pos").text()},
+     success: function (data) {
+     //elimina div
+     },
+     statusCode: {
+     404: function (content) {
+     alert('cannot find resource');
+     },
+     500: function (content) {
+     alert('internal server error');
+     }
+     },
+     error: function (req, status, errorObj) {
+     alert(status + errorObj)
+     }
+     });*/
 });
 
 function mandaMessaggio(msg) {
@@ -47,7 +61,7 @@ function mandaMessaggio(msg) {
         type: 'POST',
         data: {mittente: utente, destinatario: dest, messaggio: msg},
         success: function (data) {
-            var prova = "<div id=\"chatDiv\"><p>" + mit + ":</p><p id=\"messaggioDiv\">" + msg + "</p><p id=\"dataDiv\">" + new Date() + "</p></div></div>";
+            var prova = "<div id=\"chatDiv\"><p>" + utente + ":</p><p id=\"messaggioDiv\">" + msg + "</p><p id=\"dataDiv\">" + new Date() + "</p></div></div>";
             $('#storicoChat').append(prova);
             $("#inputMess").val("");
         },
@@ -86,7 +100,7 @@ function addRowHandlers() {
 }
 
 function showMessages(email) {
-     $("#storicoChat").text("");
+    $("#storicoChat").text("");
     $.ajax({
         url: 'provaa',
         data: {mittente: utente, destinatario: email},
@@ -113,7 +127,7 @@ function makeTable(json) {
     var prova = "";
     for (var i in data)
     {
-        prova += "<div id=\"chatDiv\"><p>" + data[i].mittente + ":</p><p id=\"messaggioDiv\">" + data[i].messaggio + "</p><p id=\"dataDiv\">" + data[i].dataOra + "</p><p id=\"pos\" hidden=\"true\">" + data[i].pos + "</p></div>";
+        prova += "<div id=\"chatDiv\"><p>" + data[i].mittente + ":</p><p id=\"messaggioDiv\">" + data[i].messaggio + "<img id=\"imgCanc\" src=\"img\\bin.png\" width=\"25\" height=\"25\"></p><p id=\"dataDiv\">" + data[i].dataOra + "</p><p id=\"pos\" hidden=\"true\">" + data[i].pos + "</p></div>";
     }
     prova += "</div>";
     $('#storicoChat').append(prova);
