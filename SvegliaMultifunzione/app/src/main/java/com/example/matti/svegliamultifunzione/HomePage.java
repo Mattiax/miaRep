@@ -15,7 +15,10 @@ import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -25,6 +28,7 @@ import com.example.matti.svegliamultifunzione.weather.Function;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.things.userdriver.location.GpsDriver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +53,7 @@ public class HomePage extends Activity implements Observer {
     int flags = PackageManager.GET_META_DATA |
             PackageManager.GET_SHARED_LIBRARY_FILES |
             PackageManager.GET_UNINSTALLED_PACKAGES;
+    Button btn;
 
 
     @Override
@@ -65,6 +70,7 @@ public class HomePage extends Activity implements Observer {
         temp = findViewById(R.id.temperature);
         hum = findViewById(R.id.humidity);
         tempMin = findViewById(R.id.tempMin);
+        btn=findViewById(R.id.btn);
         tempMax = findViewById(R.id.tempMax);
         location = LocationServices.getFusedLocationProviderClient(this);
         notificationList = findViewById(R.id.notificationList);
@@ -118,14 +124,35 @@ public class HomePage extends Activity implements Observer {
                 .addOnSuccessListener(this, new OnSuccessListener<Location>() {
                     @Override
                     public void onSuccess(Location location) {
-                        Toast.makeText(HomePage.this, "getted", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(HomePage.this, "getted", Toast.LENGTH_SHORT).show();
                         // Got last known location. In some rare situations this can be null.
                         if (location != null) {
                             Toast.makeText(HomePage.this, "ok", Toast.LENGTH_SHORT).show();
                             asyncTask.execute(String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()));
+                        }else{
+                            Toast.makeText(HomePage.this, "errore", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
+        pApplication.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Toast.makeText(HomePage.this, appList.get(i).packageName, Toast.LENGTH_SHORT).show();
+                Intent launchIntent = getPackageManager().getLaunchIntentForPackage(appList.get(i).packageName);
+                if (launchIntent != null) {
+                    startActivity(launchIntent);//null pointer check in case package name was not found
+                }
+            }
+        });
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent launchIntent = getPackageManager().getLaunchIntentForPackage("com.android.chrome");
+                if (launchIntent != null) {
+                    startActivity(launchIntent);//null pointer check in case package name was not found
+                }
+            }
+        });
 
     }
 

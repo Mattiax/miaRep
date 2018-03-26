@@ -119,6 +119,7 @@ public class WifiSetup extends Fragment {
                         manager.disconnect();
                         manager.enableNetwork(conf.networkId,true);
                         manager.reconnect();
+                        getContext().unregisterReceiver(reciver);
                     }
                 })
                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
