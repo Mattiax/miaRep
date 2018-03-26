@@ -1,23 +1,25 @@
-$(document).ready(function(){
-	document.getElementById("signIn").onreset = function(){$("#email").focus();};
+$(document).ready(function () {
+	document.getElementById("signIn").onreset = function () {
+		$("#email").focus();
+	};
 	$("#email").focus();
-		
+
 	$("#signIn").validate({
-		submitHandler: function(form) {
+		submitHandler: function (form) {
 			form.submit();
 		},
-		rules: { //sui "name", non sugli "id"
+		rules: {//sui "name", non sugli "id"
 			nome: {
-				required: true,
+				required: true
 			},
-                        sesso: {
-				required: true,
+			sesso: {
+				required: true
 			},
-                        privacy: {
-				required: true,
+			privacy: {
+				required: true
 			},
-                        cognome: {
-				required: true,
+			cognome: {
+				required: true
 			},
 			password: {
 				required: true,
@@ -25,20 +27,20 @@ $(document).ready(function(){
 			},
 			passwordRip: {
 				required: true,
-				//equalTo: "#password"
+				equalTo: "#password"
 			},
 			email: {
-				email: true,
+				email: true
 			},
 			telefono: {
-				telefonoValido: true,
+				telefonoValido: true
 			},
 			dataNascita: {
-                            required: true,
-				dataGGMMAAAA: true,
+				required: true,
+				dataGGMMAAAA: true
 			},
 			accCond: {
-				required: true,
+				required: true
 			}
 		},
 		messages: {
@@ -54,16 +56,16 @@ $(document).ready(function(){
 });
 
 jQuery.validator.addMethod("dataGGMMAAAA",
-	function(valore, elem) {
-		return this.optional(elem) || dataValidaGGMMAAAA(valore); 
-	},
-	"Inserire una data valida nel formato GG/MM/AAAA"
-);
+		function (valore, elem) {
+			return this.optional(elem) || dataValidaGGMMAAAA(valore);
+		},
+		"Inserire una data valida nel formato GG/MM/AAAA"
+		);
 
 jQuery.validator.addMethod("telefonoValido",
-	function(valore, elem) {
-		return this.optional(elem) || telefonoValid(valore); 
-	},
-	"Inserire un numero di telefono valido"
-);
+		function (valore, elem) {
+			return this.optional(elem) || telefonoValid(valore);
+		},
+		"Inserire un numero di telefono valido"
+		);
 

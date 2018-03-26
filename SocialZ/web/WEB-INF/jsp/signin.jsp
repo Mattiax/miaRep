@@ -50,6 +50,10 @@
                     <input type="radio" name="sesso" value="M">M
                     <input type="radio" name="sesso" value="F">F
                 </div>
+				<div>
+                    <label for="immagine">Immagine</label>
+                    <input type="file" accept="image/*" name="immagine">
+                </div>
             </fieldset>
             <fieldset>
                 <legend>Account</legend>

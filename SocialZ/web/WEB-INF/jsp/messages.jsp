@@ -21,7 +21,6 @@
         <li id="personalAreaLI">
             <form action="personalArea">
                 <ul id="subUL">
-                    <span name="mittente" id="mittente" hidden="true"><${mittente}></span>
                     <li id="dropLI"><button id="test" type="submit">Account</button></li>
                     <li id="dropLI"><a id="test" href="#">Esci</a></li>
                 </ul>
@@ -31,7 +30,6 @@
 
     <body>
         <div class="split left">
-
             <table id="tableId">
                 <h1>Contatti</h1>  
                 <th>Nome</th>
@@ -52,13 +50,10 @@
             <h1>Messaggi</h1>  
             <div id="storicoChat">
             </div>
-
             <div id="componiMessaggio">
-
                 <span id="dest" value="" hidden="true"></span>
                 <textarea id="inputMess" rows="4" cols="50"></textarea>
                 <button type="submit" id="invioMess">></button>
-                <button id="scriviMessaggio" name="nuovoMessaggio">+</button>
             </div>
         </div>
     </body>

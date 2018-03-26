@@ -21,110 +21,118 @@ import org.springframework.stereotype.Component;
  */
 public class Utente {
 
-    private String nome, cognome, telefono, email, password, indirizzo,dataNascita;
-    private char sesso;
-    private String[] hobbies;
-    private Image image;
-    private boolean acc;
+	private String nome, cognome, telefono, email, password, indirizzo, dataNascita;
+	private char sesso;
+	private String[] hobbies;
+	private byte[] image;
+	private boolean acc;
 
-    public Utente() {
-        this.nome = "";
-        this.cognome = "";
-        this.telefono = "";
-        this.email = "";
-        this.password = "";
-        this.dataNascita = "";
-        this.sesso = 'x';
-        this.hobbies = null;
-    }
+	public Utente() {
+		this.nome = "";
+		this.cognome = "";
+		this.telefono = "";
+		this.email = "";
+		this.password = "";
+		this.dataNascita = "";
+		this.sesso = 'x';
+		this.hobbies = null;
+	}
 
-    public Utente(String email, String password, String nome, String cognome, String indirizzo, char sesso, String dataNascita, Image image, String telefono, boolean acc, String[] hobbies) {
-        this.nome = nome;
-        this.cognome = cognome;
-        this.sesso = sesso;
-        this.indirizzo = indirizzo;
-        this.telefono = telefono;
-        this.email = email;
-        this.password = password;
-        this.dataNascita=dataNascita;
-        this.acc = acc;
-        this.hobbies = hobbies;
-        this.image = image;
-    }
+	public Utente(String email, String password, String nome, String cognome, String indirizzo, char sesso, String dataNascita, byte[] image, String telefono, boolean acc, String[] hobbies) {
+		this.nome = nome;
+		this.cognome = cognome;
+		this.sesso = sesso;
+		this.indirizzo = indirizzo;
+		this.telefono = telefono;
+		this.email = email;
+		this.password = password;
+		this.dataNascita = dataNascita;
+		this.acc = acc;
+		this.hobbies = hobbies;
+		this.image = image;
+	}
 
-    public void setIndirizzo(String indirizzo) {
-        this.indirizzo = indirizzo;
-    }
+	public byte[] getImage() {
+		return image;
+	}
 
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
+	public void setImage(byte[] image) {
+		this.image = image;
+	}
 
-    public void setCognome(String cognome) {
-        this.cognome = cognome;
-    }
+	public void setIndirizzo(String indirizzo) {
+		this.indirizzo = indirizzo;
+	}
 
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
-    }
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
 
-    public void setSesso(char sesso) {
-        this.sesso = sesso;
-    }
+	public void setCognome(String cognome) {
+		this.cognome = cognome;
+	}
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+	public void setTelefono(String telefono) {
+		this.telefono = telefono;
+	}
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+	public void setSesso(char sesso) {
+		this.sesso = sesso;
+	}
 
-    public void setDataNascita(String dataNascita) {
-            this.dataNascita = dataNascita;
-    }
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
-    public void setHobbies(String[] hobbies) {
-        this.hobbies = hobbies;
-    }
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
-    public String getNome() {
-        return nome;
-    }
+	public void setDataNascita(String dataNascita) {
+		this.dataNascita = dataNascita;
+	}
 
-    public String getCognome() {
-        return cognome;
-    }
+	public void setHobbies(String[] hobbies) {
+		this.hobbies = hobbies;
+	}
 
-    public char getSesso() {
-        return sesso;
-    }
+	public String getNome() {
+		return nome;
+	}
 
-    public String getTelefono() {
-        return telefono;
-    }
+	public String getCognome() {
+		return cognome;
+	}
 
-    public String getEmail() {
-        return email;
-    }
+	public char getSesso() {
+		return sesso;
+	}
 
-    public String getPassword() {
-        return password;
-    }
+	public String getTelefono() {
+		return telefono;
+	}
 
-    public String getDataNascita() {
-        return dataNascita;
-    }
+	public String getEmail() {
+		return email;
+	}
 
-    public String[] getHobbies() {
-        return hobbies;
-    }
+	public String getPassword() {
+		return password;
+	}
 
-    public boolean getPermesso() {
-        return acc;
-    }
+	public String getDataNascita() {
+		return dataNascita;
+	}
 
-    public String getIndirizzo() {
-        return indirizzo;
-    }
+	public String[] getHobbies() {
+		return hobbies;
+	}
+
+	public boolean getPermesso() {
+		return acc;
+	}
+
+	public String getIndirizzo() {
+		return indirizzo;
+	}
 }
