@@ -14,20 +14,19 @@
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/script.js"></script>
         <title>JSP Page</title>
     </head>
-
-    <ul id="mainUL">
-        <li id="mainLI"><a class="active">Messaggi</a></li>
-        <li id="mainLI"><a href="messaggiGruppo" >Gruppi</a></li>
-        <li id="personalAreaLI">
-            <form action="personalArea">
-                <ul id="subUL">
-                    <li id="dropLI"><button id="test" type="submit">Account</button></li>
-                    <li id="dropLI"><a id="test" href="#">Esci</a></li>
-                </ul>
-            </form>
-        </li>
-    </ul>
-
+		<ul id="mainUL">
+			<li id="mainLI"><a class="active">Messaggi</a></li>
+			<li id="mainLI"><a href="messaggiGruppo" >Gruppi</a></li>
+			<li id="personalAreaLI">
+				<form action="personalArea">
+					<ul id="subUL">
+						<li id="dropLI"><button id="test" type="submit">Account</button></li>
+						<li id="dropLI"><a id="test" href="#">Esci</a></li>
+					</ul>
+				</form>
+			</li>
+		</ul>
+		
     <body>
         <div class="split left">
             <table id="tableId">

@@ -63,7 +63,7 @@ public class DefaultController {
         return "newjsp";
     }
 
-    @RequestMapping(value = "/doLogin", method = RequestMethod.GET)
+    @RequestMapping(value = "/doLogin", method = RequestMethod.POST)
     public String logIn(HttpServletRequest request, ModelMap map, HttpServletResponse response) {
         System.out.println("login");
         response.addCookie(new Cookie("mittente", request.getParameter("email")));
