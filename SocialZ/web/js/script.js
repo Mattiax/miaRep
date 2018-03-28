@@ -10,20 +10,21 @@ $(document).ready(function () {
     $("#invioMess").click(function () {
         var mess = $("#inputMess").val();
         if (mess !== '') {
-            alert($("#dest").text());
             mandaMessaggio(mess);
         }
     });
+    $(document).on("click", "#canc", function () {
+        eliminaMessaggio($(this).children("#id").text());
+    });
 });
-//cancella messaggi
-$(document).on("click", "#imgCanc", '#id', function () {
-    alert($("#id").text());/*
+
+function eliminaMessaggio(id) {
      $.ajax({
      url: 'eliminaMessaggio',
      type: 'POST',
-     data: {id: $("#pos").text()},
+     data: {id: id},
      success: function (data) {
-     //elimina div
+         $('div#chatDiv div:contains(' + id + ')').parent().remove();
      },
      statusCode: {
      404: function (content) {
@@ -36,8 +37,8 @@ $(document).on("click", "#imgCanc", '#id', function () {
      error: function (req, status, errorObj) {
      alert(status + errorObj)
      }
-     });*/
-});
+     });
+};
 
 function mandaMessaggio(msg) {
     var dest = $("#dest").text();
@@ -46,9 +47,20 @@ function mandaMessaggio(msg) {
         type: 'POST',
         data: {mittente: utente, destinatario: dest, messaggio: msg},
         success: function (data) {
-            var messaggio = "<div id=\"chatDiv\"><p>" + utente + ":</p><p id=\"messaggioDiv\">" + msg + "</p><p id=\"dataDiv\">" + new Date() + "</p></div></div>";
+            var json=$.parseJSON(data);
+            var messaggio =  "<div id=\"chatDiv\">\
+                                <p>Tu:</p>\
+                                <div id=\"canc\"\
+                                    <p id=\"imagCanc\"><img src=\"img\\bin.png\" width=\"25\" height=\"25\" value=\"e\"></p>\
+                                    <p id=\"id\" hidden=\"true\" value=\""+json.id+"\">" + json.id + "</p>\n\
+                                </div>\
+                                <div id=\"messaggioDiv\">" + msg + "\
+                                    <p id=\"dataDiv\">" + new Date() + "</p>\
+                                </div>\
+                            </div>";
             $('#storicoChat').append(messaggio);
             $("#inputMess").val("");
+            scrollChat();
         },
         statusCode: {
             404: function (content) {
@@ -114,14 +126,26 @@ function makeTable(json) {
     {
         var mittente = data[i].mittente;
         if (mittente === utente) {
-            tabella += "<div id=\"chatDiv\"><p>Tu:</p><p id=\"messaggioDiv\">" + data[i].messaggio + "<img id=\"imgCanc\" src=\"img\\bin.png\" width=\"25\" height=\"25\"></p><p id=\"dataDiv\">" + data[i].dataOra + "</p><p id=\"id\" hidden=\"true\">" + data[i].id + "</p></div>";
+            tabella += "<div id=\"chatDiv\">\
+                                <p>Tu:</p>\
+                                <div id=\"canc\"\
+                                    <p id=\"imagCanc\"><img src=\"img\\bin.png\" width=\"25\" height=\"25\" value=\"e\"></p>\
+                                    <p id=\"id\" hidden=\"true\" value=\""+data[i].id+"\">" + data[i].id + "</p>\n\
+                                </div>\
+                                <div id=\"messaggioDiv\">" + data[i].messaggio + 
+                                    "<p id=\"dataDiv\">" + data[i].dataOra + "</p>\
+                                </div>";
         } else {
             tabella += "<div id=\"chatDiv\"><p>" + mittente + ":</p><p id=\"messaggioDiv\">" + data[i].messaggio + "</p><p id=\"dataDiv\">" + data[i].dataOra + "</p></div>";
-        }
+        } 
+        tabella += "</div>";
     }
-    tabella += "</div>";
+   
     $('#storicoChat').append(tabella);
+    scrollChat();
 }
 
-
+function scrollChat() {
+    $("#storicoChat").animate({scrollTop: $('#storicoChat').prop("scrollHeight")}, 1000);
+}
 

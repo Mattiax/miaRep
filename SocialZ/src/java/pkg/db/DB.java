@@ -24,7 +24,7 @@ public interface DB {
 
     public List<Messaggio> getConversazione(String mittente, String destinatario);
 
-    public void salvaMess(Messaggio m);
+    public long salvaMess(Messaggio m);
 
     public List<String> getGruppi();
 

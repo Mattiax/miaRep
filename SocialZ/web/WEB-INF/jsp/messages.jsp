@@ -51,7 +51,7 @@
             <div class="split down" id="componiMessaggio">
                 <span id="dest" value="" hidden="true"></span>
                 <textarea id="inputMess" rows="4" cols="50"></textarea>
-                <button type="submit" id="invioMess">></button>
+                <input type="submit" id="invioMess" value=">">
             </div>
         </div>
     </body>

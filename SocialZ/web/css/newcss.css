@@ -129,3 +129,8 @@ html, body {
 #menu-toggle:not(:checked), #menu-toggle:checked {
     display: none;
 }
+
+#canc{
+    display: inline-block;
+    float:right;
+}

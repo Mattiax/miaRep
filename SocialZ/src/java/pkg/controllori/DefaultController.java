@@ -130,11 +130,17 @@ public class DefaultController {
     }
 
     @RequestMapping(value = "/salvaMessaggio", method = RequestMethod.POST)
-    public ResponseEntity<String> salvaMess(String mittente, String destinatario, String messaggio) {
+    public @ResponseBody String salvaMess(String mittente, String destinatario, String messaggio) {
         System.out.println("saving" + mittente + destinatario + messaggio);
         Messaggio m = new Messaggio(mittente, destinatario, messaggio, Calendar.getInstance().getTime().toString());
-        db.salvaMess(m);
-        return new ResponseEntity<>("OK", new HttpHeaders(), HttpStatus.OK);
+        long id=db.salvaMess(m);
+        JSONObject json= new JSONObject();
+        try {
+            json.put("id", id);
+        } catch (JSONException ex) {
+            Logger.getLogger(DefaultController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return json.toString();
     }
 
     @RequestMapping(value = "/richiestaPartecipazione", method = RequestMethod.POST)
@@ -168,7 +174,6 @@ public class DefaultController {
     @RequestMapping(value = "/messages")
     public String message(ModelMap map) {
         List<Utente> lst = db.getAllUsers();
-
         System.out.println(lst.size());
         map.addAttribute("listaUtenti", lst);
         return "messages";
