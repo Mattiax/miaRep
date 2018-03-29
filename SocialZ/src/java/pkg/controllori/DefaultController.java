@@ -75,7 +75,7 @@ public class DefaultController {
 
     @RequestMapping(value = "/nuovoGruppo", method = RequestMethod.GET)
     public String nuovoGruppo(HttpServletRequest request, ModelMap map) {
-        System.out.println("login");
+        System.out.println("gruppo");
         List<Utente> lst = db.getAllUsers();
         System.out.println(lst.size());
         map.addAttribute("listaUtenti", lst);
@@ -108,10 +108,11 @@ public class DefaultController {
         return "messaggiGruppo";
     }
 
-    @RequestMapping(value = "/personalArea", method = RequestMethod.GET)
+    @RequestMapping(value = "/personalArea")
     public String setData(HttpServletRequest request, ModelMap map) {
-        System.out.println(request.getParameter("mittente"));
-        Utente u = db.getUser(request.getParameter("mittente"), "");
+        System.out.println(request.getCookies()[0].getValue());
+        String user=request.getCookies()[0].getValue();
+        Utente u = db.getUser(user, "");
         if (u == null) {
             return "signin";
         }
@@ -121,20 +122,24 @@ public class DefaultController {
         map.addAttribute("email", u.getEmail());
         map.addAttribute("password", u.getPassword());
         map.addAttribute("sesso", u.getSesso());
+        map.addAttribute("listaHobbies",db.getHobbiesPersona(user));
         return "personalArea";
     }
 
     @RequestMapping(value = "/signin")
     public String signIn(ModelMap map) {
+        System.out.println("signin");
+        map.addAttribute("listaHobbies",db.getHobbies());
         return "signin";
     }
 
     @RequestMapping(value = "/salvaMessaggio", method = RequestMethod.POST)
-    public @ResponseBody String salvaMess(String mittente, String destinatario, String messaggio) {
+    public @ResponseBody
+    String salvaMess(String mittente, String destinatario, String messaggio) {
         System.out.println("saving" + mittente + destinatario + messaggio);
         Messaggio m = new Messaggio(mittente, destinatario, messaggio, Calendar.getInstance().getTime().toString());
-        long id=db.salvaMess(m);
-        JSONObject json= new JSONObject();
+        long id = db.salvaMess(m);
+        JSONObject json = new JSONObject();
         try {
             json.put("id", id);
         } catch (JSONException ex) {
@@ -152,17 +157,31 @@ public class DefaultController {
     }
 
     @RequestMapping(value = "/salvaMessaggioGruppo", method = RequestMethod.POST)
-    public ResponseEntity<String> salvaMessGruppo(String mittente, String destinatario, String messaggio) {
+    public @ResponseBody
+    String salvaMessGruppo(String mittente, String destinatario, String messaggio) {
         System.out.println("saving" + mittente + destinatario + messaggio);
         Messaggio m = new Messaggio(mittente, destinatario, messaggio, Calendar.getInstance().getTime().toString());
-        db.aggiungiMessaggioGruppo(m);
-        return new ResponseEntity<>("OK", new HttpHeaders(), HttpStatus.OK);
+        long id = db.aggiungiMessaggioGruppo(m);
+        JSONObject json = new JSONObject();
+        try {
+            json.put("id", id);
+        } catch (JSONException ex) {
+            Logger.getLogger(DefaultController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return json.toString();
     }
 
     @RequestMapping(value = "/eliminaMessaggio", method = RequestMethod.POST)
     public ResponseEntity<String> eliminaMess(int id) {
         System.out.println("deleting");
         db.eliminaMess(id);
+        return new ResponseEntity<>("OK", new HttpHeaders(), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/eliminaMessaggioGruppo", method = RequestMethod.POST)
+    public ResponseEntity<String> eliminaMessGrupp(int id) {
+        System.out.println("deleting");
+        db.eliminaMessGruppo(id);
         return new ResponseEntity<>("OK", new HttpHeaders(), HttpStatus.OK);
     }
 
@@ -181,9 +200,8 @@ public class DefaultController {
 
     @RequestMapping(value = "/messaggiGruppo", method = RequestMethod.GET)
     public String messGruppo(HttpServletRequest request, ModelMap map) {
-        List<String> lst = db.getGruppi();
+        List<String[]> lst = db.getGruppi();
         System.out.println(request.getParameter("mittente"));
-        map.addAttribute("mittente", request.getParameter("mittente"));
         map.addAttribute("listaGruppi", lst);
         return "messaggiGruppo";
     }
@@ -193,7 +211,27 @@ public class DefaultController {
     String getMessaggio(String mittente, String destinatario) {
         System.out.println(mittente + destinatario);
         List<Messaggio> msg = db.getConversazione(mittente, destinatario);
+        return creaJSONMessaggio(msg);
+    }
 
+    @RequestMapping(value = "/getConvGruppo")
+    public @ResponseBody
+    String getConvGruppo(String mittente, String destinatario) {
+        System.out.println("conversazione gruppo  "+mittente + destinatario+db.isPartecipante(mittente, destinatario));
+        if (db.isPartecipante(mittente, destinatario) < 0) {
+            System.out.println("non partecipo");
+            if (db.hasRichiestaPartecipazione(mittente, destinatario) > 0) {
+                return "{}";
+            } else {
+                return null;
+            }
+        } else {
+            List<Messaggio> msg = db.getConversazioneGruppo(mittente, destinatario);
+            return creaJSONMessaggio(msg);
+        }
+    }
+
+    private String creaJSONMessaggio(List<Messaggio> msg) {
         JSONObject js = new JSONObject();
         JSONArray ja = new JSONArray();
         try {
@@ -219,47 +257,9 @@ public class DefaultController {
             js.put("messaggi", ja);
         } catch (JSONException ex) {
             System.out.println("errore json");
-            Logger.getLogger(DefaultController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        System.out.println(js.toString());
-        return js.toString();
-    }
-
-    @RequestMapping(value = "/getConvGruppo")
-    public @ResponseBody
-    String getConvGruppo(String mittente, String destinatario) {
-        System.out.println(mittente + destinatario);
-        if (db.isPartecipante(mittente, destinatario) < 0) {
-            return null;
-        }
-        List<Messaggio> msg = db.getConversazioneGruppo(mittente, destinatario);
-
-        JSONObject js = new JSONObject();
-        JSONArray ja = new JSONArray();
-        try {
-            if (msg == null || msg.isEmpty()) {
-                js.put("mittente", "Nessun messaggio");
-                js.put("destinatario", "");
-                js.put("messaggio", "");
-                js.put("dataOra", "");
-                ja.put(js);
-            } else {
-                for (int i = 0; i < msg.size(); i++) {
-                    System.out.println(msg.get(i).getMessaggio());
-                    js = new JSONObject();
-                    js.put("mittente", msg.get(i).getMittente());
-                    js.put("destinatario", msg.get(i).getDestinatario());
-                    js.put("messaggio", msg.get(i).getMessaggio());
-                    js.put("dataOra", msg.get(i).getDataOra());
-                    js.put("pos", msg.get(i).getId());
-                    ja.put(js);
-                }
-            }
-            js = new JSONObject();
-            js.put("messaggi", ja);
-        } catch (JSONException ex) {
-            System.out.println("errore json");
-            Logger.getLogger(DefaultController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger
+                    .getLogger(DefaultController.class
+                            .getName()).log(Level.SEVERE, null, ex);
         }
         System.out.println(js.toString());
         return js.toString();
@@ -267,11 +267,11 @@ public class DefaultController {
 
     @RequestMapping(value = "/doSignin", method = RequestMethod.POST)
     public String signIn(HttpServletRequest request, ModelMap map) {
-        System.out.println("reg   ");
+        System.out.println("reg   "+request.getParameterValues("hobbies")[0]);
         Utente temp = new Utente(request.getParameter("email"), request.getParameter("password"),
-                request.getParameter("nome"), request.getParameter("cognome"), request.getParameter("indirizzo").equals("")?null:request.getParameter("indirizzo"),
-                request.getParameter("sesso").charAt(0), request.getParameter("dataNascita"), null, request.getParameter("telefono").equals("")?null:request.getParameter("telefono"), (request.getParameter("privacy").equals("T") ? true : false), null);
+                request.getParameter("nome"), request.getParameter("cognome"), request.getParameter("indirizzo").equals("") ? null : request.getParameter("indirizzo"),
+                request.getParameter("sesso").charAt(0), request.getParameter("dataNascita"), null, request.getParameter("telefono").equals("") ? null : request.getParameter("telefono"), (request.getParameter("privacy").equals("T") ? true : false), request.getParameterValues("hobbies"));
         db.sigIn(temp);
-        return "signin";
+        return "index";
     }
 }

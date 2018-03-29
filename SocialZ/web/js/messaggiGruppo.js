@@ -10,20 +10,25 @@ $(document).ready(function () {
     $("#invioMess").click(function () {
         var mess = $("#inputMess").val();
         if (mess !== '') {
-            alert($("#dest").text());
             mandaMessaggio(mess);
         }
     });
+    $(document).on("click", "#canc", function () {
+        eliminaMessaggio($(this).children("#id").text());
+    });
+    $("table tr").click(function () {
+        $("table tr").removeClass('highlighted');
+        $(this).addClass('highlighted');
+    });
 });
 
-$(document).on("click", "#chatDiv", "#pos", function () {
-    alert($("#pos").text());
+function eliminaMessaggio(id) {
     $.ajax({
         url: 'eliminaMessaggioGruppo',
         type: 'POST',
-        data: {id: $("#pos").text()},
+        data: {id: id},
         success: function (data) {
-            //elimina div
+            $('div#chatDiv div:contains(' + id + ')').parent().remove();
         },
         statusCode: {
             404: function (content) {
@@ -37,12 +42,15 @@ $(document).on("click", "#chatDiv", "#pos", function () {
             alert(status + errorObj)
         }
     });
-});
+}
+;
+
 
 $(document).on("click", "#partecipaBtn", "#dest", function () {
-    alert($("#dest").text());
     var dest = $("#dest").text();
-    var msg = "{mittente:" + utente + ", destinatario:" + dest + ", richiesta:\"partecipazione al gruppo\"}"
+    $('#storicoChat').text("");
+    $('#storicoChat').append("<p>Hai già richiesto la partecipazione a questo gruppo</p>");
+    var msg = "{mittente:" + utente + ", destinatario:" + dest + ", richiesta:\"partecipazione al gruppo\"}";
     $.ajax({
         url: 'richiestaPartecipazione',
         type: 'POST',
@@ -73,9 +81,20 @@ function mandaMessaggio(msg) {
         type: 'POST',
         data: {mittente: utente, destinatario: dest, messaggio: msg},
         success: function (data) {
-            var prova = "<div id=\"chatDiv\"><p>" + utente + ":</p><p id=\"messaggioDiv\">" + msg + "</p><p id=\"dataDiv\">" + new Date() + "</p></div></div>";
-            $('#storicoChat').append(prova);
+            var json = $.parseJSON(data);
+            var messaggio = "<div id=\"chatDiv\">\
+                                <p>Tu:</p>\
+                                <div id=\"canc\"\
+                                    <p id=\"imagCanc\"><img src=\"img\\bin.png\" width=\"25\" height=\"25\" value=\"e\"></p>\
+                                    <p id=\"id\" hidden=\"true\" value=\"" + json.id + "\">" + json.id + "</p>\n\
+                                </div>\
+                                <div id=\"messaggioDiv\">" + msg + "\
+                                    <p id=\"dataDiv\">" + new Date() + "</p>\
+                                </div>\
+                            </div>";
+            $('#storicoChat').append(messaggio);
             $("#inputMess").val("");
+            scrollChat();
         },
         statusCode: {
             404: function (content) {
@@ -92,7 +111,6 @@ function mandaMessaggio(msg) {
 }
 
 function addRowHandlers() {
-
     var table = document.getElementById("tabellaGruppi");
     var rows = table.getElementsByTagName("tr");
     for (i = 0; i < rows.length; i++) {
@@ -101,9 +119,8 @@ function addRowHandlers() {
                 function (row)
                 {
                     return function () {
-                        var cell = row.getElementsByTagName("td")[0];
+                        var cell = row.getElementsByTagName("p")[0];
                         var id = cell.innerHTML;
-                        alert(id);
                         $("#dest").text(id);
                         showMessages(id);
                     };
@@ -123,6 +140,9 @@ function showMessages(email) {
                 $('#storicoChat').append("<p>Non fai parte di questo gruppo</p><p><button id=\"partecipaBtn\">PARTECIPA</button></p>");
             } else {
                 var obj = jQuery.parseJSON(data);
+                if($.isEmptyObject(obj)){
+                    $('#storicoChat').append("<p>Hai già richiesto la partecipazione a questo gruppo</p>");
+                }
                 makeTable(obj);
             }
         },
@@ -142,11 +162,29 @@ function showMessages(email) {
 
 function makeTable(json) {
     var data = json.messaggi;
-    var prova = "";
+    var tabella = "";
     for (var i in data)
     {
-        prova += "<div id=\"chatDiv\"><p>" + data[i].mittente + ":</p><p id=\"messaggioDiv\">" + data[i].messaggio + "</p><p id=\"dataDiv\">" + data[i].dataOra + "</p><p id=\"pos\" hidden=\"true\">" + data[i].pos + "</p></div>";
+        var mittente = data[i].mittente;
+        if (mittente === utente) {
+            tabella += "<div id=\"chatDiv\">\
+                                <p>Tu:</p>\
+                                <div id=\"canc\"\
+                                    <p id=\"imagCanc\"><img src=\"img\\bin.png\" width=\"25\" height=\"25\" value=\"e\"></p>\
+                                    <p id=\"id\" hidden=\"true\" value=\"" + data[i].id + "\">" + data[i].id + "</p>\n\
+                                </div>\
+                                <div id=\"messaggioDiv\">" + data[i].messaggio +
+                    "<p id=\"dataDiv\">" + data[i].dataOra + "</p>\
+                                </div>";
+        } else {
+            tabella += "<div id=\"chatDiv\"><p>" + mittente + ":</p><p id=\"messaggioDiv\">" + data[i].messaggio + "</p><p id=\"dataDiv\">" + data[i].dataOra + "</p></div>";
+        }
+        tabella += "</div>";
     }
-    prova += "</div>";
-    $('#storicoChat').append(prova);
+    $('#storicoChat').append(tabella);
+    scrollChat();
+}
+
+function scrollChat() {
+    $("#storicoChat").animate({scrollTop: $('#storicoChat').prop("scrollHeight")}, 1000);
 }

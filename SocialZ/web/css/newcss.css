@@ -134,3 +134,10 @@ html, body {
     display: inline-block;
     float:right;
 }
+
+#nav{
+    margin: 0;
+    height: 50px;
+    width: 100%;
+    background-color: #0288D1;
+}

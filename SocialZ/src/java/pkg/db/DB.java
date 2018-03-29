@@ -26,15 +26,23 @@ public interface DB {
 
     public long salvaMess(Messaggio m);
 
-    public List<String> getGruppi();
+    public List<String[]> getGruppi();
 
     public List<Messaggio> getConversazioneGruppo(String mittente, String destinatario);
 
-    public void aggiungiMessaggioGruppo(Messaggio m);
+    public long aggiungiMessaggioGruppo(Messaggio m);
 
     public int isPartecipante(String mittente, String destinatario);
 
     public void richiestaPartecipazioneGruppo(Messaggio m);
     
     public void creaGruppo(String amministratore,String nome, String descrizione, String[] partecipanti);
+    
+    public void eliminaMessGruppo(int id);
+    
+    public int hasRichiestaPartecipazione(String mittente, String destinatario);
+    
+     public List<String> getHobbies();
+     
+     public List<String> getHobbiesPersona(String utente);
 }

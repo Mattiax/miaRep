@@ -5,14 +5,18 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/homeNav.css"/>
+        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/index.css"/>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-3.3.1.js"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/js/index.js"></script>
         <title>Esempio di gestione tramite Spring MVC</title>
     </head>
-
     <body>
-         <h1> Benvenuto nel social network dell'ITIS C. Zuccante </h1>
-        <p> <a href="login">Accesso</a></p>
-        <p> <a href="signin">Registrati</a></p>
-        <p> <a href="messages">test message</a></p>
-        <p> <a href="provag">test</a></p>
+        <ul class="tabs text-center">
+            <li id="home" class="tab active">HOME PAGE</li>
+            <li id="signin" class="tab"><a href="login">ACCESSO</a></li>
+            <li id="login" class="tab"><a href="signin">REGISTRAZIONE</a></li>
+        </ul>
+        <h1> Benvenuto nel social network dell'ITIS C. Zuccante </h1>
     </body>
 </html>

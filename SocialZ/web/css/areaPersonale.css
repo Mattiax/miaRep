@@ -1,0 +1,84 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 29-mar-2018, 15.02.16
+    Author     : MATTI
+*/
+body{
+    background-color:#E5E5E5;
+}
+
+table{
+    margin: 0px auto;  
+    width: 80%;
+}
+
+.fab{
+    background-color:#EA4335;
+    font-weight:300;
+    color:white;
+    font-size:18px;
+    border-radius:50%;
+    height:50px;
+    width:50px;
+    border:none;
+    box-shadow:0px 1px 2px rgba(0,0,0,0.5);
+    transform:translateY(-25px);
+}
+
+.container{
+    width:50%;
+    height:80%;
+    box-shadow:0px 2px 4px rgba(0,0,0,0.3);
+    background:white;
+    margin:20px auto;
+    display:flex;
+    flex-direction:column;
+    border-radius:5px;
+}
+
+.header{
+    width:100%;
+    background-color:#4285F4;
+    height:60%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+}
+
+.header-text{
+    color:white;
+    font-size:16px;
+    font-family: 'Roboto', sans-serif;
+    line-height:1.6em;
+    margin-top:15px;
+}
+
+.fab:hover{
+    box-shadow:0px 4px 4px rgba(0,0,0,0.5);
+}
+
+.content{
+    padding:10px 60px;
+    transform:translateY(-25px);
+    align-items:center;
+}
+
+#profile-picture{
+    height:100px;
+    border-radius:50%;
+    width:100px;
+}
+
+
+
+.info{
+    margin-top:10px;
+    line-height:1.6em;
+    font-weight:600;
+    color:rgba(0,0,0,0.8);
+}

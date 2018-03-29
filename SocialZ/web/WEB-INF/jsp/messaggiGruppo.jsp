@@ -16,37 +16,42 @@
         <title>JSP Page</title>
     </head>
 
-        <ul id="nav"></ul>
-        <input type="checkbox" id="menu-toggle"/>
-        <label id="trigger" for="menu-toggle"></label>
-        <label id="burger" for="menu-toggle"></label>
-        <ul id="menu">
-            <li><a href="messages">Messaggi</a></li>
-            <li><a href="messaggiGruppo">Gruppi</a></li>
-        </ul>
-        <div class="split left">
-            <table id="tabellaGruppi">
-                <h1>Contatti</h1>  
-                <th>Nome</th>
-                    <c:forEach var="lst" items="${listaGruppi}" >
-                    <tr>
-                        <td name="destinatario">${lst}</td>
-                    </tr>
-                </c:forEach>  
-            </table>
-        </div>
-        <div class="split right" id="rightpanel">
-            <h1>Messaggi</h1>  
-            <div class="split up" id="storicoChat">
+    <ul id="nav"></ul>
+    <input type="checkbox" id="menu-toggle"/>
+    <label id="trigger" for="menu-toggle"></label>
+    <label id="burger" for="menu-toggle"></label>
+    <ul id="menu">
+        <li><a href="messages">Messaggi</a></li>
+        <li><a href="messaggiGruppo">Gruppi</a></li>
+    </ul>
+    <div class="split left">
+        <table id="tabellaGruppi">
+            <h1>Contatti</h1>  
+            <th>Nome</th>
+                <c:forEach var="lst" items="${listaGruppi}" >
+                <tr>
+                    <td name="destinatario">
+                        <div>
+                            <p>${lst[0]}</p>
+                            <p class="descrizione">${lst[1]}</p>
+                        </div>
+                    </td>
+                </tr>
+            </c:forEach>  
+        </table>
+    </div>
+    <div class="split right" id="rightpanel">
+        <h1>Messaggi</h1>  
+        <div class="split up" id="storicoChat">
 
-            </div>
-
-            <div class="split down" id="componiMessaggio">
-                <span id="dest" value="" hidden="true"></span>
-                <textarea id="inputMess" rows="4" cols="50"></textarea>
-                <button type="submit" id="invioMess">></button>
-                <a id="nuovoGruppo" name="nuovoMessaggio" href="nuovoGruppo">+</a>
-            </div>
         </div>
-    </body>
+
+        <div class="split down" id="componiMessaggio">
+            <span id="dest" value="" hidden="true"></span>
+            <textarea id="inputMess" rows="4" cols="50"></textarea>
+            <button type="submit" id="invioMess">></button>
+            <a id="nuovoGruppo" name="nuovoGruppo" href="nuovoGruppo" >+</a>
+        </div>
+    </div>
+</body>
 </html>

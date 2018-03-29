@@ -3,12 +3,14 @@
     Created on : 26-mar-2018, 16.44.20
     Author     : MATTI
 --%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/style.css"/>
+        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/homeNav.css"/>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-3.3.1.js"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery.validate.min.js"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery.validate.messages_it.js"></script>
@@ -16,10 +18,15 @@
         <title>Registrati</title>
     </head>
     <body>
-        <h1>Iscrtizione a SocialZ</h1>
+        <ul class="tabs text-center">
+            <li id="home" class="tab"><a href="index">HOME PAGE</a></li>
+            <li id="signin" class="tab"><a href="login">ACCESSO</a></li>
+            <li id="login" class="tab active">REGISTRAZIONE</li>
+        </ul>
+        <h1>Iscrizione a SocialZ</h1>
         <form class="form-card" id="signIn" action="doSignin" method="POST">  
             <fieldset class="form-fieldset">
-                <legend class="form-legend">Dati sensibili</legend>
+                <legend class="form-legend">Dati personali</legend>
                 <div class="form-element">
                     <input id="nome" name="nome" class="form-element-field" type="input" placeholder=" " required/>
                     <div class="form-element-bar"></div>
@@ -45,7 +52,6 @@
                     <div class="form-element-bar"></div>
                     <label class="form-element-label" >Telefono</label>
                 </div>
-                </div>
                 <div class="form-radio form-radio-block">
                     <div class="form-radio-legend"></div>
                     <label class="form-radio-label">
@@ -58,6 +64,15 @@
                         <i class="form-radio-button"></i>
                         <span>Femmina</span>
                     </label>
+                </div>
+                <div class="form-element">
+                    <p>Seleziona i tuoi hobby</p>
+                    <select name="hobbies" multiple>
+                        <c:forEach var="h" items="${listaHobbies}" varStatus="status" >
+                            <option>${h}</option>
+                        </c:forEach> 
+                    </select>
+                    <a>Hobby non presente? Aggiungine uno</a>
                 </div>
             </fieldset>
             <fieldset class="form-fieldset">

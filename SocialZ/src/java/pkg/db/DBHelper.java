@@ -46,10 +46,19 @@ public class DBHelper implements DB {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    private void collegaHobby(String user, String[] hobby) {
+        String sql = "INSERT INTO ELENCOHOBBIES(email,hobby) "
+                + " VALUES (?,?);";
+        for (int i = 0; i < hobby.length; i++) {
+            jdbcTemplate.update(sql, user, hobby[i]);
+        }
+    }
+
     public void sigIn(Utente u) {
         String sql = "INSERT INTO PERSONA(email,password,nome,cognome,indirizzo,sesso,dataNascita,foto,telefono,permesso) "
                 + " VALUES (?,?,?,?,?,?,?,?,?,?);";
         jdbcTemplate.update(sql, u.getEmail(), u.getPassword(), u.getNome(), u.getCognome(), u.getIndirizzo(), u.getSesso(), u.getDataNascita(), u.getImage(), u.getTelefono(), u.getPermesso());
+        collegaHobby(u.getEmail(), u.getHobbies());
     }
 
     public long salvaMess(Messaggio m) {
@@ -67,7 +76,7 @@ public class DBHelper implements DB {
                 statement.setString(5, m.getDataOra());
                 return statement;
             }
-        },holder);
+        }, holder);
         //jdbcTemplate.update(sql, m.getMittente(), m.getDestinatario(), m.getMessaggio(), null, m.getDataOra(), holder);
         return holder.getKey().longValue();
     }
@@ -78,12 +87,18 @@ public class DBHelper implements DB {
         jdbcTemplate.update(sql, id);
     }
 
-    public List<String> getGruppi() {
+    public void eliminaMessGruppo(int id) {
+        String sql = "DELETE FROM MESSAGGIGRUPPI "
+                + "WHERE id=?;";
+        jdbcTemplate.update(sql, id);
+    }
+
+    public List<String[]> getGruppi() {
         String sql = "SELECT * FROM GRUPPO;";
-        List<String> ris = jdbcTemplate.query(sql, new RowMapper<String>() {
+        List<String[]> ris = jdbcTemplate.query(sql, new RowMapper<String[]>() {
             @Override
-            public String mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return rs.getString("nome");
+            public String[] mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new String[]{rs.getString("nome"), rs.getString("descrizione")};
             }
         });
         return ris;
@@ -150,16 +165,41 @@ public class DBHelper implements DB {
         return ris;
     }
 
-    public void aggiungiMessaggioGruppo(Messaggio m) {
+    public long aggiungiMessaggioGruppo(Messaggio m) {
+        GeneratedKeyHolder holder = new GeneratedKeyHolder();
         System.out.println(m.getDestinatario());
         String sql = "INSERT INTO MESSAGGIGRUPPI(mittente,destinatario,messaggio,allegato,dataOra) "
                 + " VALUES (?,?,?,?,?);";
-        jdbcTemplate.update(sql, m.getMittente(), m.getDestinatario(), m.getMessaggio(), null, m.getDataOra());
+        jdbcTemplate.update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                PreparedStatement statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                statement.setString(1, m.getMittente());
+                statement.setString(2, m.getDestinatario());
+                statement.setString(3, m.getMessaggio());
+                statement.setString(4, null);
+                statement.setString(5, m.getDataOra());
+                return statement;
+            }
+        }, holder);
+        return holder.getKey().longValue();
     }
 
     public int isPartecipante(String mittente, String destinatario) {
+        System.out.println(mittente + destinatario);
         String sql = "SELECT email FROM PARTECIPANTI "
                 + "WHERE email = ? AND nome = ? ;";
+        try {
+            return jdbcTemplate.queryForObject(sql, Integer.class, mittente, destinatario);
+        } catch (EmptyResultDataAccessException e) {
+            return -1;
+        }
+    }
+
+    public int hasRichiestaPartecipazione(String mittente, String destinatario) {
+        System.out.println("richiesta");
+        String sql = "SELECT idRichiesta FROM RICHIESTA "
+                + "WHERE richiedente = ? AND destinatario = ? ;";
         try {
             return jdbcTemplate.queryForObject(sql, Integer.class, mittente, destinatario);
         } catch (EmptyResultDataAccessException e) {
@@ -197,9 +237,9 @@ public class DBHelper implements DB {
     }*/
     public void richiestaPartecipazioneGruppo(Messaggio m) {
         System.out.println(m.getDestinatario());
-        String sql = "INSERT INTO RICHIESTA(descrizione,amministratore) "
-                + " VALUES(?, (SELECT email FROM AMMINISTRATORIGRUPPO WHERE nomeGruppo = ?));";
-        jdbcTemplate.update(sql, m.getMessaggio(), m.getDestinatario());
+        String sql = "INSERT INTO RICHIESTA(descrizione,amministratore,richiedente,destinatario) "
+                + " VALUES(?, (SELECT email FROM AMMINISTRATORIGRUPPO WHERE nomeGruppo = ?),?,?);";
+        jdbcTemplate.update(sql, m.getMessaggio(), m.getDestinatario(), m.getMittente(), m.getDestinatario());
     }
 
     public void creaGruppo(String amministratore, String nome, String descrizione, String[] partecipanti) {
@@ -214,5 +254,28 @@ public class DBHelper implements DB {
         sql = "INSERT INTO AMMINISTRATORIGRUPPO(nomeGruppo,email) "
                 + " VALUES (?,?);";
         jdbcTemplate.update(sql, nome, amministratore);
+    }
+
+    public List<String> getHobbies() {
+        String sql = "SELECT * FROM HOBBIES;";
+        List<String> ris = jdbcTemplate.query(sql, new RowMapper<String>() {
+            @Override
+            public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getString("hobby");
+            }
+        });
+        return ris;
+    }
+    
+    public List<String> getHobbiesPersona(String utente) {
+        String sql = "SELECT hobby FROM ELENCOHOBBIES "
+                + "WHERE email = '"+utente+"';";
+        List<String> ris = jdbcTemplate.query(sql, new RowMapper<String>() {
+            @Override
+            public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getString("hobby");
+            }
+        });
+        return ris;
     }
 }

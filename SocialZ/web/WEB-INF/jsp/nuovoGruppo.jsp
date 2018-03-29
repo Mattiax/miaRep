@@ -9,42 +9,48 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/creaGruppo.css"/>
+        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/style.css"/>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-3.3.1.js"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/creaGruppo.js"></script>
         <title>JSP Page</title>
     </head>
     <body>
-        <form>
-			<fieldset>
-				<legend>Dati gruppo</legend>
-				<div>
-					<label for="nome">Nome Gruppo</label>
-					<input type="text" id="nome">
-				</div>
-				<div>
-					<label for="descrizione">Descrizione gruppo</label>
-					<input type="text" id="descrizione">
-				</div>
-				<div>
-					<label for="immagine">Immagine</label>
-					<input type="file" accept="image/*" name="immagine">
-				</div>
-			</fieldset>
-			<fieldset>
-				<legend>Partecipanti</legend>
-				<div id="partecipanti">
-					<table id="tabellaPartecipanti">
-						<th>Nome</th>
-							<c:forEach var="lst" items="${listaUtenti}" >
-							<tr>
-								<td name="utente"><input type="checkbox" id="partecipa" name=${lst.getEmail()}>${lst.getNome()}</td>
-							</tr>
-						</c:forEach>  
-					</table>
-				</div>
-				<button id="crea">CREA</button>
-			</fieldset>
+        <form class="form-card" id="signIn" action="creaGruppo" method="POST">  
+            <fieldset class="form-fieldset">
+                <legend class="form-legend">Dati gruppo</legend>
+                <div class="form-element">
+                    <input id="nome" name="nome" class="form-element-field" type="input" placeholder=" " required/>
+                    <div class="form-element-bar"></div>
+                    <label class="form-element-label" >Nome gruppo</label>
+                </div>
+                <div class="form-element">
+                    <input id="descrizione" name="descrizione" class="form-element-field" type="input" placeholder="Es. Gruppo calcio"/>
+                    <div class="form-element-bar"></div>
+                    <label class="form-element-label" >Descrizione gruppo</label>
+                </div>
+                <div class="form-element">
+                    <input id="immagine" name="immagine" class="form-element-field" type="file" accept="image/*"/>
+                    <div class="form-element-bar"></div>
+                    <label class="form-element-label">Immagine</label>
+                </div>
+            </fieldset>
+            <fieldset class="form-fieldset">
+                <legend class="form-legend">Partecipanti</legend>
+                <div class="form-checkbox form-checkbox-inline">
+                    <c:forEach var="lst" items="${listaUtenti}" >
+                        <label class="form-checkbox-label">
+                            <input name=partecipa class="form-checkbox-field" type="checkbox" name="${lst.getEmail()}"/>
+                            <i class="form-checkbox-button"></i>
+                            <span>${lst.getNome()}</span>
+                        </label>
+                    </c:forEach>  
+
+                </div>
+            </fieldset>
+            <div class="form-actions">
+                <button class="form-btn" type="submit">Crea</button>
+                <button class="form-btn-cancel -nooutline" type="reset">Reset</button>
+            </div>
         </form>
     </body>
 </html>

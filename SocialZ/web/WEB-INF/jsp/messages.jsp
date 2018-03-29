@@ -17,11 +17,12 @@
     </head>
 
     <body>
-<ul id="nav"></ul>
+        <ul id="nav"></ul>
         <input type="checkbox" id="menu-toggle"/>
         <label id="trigger" for="menu-toggle"></label>
         <label id="burger" for="menu-toggle"></label>
         <ul id="menu">
+            <li><img  width="50" src="img/no_photo.png"><a id="immagineProfilo" href="personalArea" >Profilo</a></li>
             <li><a href="messages">Messaggi</a></li>
             <li><a href="messaggiGruppo">Gruppi</a></li>
         </ul>

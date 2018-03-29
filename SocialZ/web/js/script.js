@@ -16,29 +16,34 @@ $(document).ready(function () {
     $(document).on("click", "#canc", function () {
         eliminaMessaggio($(this).children("#id").text());
     });
+    $("table tr").click(function () {
+        $("table tr").removeClass('highlighted');
+        $(this).addClass('highlighted');
+    });
 });
 
 function eliminaMessaggio(id) {
-     $.ajax({
-     url: 'eliminaMessaggio',
-     type: 'POST',
-     data: {id: id},
-     success: function (data) {
-         $('div#chatDiv div:contains(' + id + ')').parent().remove();
-     },
-     statusCode: {
-     404: function (content) {
-     alert('cannot find resource');
-     },
-     500: function (content) {
-     alert('internal server error');
-     }
-     },
-     error: function (req, status, errorObj) {
-     alert(status + errorObj)
-     }
-     });
-};
+    $.ajax({
+        url: 'eliminaMessaggio',
+        type: 'POST',
+        data: {id: id},
+        success: function (data) {
+            $('div#chatDiv div:contains(' + id + ')').parent().remove();
+        },
+        statusCode: {
+            404: function (content) {
+                alert('cannot find resource');
+            },
+            500: function (content) {
+                alert('internal server error');
+            }
+        },
+        error: function (req, status, errorObj) {
+            alert(status + errorObj)
+        }
+    });
+}
+;
 
 function mandaMessaggio(msg) {
     var dest = $("#dest").text();
@@ -47,12 +52,12 @@ function mandaMessaggio(msg) {
         type: 'POST',
         data: {mittente: utente, destinatario: dest, messaggio: msg},
         success: function (data) {
-            var json=$.parseJSON(data);
-            var messaggio =  "<div id=\"chatDiv\">\
+            var json = $.parseJSON(data);
+            var messaggio = "<div id=\"chatDiv\">\
                                 <p>Tu:</p>\
                                 <div id=\"canc\"\
                                     <p id=\"imagCanc\"><img src=\"img\\bin.png\" width=\"25\" height=\"25\" value=\"e\"></p>\
-                                    <p id=\"id\" hidden=\"true\" value=\""+json.id+"\">" + json.id + "</p>\n\
+                                    <p id=\"id\" hidden=\"true\" value=\"" + json.id + "\">" + json.id + "</p>\n\
                                 </div>\
                                 <div id=\"messaggioDiv\">" + msg + "\
                                     <p id=\"dataDiv\">" + new Date() + "</p>\
@@ -130,17 +135,17 @@ function makeTable(json) {
                                 <p>Tu:</p>\
                                 <div id=\"canc\"\
                                     <p id=\"imagCanc\"><img src=\"img\\bin.png\" width=\"25\" height=\"25\" value=\"e\"></p>\
-                                    <p id=\"id\" hidden=\"true\" value=\""+data[i].id+"\">" + data[i].id + "</p>\n\
+                                    <p id=\"id\" hidden=\"true\" value=\"" + data[i].id + "\">" + data[i].id + "</p>\n\
                                 </div>\
-                                <div id=\"messaggioDiv\">" + data[i].messaggio + 
-                                    "<p id=\"dataDiv\">" + data[i].dataOra + "</p>\
+                                <div id=\"messaggioDiv\">" + data[i].messaggio +
+                    "<p id=\"dataDiv\">" + data[i].dataOra + "</p>\
                                 </div>";
         } else {
             tabella += "<div id=\"chatDiv\"><p>" + mittente + ":</p><p id=\"messaggioDiv\">" + data[i].messaggio + "</p><p id=\"dataDiv\">" + data[i].dataOra + "</p></div>";
-        } 
+        }
         tabella += "</div>";
     }
-   
+
     $('#storicoChat').append(tabella);
     scrollChat();
 }
