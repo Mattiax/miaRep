@@ -12,6 +12,11 @@ and open the template in the editor.
     margin: 20px 0 -55px 0;
 }
 
+.disabled {
+    pointer-events: none;
+    opacity: 0.4;
+}
+
 .split {
     height: 100%;
     width: 100%;

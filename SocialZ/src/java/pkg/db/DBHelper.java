@@ -22,6 +22,7 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import pkg.oggetti.Messaggio;
+import pkg.oggetti.Richiesta;
 import pkg.oggetti.Utente;
 
 /**
@@ -126,8 +127,9 @@ public class DBHelper implements DB {
         return ris;
     }
 
-    public List<Utente> getAllUsers() {
-        String sql = "SELECT * FROM PERSONA;";
+    public List<Utente> getAllUsers(String email) {
+        String sql = "SELECT * FROM PERSONA WHERE "
+                + "email <> '"+email+"';";
         List<Utente> ris = jdbcTemplate.query(sql, new RowMapper<Utente>() {
             @Override
             public Utente mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -277,5 +279,75 @@ public class DBHelper implements DB {
             }
         });
         return ris;
+    }
+    
+    public List<Richiesta> getRichieste(String user) {
+        String sql = "SELECT * FROM RICHIESTA "
+                + "WHERE amministratore = '"+user+"';";
+        List<Richiesta> ris = jdbcTemplate.query(sql, new RowMapper<Richiesta>() {
+            @Override
+            public Richiesta mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new Richiesta(rs.getInt("idRichiesta"),rs.getString("richiedente"),rs.getString("destinatario"),rs.getString("descrizione"));
+            }
+        });
+        return ris;
+    }
+    
+    public void approvaRichiesta(int id, String richiedente,String gruppo){
+        String sql = "DELETE FROM RICHIESTA "
+                + "WHERE idRichiesta=?;";
+        jdbcTemplate.update(sql, id);
+        sql="INSERT INTO PARTECIPANTI (nome,email) VALUES(?,?)";
+        jdbcTemplate.update(sql, gruppo, richiedente);
+    }
+    
+    public List<String> getMailList(String hobby) {
+        String sql = "SELECT ELENCOHOBBIES.email FROM ELENCOHOBBIES,PERSONA "
+                + "WHERE hobby = '"+hobby+"' AND ELENCOHOBBIES.email=PERSONA.email AND permesso = 1;";
+        List<String> ris = jdbcTemplate.query(sql, new RowMapper<String>() {
+            @Override
+            public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getString("ELENCOHOBBIES.email");
+            }
+        });
+        return ris;
+    }
+    
+    public void nuovoHobby(String hobby){
+        System.out.println("agg "+hobby);
+        String sql="SELECT * FROM AMMINISTRATORISOCIAL;";
+        List<String> ris = jdbcTemplate.query(sql, new RowMapper<String>() {
+            @Override
+            public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getString("email");
+            }
+        });
+        sql="INSERT INTO RICHIESTA(descrizione,amministratore,richiedente,destinatario) "
+                + "VALUES(?,?,?,?)";
+        for(int i=0;i<ris.size();i++){
+            System.out.println("aa");
+            jdbcTemplate.update(sql, "Richiesta aggiunta hobby #%="+hobby,ris.get(i),null,null);
+        }
+                
+    }
+    
+    public int isAmministratoreSocial(String email) {
+        String sql = "SELECT email FROM AMMINISTRATORISOCIAL "
+                + "WHERE email = ? ;";
+        try {
+            return jdbcTemplate.queryForObject(sql, Integer.class, email);
+        } catch (EmptyResultDataAccessException e) {
+            return -1;
+        }
+    }
+    
+    public int isRegistrato(String email,String password) {
+        String sql = "SELECT email FROM PERSONA "
+                + "WHERE email = ? AND password = ?;";
+        try {
+            return jdbcTemplate.queryForObject(sql, Integer.class, email, password);
+        } catch (EmptyResultDataAccessException e) {
+            return -1;
+        }
     }
 }

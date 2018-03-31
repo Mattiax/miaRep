@@ -55,4 +55,9 @@
         <!-- Name of logger to use to log exceptions. Unset by default, so logging disabled -->
         <property name="warnLogCategory" value="example.MvcLogger"/>
     </bean>
+    
+
+    
+    
+
 </beans>

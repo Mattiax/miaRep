@@ -5,20 +5,30 @@ import java.awt.Image;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
 import javax.swing.ImageIcon;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,8 +48,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.multipart.MultipartFile;
 import pkg.db.DBHelper;
 import pkg.oggetti.Messaggio;
+import pkg.oggetti.Richiesta;
 import pkg.oggetti.Utente;
 
 @Controller
@@ -65,25 +77,37 @@ public class DefaultController {
 
     @RequestMapping(value = "/doLogin", method = RequestMethod.POST)
     public String logIn(HttpServletRequest request, ModelMap map, HttpServletResponse response) {
-        System.out.println("login");
-        response.addCookie(new Cookie("mittente", request.getParameter("email")));
-        List<Utente> lst = db.getAllUsers();
-        System.out.println(lst.size());
-        map.addAttribute("listaUtenti", lst);
-        return "messages";
+        
+        String email = request.getParameter("email");
+        String password = request.getParameter("password");
+        System.out.println("login" + request.getParameter("amm")+email+password);
+        if (request.getParameter("amm") != null) {
+            if (db.isAmministratoreSocial(email) > -1) {
+                return "amministratoreSocial";
+            }
+        }
+        if (db.isRegistrato(email, password) > -1) {
+            response.addCookie(new Cookie("mittente", email));
+            List<Utente> lst = db.getAllUsers(email);
+            System.out.println(lst.size());
+            map.addAttribute("listaUtenti", lst);
+            return "messages";
+        } else {
+            return "index";
+        }
     }
 
     @RequestMapping(value = "/nuovoGruppo", method = RequestMethod.GET)
     public String nuovoGruppo(HttpServletRequest request, ModelMap map) {
         System.out.println("gruppo");
-        List<Utente> lst = db.getAllUsers();
+        List<Utente> lst = db.getAllUsers(getUtenteAttivo(request.getCookies()));
         System.out.println(lst.size());
         map.addAttribute("listaUtenti", lst);
         return "nuovoGruppo";
     }
 
     @RequestMapping(value = "/creaGruppo", method = RequestMethod.POST)
-    public String crea(@RequestBody String partecipanti) {
+    public void crea(@RequestBody String partecipanti) {
         System.out.println(partecipanti);
         try {
             JSONObject ob = new JSONObject(partecipanti);
@@ -105,13 +129,12 @@ public class DefaultController {
         } catch (JSONException ex) {
             Logger.getLogger(DefaultController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return "messaggiGruppo";
     }
 
     @RequestMapping(value = "/personalArea")
     public String setData(HttpServletRequest request, ModelMap map) {
-        System.out.println(request.getCookies()[0].getValue());
-        String user=request.getCookies()[0].getValue();
+        String user = getUtenteAttivo(request.getCookies());
+
         Utente u = db.getUser(user, "");
         if (u == null) {
             return "signin";
@@ -122,14 +145,14 @@ public class DefaultController {
         map.addAttribute("email", u.getEmail());
         map.addAttribute("password", u.getPassword());
         map.addAttribute("sesso", u.getSesso());
-        map.addAttribute("listaHobbies",db.getHobbiesPersona(user));
+        map.addAttribute("listaHobbies", db.getHobbiesPersona(user));
         return "personalArea";
     }
 
     @RequestMapping(value = "/signin")
     public String signIn(ModelMap map) {
         System.out.println("signin");
-        map.addAttribute("listaHobbies",db.getHobbies());
+        map.addAttribute("listaHobbies", db.getHobbies());
         return "signin";
     }
 
@@ -191,8 +214,8 @@ public class DefaultController {
     }
 
     @RequestMapping(value = "/messages")
-    public String message(ModelMap map) {
-        List<Utente> lst = db.getAllUsers();
+    public String message(HttpServletRequest request,ModelMap map) {
+        List<Utente> lst = db.getAllUsers(getUtenteAttivo(request.getCookies()));
         System.out.println(lst.size());
         map.addAttribute("listaUtenti", lst);
         return "messages";
@@ -217,7 +240,7 @@ public class DefaultController {
     @RequestMapping(value = "/getConvGruppo")
     public @ResponseBody
     String getConvGruppo(String mittente, String destinatario) {
-        System.out.println("conversazione gruppo  "+mittente + destinatario+db.isPartecipante(mittente, destinatario));
+        System.out.println("conversazione gruppo  " + mittente + destinatario + db.isPartecipante(mittente, destinatario));
         if (db.isPartecipante(mittente, destinatario) < 0) {
             System.out.println("non partecipo");
             if (db.hasRichiestaPartecipazione(mittente, destinatario) > 0) {
@@ -267,11 +290,76 @@ public class DefaultController {
 
     @RequestMapping(value = "/doSignin", method = RequestMethod.POST)
     public String signIn(HttpServletRequest request, ModelMap map) {
-        System.out.println("reg   "+request.getParameterValues("hobbies")[0]);
+        /*Part s;
+        try {
+            s = request.getPart("immagine");
+            InputStream imageInputStream = s.getInputStream();
+       //read imageInputStream
+       
+       s.write("img");
+            String fileName = Paths.get(s.getSubmittedFileName()).getFileName().toString();
+        System.out.println(fileName);
+        } catch (Exception ex) {
+            Logger.getLogger(DefaultController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+         */
+        System.out.println("reg   " + request.getParameterValues("hobbies")[0]);
         Utente temp = new Utente(request.getParameter("email"), request.getParameter("password"),
                 request.getParameter("nome"), request.getParameter("cognome"), request.getParameter("indirizzo").equals("") ? null : request.getParameter("indirizzo"),
                 request.getParameter("sesso").charAt(0), request.getParameter("dataNascita"), null, request.getParameter("telefono").equals("") ? null : request.getParameter("telefono"), (request.getParameter("privacy").equals("T") ? true : false), request.getParameterValues("hobbies"));
         db.sigIn(temp);
         return "index";
     }
+
+    @RequestMapping(value = "/richieste")
+    public String richieste(HttpServletRequest request, ModelMap map) {
+        List<Richiesta> lst = db.getRichieste(getUtenteAttivo(request.getCookies()));
+        System.out.println(request.getParameter("mittente"));
+        map.addAttribute("listaRichieste", lst);
+        return "richieste";
+    }
+
+    @RequestMapping(value = "/approvaRichiesta")
+    public @ResponseBody
+    void approva(String id, String richiedente, String gruppo) {
+        db.approvaRichiesta(Integer.parseInt(id), richiedente, gruppo);
+        System.out.println("approva  " + id);
+    }
+
+    @RequestMapping(value = "/nuovoHobby")
+    public @ResponseBody
+    void richiestaHobby(String hobby) {
+        db.nuovoHobby(hobby);
+    }
+
+    @RequestMapping(value = "/esci")
+    public String esci(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            System.out.println("logout");
+            session.invalidate();
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if (cookie.getName().equals("mittente")) {
+                        cookie.setMaxAge(0);
+                        break;
+                    }
+                }
+            }
+        }
+        return "redirect:/index";
+    }
+
+    private String getUtenteAttivo(Cookie[] cookies) {
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("mittente")) {
+                    return cookie.getValue();
+                }
+            }
+        }
+        return "";
+    }
+
 }

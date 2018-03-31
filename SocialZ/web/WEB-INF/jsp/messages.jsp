@@ -10,10 +10,10 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/messages.css"/>
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/newcss.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/hamburger.css">
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-3.3.1.js"></script>
-        <script type="text/javascript" src="${pageContext.request.contextPath}/js/script.js"></script>
-        <title>JSP Page</title>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/js/messaggi.js"></script>
+        <title>Chat</title>
     </head>
 
     <body>
@@ -25,9 +25,9 @@
             <li><img  width="50" src="img/no_photo.png"><a id="immagineProfilo" href="personalArea" >Profilo</a></li>
             <li><a href="messages">Messaggi</a></li>
             <li><a href="messaggiGruppo">Gruppi</a></li>
+            <li><a href="richieste">Richieste</a></li>
+            <li><a href="esci">Esci</a></li>
         </ul>
-
-
         <div class="split left">
             <table id="tableId">
                 <h1>Contatti</h1>  
@@ -49,7 +49,7 @@
             <h1>Messaggi</h1>  
             <div class="split up" id="storicoChat">
             </div>
-            <div class="split down" id="componiMessaggio">
+            <div class="split down disabled" id="componiMessaggio" >
                 <span id="dest" value="" hidden="true"></span>
                 <textarea id="inputMess" rows="4" cols="50"></textarea>
                 <input type="submit" id="invioMess" value=">">

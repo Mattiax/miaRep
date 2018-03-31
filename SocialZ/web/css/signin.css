@@ -7,82 +7,13 @@ and open the template in the editor.
     Created on : 13-mar-2018, 10.07.02
     Author     : mattia.musone
 */
-h1{
-    text-align: center;
-}
 
-h2 {
-    margin-left: 20%;
-    margin-right: 20%;
-    border-left: 6px solid blue;
-    background-color: lightgrey;
-}
-
-h3 {
-    border-bottom: 6px solid green;
-    background-color: lightgrey;
-    text-align: center;
-}
-
-#signIn{
-
-    margin-left: 20%;
-    margin-right: 20%;
-    border: 2px solid grey;
-    border-radius: 10px;
-}
-
-input{
-    border: none;
-    border-bottom: 1px solid blue;
-}
-
-#registratiBtn {
-    background-color: #33cc33;
-    border: none;
-    color: white;
-    padding: 15px 32px;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin-left: 70%;
-}
-
-div{
-    color: darkgreen;
-    font-size: 20px;
-    line-height: 1.5;
-    letter-spacing: 2px;
-    font-weight: bold;
-    margin: 10px 0 0 15%;
-    padding: 0;
-}
-
-label {
-    width: 280px;
-    float: left;
-    text-align: right;
-    margin-right: 8px;
-    display: block;
-}
-
-input.error, select.error {
-    border: 1px dotted red;
-    background-color: #FCF;
-}
-
-span.error {
-    margin-left: 5px;
-    color: red;
-    font: italic 0.9em "Times New Roman", Times, serif;
-}
-
-
-input[type='radio'] {
+#done {
     position: relative;
-    padding-left: 35px;
-    margin-bottom: 12px;
+    padding: 8px 8px;
+    border-radius: 8px;
+    background: #009688;
+    font-weight: 900;
+    color: #eee;
     cursor: pointer;
-    font-size: 22px;
-    background-color: blue;
 }

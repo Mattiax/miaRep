@@ -9,12 +9,14 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/style.css"/>
+        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/form.css"/>
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/homeNav.css"/>
+        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/signin.css"/>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-3.3.1.js"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery.validate.min.js"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery.validate.messages_it.js"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/formJQvalid.js"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/js/signin.js"></script>
         <title>Registrati</title>
     </head>
     <body>
@@ -24,7 +26,7 @@
             <li id="login" class="tab active">REGISTRAZIONE</li>
         </ul>
         <h1>Iscrizione a SocialZ</h1>
-        <form class="form-card" id="signIn" action="doSignin" method="POST">  
+        <form class="form-card" id="signIn" action="doSignin" method="POST" enctype="multipart/form-data">  
             <fieldset class="form-fieldset">
                 <legend class="form-legend">Dati personali</legend>
                 <div class="form-element">
@@ -72,7 +74,7 @@
                             <option>${h}</option>
                         </c:forEach> 
                     </select>
-                    <a>Hobby non presente? Aggiungine uno</a>
+                    <div id="aggiungiHobby">Hobby non presente? Aggiungine uno</div>
                 </div>
             </fieldset>
             <fieldset class="form-fieldset">
@@ -95,7 +97,7 @@
                     <small id="eqPass2"></small>
                 </div>
                 <div class="form-element">
-                    <input id="immagine" name="immagine" class="form-element-field" type="file" accept="image/*"/>
+                    <input id="immagine" name="immagine" class="form-element-field" type="file" />
                     <div class="form-element-bar"></div>
                     <label class="form-element-label">Immagine</label>
                 </div>

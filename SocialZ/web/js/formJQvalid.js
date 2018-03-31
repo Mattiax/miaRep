@@ -19,7 +19,7 @@ $(document).ready(function () {
                 required: "E' necessario accettare i termini e le condizioni di servizio sulla privacy per continuare."
             }
         },
-        errorElement: "span", // This is to override the label w/ a span
+        //errorElement: "span", // This is to override the label w/ a span
         errorPlacement: function (errore, element) {
             var errore = errore.text();
             var type = $(element).attr("id");
@@ -37,7 +37,8 @@ $(document).ready(function () {
             }
         },
         success: function (errore, element) {
-            var type = $(errore).attr("id");
+            $("#lungPass1").text("");
+            $("#eqPass2").text("");
         }
     });
 });

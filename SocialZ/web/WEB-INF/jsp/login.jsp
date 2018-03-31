@@ -9,7 +9,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/style.css"/>
+        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/form.css"/>
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/homeNav.css"/>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-3.3.1.js"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/index.js"></script>
@@ -25,13 +25,7 @@
         <form class="form-card" id="logIn" action="doLogin" method="POST">  
             <fieldset class="form-fieldset">
                 <legend class="form-legend">Dati sensibili</legend>
-                <div class="form-checkbox form-checkbox-inline">
-                    <label class="form-checkbox-label">
-                        <input name="amm" class="form-checkbox-field" type="checkbox" />
-                        <i id="amministratore"></i>
-                        <span class="testo">Sei un amministratore?</span>
-                    </label>
-                </div>
+
                 <div class="form-element">
                     <input id="email" name="email" class="form-element-field" type="email" placeholder=" " required/>
                     <div class="form-element-bar"></div>
@@ -41,6 +35,13 @@
                     <input id="password" name="password" class="form-element-field" type="password" placeholder=" " required/>
                     <div class="form-element-bar"></div>
                     <label class="form-element-label" >Password</label>
+                </div>
+                <div class="form-checkbox form-checkbox-inline">
+                    <label class="form-checkbox-label">
+                        <input name="amm" class="form-checkbox-field" type="checkbox" />
+                        <i class="form-checkbox-button"></i>
+                        <span class="testo">Sei un amministratore?</span>
+                    </label>
                 </div>
             </fieldset>
             <div class="form-actions">

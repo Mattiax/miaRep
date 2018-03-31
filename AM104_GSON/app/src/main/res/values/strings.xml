@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">AM104_GSON</string>
-    <string name="header">elenco giornate</string>
+    <string name="header">Elenco giornate</string>
+    <string name="error">Qualcosa è andato storto\nErrore:</string>
+    <string name="ok">ok</string>
+    <string name="hint_favorite">Squadra del cuore</string>
 </resources>

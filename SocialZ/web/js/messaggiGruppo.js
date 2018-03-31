@@ -5,7 +5,14 @@
  */
 var utente;
 $(document).ready(function () {
-    utente = document.cookie.substr(9);
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        if (c.indexOf("mittente") !== -1) {
+            utente = document.cookie.substr(9);
+            break;
+        }
+    }
     addRowHandlers();
     $("#invioMess").click(function () {
         var mess = $("#inputMess").val();
@@ -131,6 +138,7 @@ function addRowHandlers() {
 }
 
 function showMessages(email) {
+     $("#componiMessaggio").removeClass("disabled");
     $("#storicoChat").text("");
     $.ajax({
         url: 'getConvGruppo',

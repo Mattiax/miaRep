@@ -9,13 +9,25 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/style.css"/>
+        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/form.css"/>
+        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/hamburger.css"/>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-3.3.1.js"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/creaGruppo.js"></script>
-        <title>JSP Page</title>
+        <title>Creazione nuovo gruppo</title>
     </head>
     <body>
-        <form class="form-card" id="signIn" action="creaGruppo" method="POST">  
+         <ul id="nav"></ul>
+         <input type="checkbox" id="menu-toggle"/>
+        <label id="trigger" for="menu-toggle"></label>
+        <label id="burger" for="menu-toggle"></label>
+        <ul id="menu">
+            <li><img  width="50" src="img/no_photo.png"><a id="immagineProfilo" href="personalArea" >Profilo</a></li>
+            <li><a href="messages">Messaggi</a></li>
+            <li><a href="messaggiGruppo">Gruppi</a></li>
+            <li><a href="richieste">Richieste</a></li>
+            <li><a href="esci">Esci</a></li>
+        </ul>
+        <form class="form-card" id="creaGruppo" >  
             <fieldset class="form-fieldset">
                 <legend class="form-legend">Dati gruppo</legend>
                 <div class="form-element">
@@ -39,7 +51,7 @@
                 <div class="form-checkbox form-checkbox-inline">
                     <c:forEach var="lst" items="${listaUtenti}" >
                         <label class="form-checkbox-label">
-                            <input name=partecipa class="form-checkbox-field" type="checkbox" name="${lst.getEmail()}"/>
+                            <input id="partecipante" class="form-checkbox-field" type="checkbox" value="${lst.getEmail()}"/>
                             <i class="form-checkbox-button"></i>
                             <span>${lst.getNome()}</span>
                         </label>
@@ -48,7 +60,7 @@
                 </div>
             </fieldset>
             <div class="form-actions">
-                <button class="form-btn" type="submit">Crea</button>
+                <button class="form-btn"id="crea">Crea</button>
                 <button class="form-btn-cancel -nooutline" type="reset">Reset</button>
             </div>
         </form>

@@ -9,7 +9,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/newcss.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/hamburger.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/areaPersonale.css">
         <title>Area personale</title>
     </head>
@@ -22,6 +22,8 @@
             <li><img  width="50" src="img/no_photo.png"><a id="immagineProfilo" href="personalArea" >Profilo</a></li>
             <li><a href="messages">Messaggi</a></li>
             <li><a href="messaggiGruppo">Gruppi</a></li>
+            <li><a href="richieste">Richieste</a></li>
+            <li><a href="esci">Esci</a></li>
         </ul>
         <div class="container">
             <div class="header">

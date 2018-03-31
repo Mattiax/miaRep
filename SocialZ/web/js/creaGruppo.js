@@ -5,7 +5,14 @@
  */
 var utente;
 $(document).ready(function () {
-    utente = document.cookie.substr(9);
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        if (c.indexOf("mittente") !== -1) {
+            utente = document.cookie.substr(9);
+            break;
+        }
+    }
     $("#crea").click(function () {
         ottieniDati();
     });
@@ -21,9 +28,9 @@ function ottieniDati() {
     } else {
         json += ",descrizione:" + descrizione;
     }
-    json += ",partecipanti:[";
-    $('#partecipanti input:checked').each(function () {
-        json += ($(this).attr('name')) + ",";
+    json += ",partecipanti:["+utente+",";
+    $('input:checked').each(function () {
+        json += ($(this).attr('value')) + ",";
     });
     json += "]}";
     json = json.replace(",]}", "]}");
@@ -32,19 +39,19 @@ function ottieniDati() {
         type: 'POST',
         contentType: "application/json",
         data: json/*,
-        success: function (data) {
-            alert("ok");
-        },
-        statusCode: {
-            404: function (content) {
-                alert('cannot find resource');
-            },
-            500: function (content) {
-                alert('internal server error');
-            }
-        },
-        error: function (req, status, errorObj) {
-            alert(status + errorObj)
-        }*/
+         success: function (data) {
+         alert("ok");
+         },
+         statusCode: {
+         404: function (content) {
+         alert('cannot find resource');
+         },
+         500: function (content) {
+         alert('internal server error');
+         }
+         },
+         error: function (req, status, errorObj) {
+         alert(status + errorObj)
+         }*/
     });
 }

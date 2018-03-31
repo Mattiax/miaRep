@@ -7,35 +7,6 @@ small{
     color:red;    
 }
 
-#amministratore{
-    position: absolute;
-    display: block;
-    color: #999;
-    top: 0.25rem;
-    width: 1rem;
-    height: 1rem;
-    right:0;
-    z-index: 0;
-    border: 0.125rem solid currentColor;
-    border-radius: 0.0625rem;
-    transition: border-color 0.28s ease;
-}
-
-#amministratore::before,
-#amministratore::after{
-    position: absolute;
-    height: 0;
-    width: 0.2rem;
-    background-color: #337ab7;
-    display: block;
-    transform-origin: left top;
-    border-radius: 0.25rem;
-    content: "";
-    transition: opacity 0.28s ease, height 0s linear 0.28s;
-    opacity: 0;
-}
-
-
 .form-btn,
 .form-btn-cancel,
 .form-btn-error {
@@ -360,10 +331,10 @@ body {
 
 
 
-.testo{
+/*.testo{
     float:right;
     margin-right: 25px;
-}
+}*/
 
 .form-checkbox-button {
     position: absolute;

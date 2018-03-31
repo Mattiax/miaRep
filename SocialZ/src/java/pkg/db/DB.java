@@ -8,6 +8,7 @@ package pkg.db;
 import java.util.ArrayList;
 import java.util.List;
 import pkg.oggetti.Messaggio;
+import pkg.oggetti.Richiesta;
 import pkg.oggetti.Utente;
 
 /**
@@ -20,7 +21,7 @@ public interface DB {
 
     public Utente getUser(String email, String password);
 
-    public List<Utente> getAllUsers();
+    public List<Utente> getAllUsers(String email);
 
     public List<Messaggio> getConversazione(String mittente, String destinatario);
 
@@ -45,4 +46,16 @@ public interface DB {
      public List<String> getHobbies();
      
      public List<String> getHobbiesPersona(String utente);
+     
+     public List<Richiesta> getRichieste(String user);
+     
+     public void approvaRichiesta(int id, String richiedente,String gruppo);
+     
+     public List<String> getMailList(String hobby);
+     
+     public void nuovoHobby(String hobby);
+     
+     public int isAmministratoreSocial(String email);
+     
+      public int isRegistrato(String email,String password);
 }
