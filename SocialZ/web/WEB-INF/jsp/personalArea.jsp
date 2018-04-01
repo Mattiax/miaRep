@@ -11,6 +11,8 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/hamburger.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/areaPersonale.css">
+        <script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-3.3.1.js"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/js/areaPersonale.js"></script>
         <title>Area personale</title>
     </head>
     <body>
@@ -30,23 +32,55 @@
                 <img id="profile-picture" src="img/no_photo.png"/>
                 <h class="header-text">${nome} ${cognome}</h>
             </div>
-            <button class="fab" type="file" tab-index="0">
-                <img src="img/modify_pencil.png" width="30">
+            <button class="fab" id="modify">
+                <img id="fabImg" src="img/modify_pencil.png" width="30">
             </button>
             <div class="content">
                 <div class="info">
                     <table>
                         <tr>
                             <td>Nome</td>
-                            <td>${nome}</td>
+                            <td> 
+                                <div class="form-element disabled">
+                                    <input id="nome" name="nome" class="form-element-field" type="text" placeholder=" " required value="${nome}"/>
+                                    <div class="form-element-bar"></div>
+                                </div> 
+                            </td>
                         </tr>
                         <tr>
                             <td>Cognome</td>
-                            <td>${cognome}</td>
+                            <td> 
+                                <div class="form-element disabled">
+                                    <input id="cognome" name="cognome" class="form-element-field" type="text" placeholder=" " required value="${cognome}"/>
+                                    <div class="form-element-bar"></div>
+                                </div> 
+                            </td>
                         </tr>
                         <tr>
                             <td>Data di nascita</td>
                             <td>${dataNascita}</td>
+                        </tr>
+                        <tr>
+                            <td>Indirizzo</td>
+                            <td>
+                                <div class="form-element disabled">
+                                    <input id="indirizzo" name="indirizzo" class="form-element-field" type="text" placeholder=" " required value="${indirizzo}"/>
+                                    <div class="form-element-bar"></div>
+                                </div> 
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Telefono</td>
+                            <td>
+                                <div class="form-element disabled">
+                                    <input id="telefono" name="telefono" class="form-element-field" type="number" placeholder=" " required value="${telefono}"/>
+                                    <div class="form-element-bar"></div>
+                                </div> 
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Acconsento trattamento dati non sensibili</td>
+                            <td id="permTd">${datiPers}</td>
                         </tr>
                         <tr>
                             <td>Sesso</td>
@@ -58,17 +92,30 @@
                         </tr>
                         <tr>
                             <td>Password</td>
-                            <td>${password}</td>
+                            <td> 
+                                <div class="form-element disabled">
+                                    <input id="password" name="password" class="form-element-field" type="password" placeholder=" " required value="${password}"/>
+
+                                    <div class="form-element-bar"></div>
+                                </div> 
+                            </td>
+                            <td><img class="passVisibility" id="open" src="img/open_eye.ico" width="20"></td>
                         </tr>
                         <tr>
                             <td><p>Lista Hobbies:</p></td>
                         </tr>
                         <c:forEach var="h" items="${listaHobbies}" varStatus="status" >
-                            <tr>
-                                <td></td>
-                                <td>${h}</td>
+                            <tr class="hobbies disabled">
+                                <td class="firstCol">${h}</td>
+                                <td class="eliminaHobby"><img  src="img/bin.png" width="20"><td>
                             </tr>
                         </c:forEach> 
+                        <tr>
+                            <td class="firstCol inputHobby"></td>
+                            <td>
+                                <input type="button" class="nuovoHobby disabled" value="+">
+                            </td>
+                        </tr>
                     </table>
                 </div>
             </div>

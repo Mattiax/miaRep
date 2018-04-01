@@ -71,7 +71,7 @@ html, body {
     height: 5px;
     transition: .2s ease;
     cursor: pointer;
-    z-index: 1;
+    z-index: 2;
 }
 #trigger {
     height: 25px;
@@ -79,11 +79,13 @@ html, body {
 }
 
 #burger:before {
+    z-index: 2;
     content: " ";
     top: 10px;
     left: 0;
 }
 #burger:after {
+    z-index: 2;
     content: " ";
     top: 20px;
     left: 0;
@@ -109,7 +111,7 @@ html, body {
     transition: transform .2s ease;
 }
 #menu {
-    position: absolute;
+    position: absolute !important;
     margin: 0; padding: 0;
     height: 50px;
     width: 50px;
@@ -117,6 +119,7 @@ html, body {
     background-color: #fff;
     border-bottom-right-radius: 100%;
     box-shadow: 0 2px 5px rgba(0,0,0,0.26);
+    z-index: 1;
     animation: not-checked-anim .2s both;
     transition: .2s;
 }

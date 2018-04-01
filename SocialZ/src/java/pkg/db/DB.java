@@ -58,4 +58,12 @@ public interface DB {
      public int isAmministratoreSocial(String email);
      
       public int isRegistrato(String email,String password);
+      
+      public void updateUtente(Utente u);
+      
+      public void eliminaMess(int id);
+      
+      public void eliminaCollegamentoHobby(String utente,String hobby);
+      
+      public List<Richiesta> getRichiesteAmm(String user);
 }

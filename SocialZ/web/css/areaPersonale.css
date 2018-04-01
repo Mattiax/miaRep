@@ -16,6 +16,10 @@ table{
     width: 80%;
 }
 
+.firstCol{
+    text-indent: 50px;
+}
+
 .fab{
     background-color:#EA4335;
     font-weight:300;
@@ -78,4 +82,113 @@ table{
     line-height:1.6em;
     font-weight:600;
     color:rgba(0,0,0,0.8);
+}
+
+.form-element-bar {
+    position: relative;
+    height: 1px;
+    background: #999;
+    display: block;
+}
+
+.form-element-bar::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #337ab7;
+    height: 2px;
+    display: block;
+    transition: transform 0.28s ease;
+    transform: rotateY(90deg);
+    z-index:1;
+}
+
+.form-element-field {
+    outline: none;
+    height: 1.5rem;
+    display: block;
+    background: none;
+    padding: 0.125rem 0.125rem 0.0625rem;
+    font-size: 1rem;
+    border: 0 solid transparent;
+    line-height: 1.5;
+    width: 100%;
+    color: transparent;
+    transition: all 0.28s ease;
+    box-shadow: none;
+    opacity: 0.001;
+}
+
+.form-element-field:-ms-input-placeholder {
+    color: #a6a6a6;
+    transform: scale(0.9);
+    transform-origin: left top;
+}
+
+.form-element-field::placeholder {
+    color: #a6a6a6;
+    transform: scale(0.9);
+    transform-origin: left top;
+}
+
+.form-element-field:focus~.form-element-bar::after {
+    transform: rotateY(0deg);
+}
+
+.form-element-field.-hasvalue,
+.form-element-field:focus {
+    color: #333;
+    opacity: 1;
+}
+
+.form-has-error .form-element-hint {
+    color: #d9534f;
+}
+
+.form-has-error .form-element-bar,
+.form-has-error .form-element-bar::after {
+    background: #d9534f;
+}
+
+.form-has-error .form-element-field:focus~.form-element-label {
+    color: #d9534f;
+}
+
+.form-is-success .form-element-hint {
+    color: #259337;
+}
+
+.form-is-success .form-element-bar::after {
+    background: #259337;
+}
+
+input.form-element-field:not(:placeholder-shown),
+textarea.form-element-field:not(:placeholder-shown) {
+    color: #333;
+    opacity: 1;
+}
+
+textarea.form-element-field {
+    height: auto;
+    min-height: 3rem;
+}
+
+.nuovoHobby{
+    background-color: #4CAF50;
+    border-radius: 20px;
+    border: none;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
+.disabled {
+    pointer-events: none;
+    opacity: 0.4;
 }

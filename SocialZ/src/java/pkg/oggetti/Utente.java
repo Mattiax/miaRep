@@ -135,4 +135,9 @@ public class Utente {
 	public String getIndirizzo() {
 		return indirizzo;
 	}
+        
+        @Override
+        public String toString(){
+            return "nome "+nome+"cognome "+ cognome+"tel "+ telefono+"email "+ email+"pass "+ password+"ind "+ indirizzo+"data "+ dataNascita;
+        }
 }

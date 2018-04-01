@@ -1,6 +1,6 @@
 <%-- 
-    Document   : amministratoreSocal
-    Created on : 31-mar-2018, 17.15.30
+    Document   : gruppi
+    Created on : 1-apr-2018, 17.55.58
     Author     : MATTI
 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -11,7 +11,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/hamburger.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/richieste.css">
-        <title>Amministratore</title>
+        <title>Gruppi</title>
     </head>
     <body>
         <ul id="nav"></ul>
@@ -24,15 +24,15 @@
             <li><a href="utenti">Utenti</a></li>
             <li><a href="esci">Esci</a></li>
         </ul>
-        <h1>Richieste</h1>
+        <h1>Gruppi</h1>
         <table>
-            <th>Numero richiesta</th>
+            <th>Nome</th>
             <th>Descrizione</th>
-                <c:forEach var="l" items="${listaRichieste}" varStatus="status" >
+                <c:forEach var="g" items="${listaGruppi}" varStatus="status" >
                 <tr>
-                    <td>${l.getId()}</td>
-                    <td>${l.getRichiesta()}</td>
-                    <td><button id="approvaRichiesta">Approva</button></td>
+                    <td>${g[0]}</td>
+                    <td>${g[1]}</td>
+                    <td><button id="approvaRichiesta">Elimina</button></td>
                 </tr>
             </c:forEach>  
         </table>

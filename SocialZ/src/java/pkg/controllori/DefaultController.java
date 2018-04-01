@@ -14,6 +14,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -49,6 +50,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
+import pkg.db.DB;
 import pkg.db.DBHelper;
 import pkg.oggetti.Messaggio;
 import pkg.oggetti.Richiesta;
@@ -58,7 +60,7 @@ import pkg.oggetti.Utente;
 public class DefaultController {
 
     @Autowired
-    private DBHelper db;
+    private DB db;
 
     @RequestMapping(value = "/")
     public String index(ModelMap map) {
@@ -70,19 +72,36 @@ public class DefaultController {
         return "index";
     }
 
-    @RequestMapping(value = "/provag")
-    public String gg(ModelMap map) {
-        return "newjsp";
+    @RequestMapping(value = "/gruppi")
+    public String gruppi(ModelMap map) {
+        map.addAttribute("listaGruppi", db.getGruppi());
+        return "gruppi";
+    }
+
+    @RequestMapping(value = "/utenti")
+    public String utenti(HttpServletRequest request, ModelMap map) {
+        map.addAttribute("listaUtenti", db.getAllUsers(getUtenteAttivo(request.getCookies())));
+        return "utenti";
+    }
+
+    @RequestMapping(value = "/richiesteAmm")
+    public String richiesteAmm(HttpServletRequest request, ModelMap map) {
+        List<Richiesta> list = db.getRichiesteAmm(getUtenteAttivo(request.getCookies()));
+        map.addAttribute("listaRichieste", list);
+        return "amministratoreSocial";
     }
 
     @RequestMapping(value = "/doLogin", method = RequestMethod.POST)
     public String logIn(HttpServletRequest request, ModelMap map, HttpServletResponse response) {
-        
+
         String email = request.getParameter("email");
         String password = request.getParameter("password");
-        System.out.println("login" + request.getParameter("amm")+email+password);
+        System.out.println("login" + request.getParameter("amm") + email + password);
         if (request.getParameter("amm") != null) {
             if (db.isAmministratoreSocial(email) > -1) {
+                response.addCookie(new Cookie("mittente", email));
+                List<Richiesta> list = db.getRichiesteAmm(email);
+                map.addAttribute("listaRichieste", list);
                 return "amministratoreSocial";
             }
         }
@@ -145,6 +164,9 @@ public class DefaultController {
         map.addAttribute("email", u.getEmail());
         map.addAttribute("password", u.getPassword());
         map.addAttribute("sesso", u.getSesso());
+        map.addAttribute("indirizzo", u.getIndirizzo());
+        map.addAttribute("telefono", u.getTelefono());
+        map.addAttribute("datiPers", u.getPermesso());
         map.addAttribute("listaHobbies", db.getHobbiesPersona(user));
         return "personalArea";
     }
@@ -214,7 +236,7 @@ public class DefaultController {
     }
 
     @RequestMapping(value = "/messages")
-    public String message(HttpServletRequest request,ModelMap map) {
+    public String message(HttpServletRequest request, ModelMap map) {
         List<Utente> lst = db.getAllUsers(getUtenteAttivo(request.getCookies()));
         System.out.println(lst.size());
         map.addAttribute("listaUtenti", lst);
@@ -332,6 +354,33 @@ public class DefaultController {
         db.nuovoHobby(hobby);
     }
 
+    @RequestMapping(value = "/getHobbies", method = RequestMethod.POST)
+    public @ResponseBody
+    String hobbies(@RequestBody String hobbies) {
+        System.out.println(hobbies);
+        List<String> list = db.getHobbies();
+        for (Iterator<String> iter = list.listIterator(); iter.hasNext();) {
+            if (hobbies.contains(iter.next())) {
+                iter.remove();
+            }
+        }
+
+        JSONObject js = new JSONObject();
+        JSONArray ja = new JSONArray();
+        try {
+            for (int i = 0; i < list.size(); i++) {
+                ja.put(list.get(i));
+            }
+            js = new JSONObject();
+            js.put("hobbies", ja);
+        } catch (JSONException ex) {
+            System.out.println("errore json");
+            ex.printStackTrace();
+        }
+        System.out.println(js.toString());
+        return js.toString();
+    }
+
     @RequestMapping(value = "/esci")
     public String esci(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
@@ -349,6 +398,46 @@ public class DefaultController {
             }
         }
         return "redirect:/index";
+    }
+
+    @RequestMapping(value = "/setNewData", method = RequestMethod.POST)
+    public @ResponseBody
+    ResponseEntity aggiungi(@RequestBody String dati) {
+        System.out.println(dati);
+        try {
+            JSONObject ob = new JSONObject(dati);
+            String email = ob.getString("utente");
+            String nome = ob.getString("nome");
+            String cognome = ob.getString("cognome");
+            String password = ob.getString("password");
+            String indirizzo = ob.getString("indirizzo");
+            System.out.println(indirizzo.equals("") ? null : indirizzo);
+            String telefono = "" + ob.getInt("telefono");
+            boolean datiPers = ob.getBoolean("permesso");
+            Utente u;
+            try {
+                JSONArray a = ob.getJSONArray("hobbies");
+                String[] hobbies = new String[a.length()];
+                for (int i = 0; i < a.length(); i++) {
+                    hobbies[i] = a.getString(i);
+                }
+                u = new Utente(email, password, nome, cognome, indirizzo.equals("") ? null : indirizzo, 'X', null, null, telefono.equals("") ? null : telefono, datiPers, hobbies);
+            } catch (Exception ex) {
+                u = new Utente(email, password, nome, cognome, indirizzo.equals("") ? null : indirizzo, 'X', null, null, telefono.equals("") ? null : telefono, datiPers, null);
+            }
+            db.updateUtente(u);
+        } catch (JSONException ex) {
+            Logger.getLogger(DefaultController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return new ResponseEntity<>("OK", new HttpHeaders(), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/eliminaHobby", method = RequestMethod.POST)
+    public @ResponseBody
+    ResponseEntity eliminaHobby(String utente, String hobby) {
+        System.out.println(utente);
+        db.eliminaCollegamentoHobby(utente, hobby);
+        return new ResponseEntity<>("OK", new HttpHeaders(), HttpStatus.OK);
     }
 
     private String getUtenteAttivo(Cookie[] cookies) {
