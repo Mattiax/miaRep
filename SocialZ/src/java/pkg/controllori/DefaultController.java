@@ -2,18 +2,23 @@ package pkg.controllori;
 
 import com.sun.mail.iap.Response;
 import java.awt.Image;
+import java.awt.Point;
+import java.awt.Transparency;
+import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.ComponentColorModel;
+import java.awt.image.DataBuffer;
+import java.awt.image.DataBufferByte;
+import java.awt.image.Raster;
+import java.awt.image.WritableRaster;
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Base64;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
@@ -31,6 +36,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 import javax.swing.ImageIcon;
+import javax.ws.rs.Consumes;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -55,10 +61,12 @@ import pkg.db.DBHelper;
 import pkg.oggetti.Messaggio;
 import pkg.oggetti.Richiesta;
 import pkg.oggetti.Utente;
+import sun.misc.IOUtils;
 
 @Controller
 public class DefaultController {
 
+    private String image;
     @Autowired
     private DB db;
 
@@ -106,6 +114,7 @@ public class DefaultController {
             }
         }
         if (db.isRegistrato(email, password) > -1) {
+            salvaImmagine(db.getUser(email, password).getImage(), email);
             response.addCookie(new Cookie("mittente", email));
             List<Utente> lst = db.getAllUsers(email);
             System.out.println(lst.size());
@@ -438,6 +447,100 @@ public class DefaultController {
         System.out.println(utente);
         db.eliminaCollegamentoHobby(utente, hobby);
         return new ResponseEntity<>("OK", new HttpHeaders(), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/inserisciNuovoHobby", method = RequestMethod.POST)
+    public @ResponseBody
+    ResponseEntity nuovoHobby(int id, String hobby) {
+        System.out.println(id + hobby);
+        db.aggiungiHobby(id, hobby);
+        return new ResponseEntity<>("OK", new HttpHeaders(), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/eliminaGruppo", method = RequestMethod.POST)
+    public @ResponseBody
+    ResponseEntity eliminaGruppo(String nome) {
+        System.out.println(nome);
+        db.rimuoviGruppo(nome);
+        return new ResponseEntity<>("OK", new HttpHeaders(), HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = "/getImmagine", method = RequestMethod.POST)
+    public @ResponseBody String immaginea() {
+        return image;
+    }
+
+    @RequestMapping(value = "/caricaImmagine", method = RequestMethod.POST)
+    public @ResponseBody
+    ResponseEntity immagine(HttpServletRequest request) {
+        System.out.println("aaaa");
+        try {
+            Part im = null;
+            for (Part part : request.getParts()) {
+                if (part.getName().equals("image")) {
+                    im = part;
+                }
+            }
+            if (im != null) {
+                InputStream input = im.getInputStream();
+                ByteArrayOutputStream output = new ByteArrayOutputStream();
+                byte[] buffer = new byte[10240];
+                for (int length = 0; (length = input.read(buffer)) > 0;) {
+                    output.write(buffer, 0, length);
+                }
+                image=Base64.getEncoder().encodeToString(buffer);
+                /**/
+                System.out.println(image);
+                db.setImmagine(buffer, getUtenteAttivo(request.getCookies()));
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return new ResponseEntity<>("OK", new HttpHeaders(), HttpStatus.OK);
+    }
+    
+    //"D:\\Windows\\Desktop\\miaRep" + File.separator+ utente + ".png"
+
+    private void salvaImmagine(byte[] im, String utente) {
+        if (im != null) {
+            try {
+                int width = 1;
+                int height = 2;
+
+                DataBuffer buffer = new DataBufferByte(im, im.length);
+
+//3 bytes per pixel: red, green, blue
+                WritableRaster raster = Raster.createInterleavedRaster(buffer, width, height, 3 * width, 3, new int[]{0, 1, 2}, (Point) null);
+                ColorModel cm = new ComponentColorModel(ColorModel.getRGBdefault().getColorSpace(), false, true, Transparency.OPAQUE, DataBuffer.TYPE_BYTE);
+                BufferedImage image = new BufferedImage(cm, raster, true, null);
+
+                ImageIO.write(image, "png", new File("D:\\Windows\\Desktop\\miaRep" + File.separator+ utente + ".png"));
+            } catch (Exception e) {
+
+            }
+        }
+    }
+
+
+    @RequestMapping(value = "/mailList")
+    public @ResponseBody
+    Object mailList(@RequestBody String hobby) {
+        try {
+            String json;
+            try {
+                json = hobby.substring(hobby.indexOf("{"));
+            } catch (StringIndexOutOfBoundsException ei) {
+                System.out.println("error");
+                json = hobby;
+            }
+            JSONObject js = new JSONObject(json);
+            System.out.println("hobby " + js);
+            List<String> list = db.getMailList(js.getString("hobby"));
+            return list;
+        } catch (JSONException ex) {
+            Logger.getLogger(DefaultController.class.getName()).log(Level.SEVERE, null, ex);
+            return "";
+        }
     }
 
     private String getUtenteAttivo(Cookie[] cookies) {

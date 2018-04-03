@@ -31,7 +31,11 @@
             <div class="header">
                 <img id="profile-picture" src="img/no_photo.png"/>
                 <h class="header-text">${nome} ${cognome}</h>
+                <div id="buttonContainer">
+                <button class="fabImg" id="cambiaImmagine"><img id="newImg" src="img/img.png" width="30"></button>
+                </div>
             </div>
+                <button class="ciao" id="cambiaImmagine"></button>
             <button class="fab" id="modify">
                 <img id="fabImg" src="img/modify_pencil.png" width="30">
             </button>

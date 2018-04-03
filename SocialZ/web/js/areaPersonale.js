@@ -14,6 +14,31 @@ $(document).ready(function () {
             break;
         }
     }
+    $(".ciao").click(function (){
+       $.ajax({
+                url: 'getImmagine',
+                type: 'POST',
+                //data: formData,
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    alert(data)
+                    $("#profile-picture").attr("src","data:image/jpeg;base64,"+data);
+                    alert()
+                },
+                statusCode: {
+                    404: function (content) {
+                        alert('cannot find resource');
+                    },
+                    500: function (content) {
+                        alert('internal server error');
+                    }
+                },
+                error: function (req, status, errorObj) {
+                    alert(status + errorObj)
+                }
+            }); 
+    });
     $(".passVisibility").click(function () {
         if ($(".passVisibility").attr("id") === "open") {
             $(".passVisibility").attr("src", "img/closed_eye.png");
@@ -25,6 +50,39 @@ $(document).ready(function () {
             $(".passVisibility").attr("id", "open");
         }
 
+    });
+    $(".fabImg").click(function () {
+        alert($(".fabImg").attr("id"))
+        if ($(".fabImg").attr("id") === "cambiaImmagine") {
+            $("#buttonContainer").append("<input type=\"file\"/ accept=\"image/*\" id=\"immagine\"/>");
+            $(".fabImg").attr("id", "cambiaImmagineDone");
+        } else {
+            var formData = new FormData();
+            formData.append('image', $('#immagine')[0].files[0]);
+            alert(formData)
+            $.ajax({
+                url: 'caricaImmagine',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    $(".profile-picture").attr("src","img/"+utente+".png");
+                    alert("Richiesta inoltrata con successo");
+                },
+                statusCode: {
+                    404: function (content) {
+                        alert('cannot find resource');
+                    },
+                    500: function (content) {
+                        alert('internal server error');
+                    }
+                },
+                error: function (req, status, errorObj) {
+                    alert(status + errorObj)
+                }
+            });
+        }
     });
     $(".fab").click(function () {
         if ($(".fab").attr("id") === "modify") {
@@ -50,7 +108,8 @@ $(document).ready(function () {
         if ($(".nuovoHobby").attr("value") === "+") {
             getHobbies();
             $(".fab").addClass("disabled");
-        } else { $(".fab").addClass("disabled");
+        } else {
+            $(".fab").addClass("disabled");
             $(".fab").removeClass("disabled");
             hobbies = $("#selectHobby").val();
             for (var i in hobbies) {
@@ -61,7 +120,7 @@ $(document).ready(function () {
         }
     });
     $(".eliminaHobby").click(function () {
-        var hobby=$(this).parent().children();
+        var hobby = $(this).parent().children();
         eliminaHobby(hobby);
     });
 });
@@ -108,7 +167,7 @@ function cambioDati() {
     json += ",nome:" + $("#nome").val();
     json += ",cognome:" + $("#cognome").val();
     json += ",password:" + $("#password").val();
-    var temp =$("#telefono").val().toString();
+    var temp = $("#telefono").val().toString();
     if (temp === "") {
         json += ",telefono:\"\"";
     } else {
@@ -153,11 +212,11 @@ function cambioDati() {
     });
 }
 
-function eliminaHobby(hobby){
+function eliminaHobby(hobby) {
     $.ajax({
         url: 'eliminaHobby',
         type: 'POST',
-        data: {utente:utente,hobby:hobby.text()},
+        data: {utente: utente, hobby: hobby.text()},
         success: function (data) {
             alert("Dati modificati con successo");
             hobby.remove();

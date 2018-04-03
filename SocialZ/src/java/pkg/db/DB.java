@@ -66,4 +66,10 @@ public interface DB {
       public void eliminaCollegamentoHobby(String utente,String hobby);
       
       public List<Richiesta> getRichiesteAmm(String user);
+      
+      public void aggiungiHobby(int id, String hobby);
+      
+      public void rimuoviGruppo(String gruppo);
+      
+      public void setImmagine(byte[] image, String utente);
 }

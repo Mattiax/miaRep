@@ -117,6 +117,7 @@
                         <span>Non accetto</span>
                     </label>
                 </div>
+                <input type="button" id="ciao" value="asds">
             </fieldset>
             <div class="form-actions">
                 <button class="form-btn" type="submit">Iscriviti</button>

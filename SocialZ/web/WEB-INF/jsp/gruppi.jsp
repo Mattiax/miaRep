@@ -11,6 +11,8 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/hamburger.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/richieste.css">
+        <script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-3.3.1.js"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/js/richiesteAmm.js"></script>
         <title>Gruppi</title>
     </head>
     <body>
@@ -30,9 +32,9 @@
             <th>Descrizione</th>
                 <c:forEach var="g" items="${listaGruppi}" varStatus="status" >
                 <tr>
-                    <td>${g[0]}</td>
+                    <td class="nome">${g[0]}</td>
                     <td>${g[1]}</td>
-                    <td><button id="approvaRichiesta">Elimina</button></td>
+                    <td><button class="eliminaGruppo">Elimina</button></td>
                 </tr>
             </c:forEach>  
         </table>

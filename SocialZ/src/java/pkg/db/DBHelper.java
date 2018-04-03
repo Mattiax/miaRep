@@ -5,6 +5,7 @@
  */
 package pkg.db;
 
+import java.awt.image.BufferedImage;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -107,7 +108,8 @@ public class DBHelper implements DB {
 
     public Utente getUser(String email, String password) {
         System.out.println(email + "   " + password);
-        String sql = "SELECT * FROM PERSONA WHERE email = '" + email + "' ";
+        String sql = "SELECT * FROM PERSONA "
+                + "WHERE email = '" + email + "' ";
         if (!password.isEmpty()) {
             sql += "AND password = '" + password + "';";
         }
@@ -120,7 +122,7 @@ public class DBHelper implements DB {
                         rs.getString("indirizzo"),
                         rs.getString("sesso").charAt(0),
                         rs.getString("dataNascita"),
-                        null,
+                        rs.getBytes("foto"),
                         rs.getString("telefono"),
                         rs.getBoolean("permesso"),
                         null) : null);
@@ -302,12 +304,13 @@ public class DBHelper implements DB {
     }
 
     public List<String> getMailList(String hobby) {
-        String sql = "SELECT ELENCOHOBBIES.email FROM ELENCOHOBBIES,PERSONA "
+        String sql = "SELECT ELENCOHOBBIES.email "
+                + "FROM ELENCOHOBBIES,PERSONA "
                 + "WHERE hobby = '" + hobby + "' AND ELENCOHOBBIES.email=PERSONA.email AND permesso = 1;";
         List<String> ris = jdbcTemplate.query(sql, new RowMapper<String>() {
             @Override
             public String mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return rs.getString("ELENCOHOBBIES.email");
+                return rs.getString("email");
             }
         });
         return ris;
@@ -382,11 +385,24 @@ public class DBHelper implements DB {
         return ris;
     }
 
-    public void approvaRichiestaAmm(int id, String richiedente, String gruppo) {
-        String sql = "DELETE FROM RICHIESTA "
-                + "WHERE idRichiesta=?;";
+    public void aggiungiHobby(int id, String hobby) {
+        String sql = "INSERT INTO HOBBIES (hobby) VALUES(?)";
+        jdbcTemplate.update(sql, hobby);
+        sql = "DELETE FROM RICHIESTAAMMINISTRATORES "
+                + "WHERE idRichiesta = ?";
         jdbcTemplate.update(sql, id);
-        sql = "INSERT INTO PARTECIPANTI (nome,email) VALUES(?,?)";
-        jdbcTemplate.update(sql, gruppo, richiedente);
+    }
+    
+    public void setImmagine(byte[] image, String utente) {
+        String sql = "UPDATE PERSONA "
+                + "SET foto = '"+image+"' "
+                + "WHERE email = '"+utente+"';";
+        jdbcTemplate.execute(sql);
+    }
+    
+    public void rimuoviGruppo(String gruppo) {
+        String sql = "DELETE FROM GRUPPO "
+                + "WHERE nome = ?";
+        jdbcTemplate.update(sql, gruppo);
     }
 }

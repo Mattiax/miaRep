@@ -11,6 +11,8 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/hamburger.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/richieste.css">
+         <script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-3.3.1.js"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/js/richiesteAmm.js"></script>
         <title>Amministratore</title>
     </head>
     <body>
@@ -30,9 +32,9 @@
             <th>Descrizione</th>
                 <c:forEach var="l" items="${listaRichieste}" varStatus="status" >
                 <tr>
-                    <td>${l.getId()}</td>
-                    <td>${l.getRichiesta()}</td>
-                    <td><button id="approvaRichiesta">Approva</button></td>
+                    <td class="nRichiesta">${l.getId()}</td>
+                    <td class="richiesta">${l.getRichiesta()}</td>
+                    <td><button class="approvaRichiesta">Approva</button></td>
                 </tr>
             </c:forEach>  
         </table>

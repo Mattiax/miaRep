@@ -20,7 +20,8 @@ table{
     text-indent: 50px;
 }
 
-.fab{
+.fab,
+.fabImg{
     background-color:#EA4335;
     font-weight:300;
     color:white;
@@ -61,6 +62,7 @@ table{
     margin-top:15px;
 }
 
+.fabImg,
 .fab:hover{
     box-shadow:0px 4px 4px rgba(0,0,0,0.5);
 }
@@ -72,9 +74,9 @@ table{
 }
 
 #profile-picture{
-    height:100px;
-    border-radius:50%;
-    width:100px;
+  
+    border-radius:10%;
+  
 }
 
 .info{
