@@ -13,6 +13,7 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/richieste.css">
          <script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-3.3.1.js"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/richiesteAmm.js"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/js/imageLoaderHamburger.js"></script>
         <title>Amministratore</title>
     </head>
     <body>
@@ -21,6 +22,7 @@
         <label id="trigger" for="menu-toggle"></label>
         <label id="burger" for="menu-toggle"></label>
         <ul id="menu">
+            <li><img id="immagineProfilo" width="200" height="200" src="img/no_photo.png"></li>
             <li><a href="richiesteAmm">Richieste</a></li>
             <li><a href="gruppi">Gruppi</a></li>
             <li><a href="utenti">Utenti</a></li>

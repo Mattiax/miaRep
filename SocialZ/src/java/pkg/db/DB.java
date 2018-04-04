@@ -71,5 +71,5 @@ public interface DB {
       
       public void rimuoviGruppo(String gruppo);
       
-      public void setImmagine(byte[] image, String utente);
+      public void setImmagine(String image, String utente);
 }

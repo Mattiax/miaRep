@@ -15,7 +15,7 @@ public class Utente {
 	private String nome, cognome, telefono, email, password, indirizzo, dataNascita;
 	private char sesso;
 	private String[] hobbies;
-	private byte[] image;
+	private String image;
 	private boolean acc;
 
 	public Utente() {
@@ -29,7 +29,7 @@ public class Utente {
 		this.hobbies = null;
 	}
 
-	public Utente(String email, String password, String nome, String cognome, String indirizzo, char sesso, String dataNascita, byte[] image, String telefono, boolean acc, String[] hobbies) {
+	public Utente(String email, String password, String nome, String cognome, String indirizzo, char sesso, String dataNascita, String image, String telefono, boolean acc, String[] hobbies) {
 		this.nome = nome;
 		this.cognome = cognome;
 		this.sesso = sesso;
@@ -43,11 +43,11 @@ public class Utente {
 		this.image = image;
 	}
 
-	public byte[] getImage() {
+	public String getImage() {
 		return image;
 	}
 
-	public void setImage(byte[] image) {
+	public void setImage(String image) {
 		this.image = image;
 	}
 

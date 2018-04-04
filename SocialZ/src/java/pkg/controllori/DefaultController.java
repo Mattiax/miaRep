@@ -114,7 +114,8 @@ public class DefaultController {
             }
         }
         if (db.isRegistrato(email, password) > -1) {
-            salvaImmagine(db.getUser(email, password).getImage(), email);
+            image=db.getUser(email, password).getImage();
+            //salvaImmagine(db.getUser(email, password).getImage(), email);
             response.addCookie(new Cookie("mittente", email));
             List<Utente> lst = db.getAllUsers(email);
             System.out.println(lst.size());
@@ -488,10 +489,8 @@ public class DefaultController {
                 for (int length = 0; (length = input.read(buffer)) > 0;) {
                     output.write(buffer, 0, length);
                 }
-                image=Base64.getEncoder().encodeToString(buffer);
-                /**/
-                System.out.println(image);
-                db.setImmagine(buffer, getUtenteAttivo(request.getCookies()));
+                image=Base64.getEncoder().encodeToString(output.toByteArray());
+                db.setImmagine(image, getUtenteAttivo(request.getCookies()));
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -501,7 +500,7 @@ public class DefaultController {
     
     //"D:\\Windows\\Desktop\\miaRep" + File.separator+ utente + ".png"
 
-    private void salvaImmagine(byte[] im, String utente) {
+   /* private void salvaImmagine(byte[] im, String utente) {
         if (im != null) {
             try {
                 int width = 1;
@@ -519,12 +518,12 @@ public class DefaultController {
 
             }
         }
-    }
+    }*/
 
 
     @RequestMapping(value = "/mailList")
     public @ResponseBody
-    Object mailList(@RequestBody String hobby) {
+    String mailList(@RequestBody String hobby) {
         try {
             String json;
             try {
@@ -534,13 +533,21 @@ public class DefaultController {
                 json = hobby;
             }
             JSONObject js = new JSONObject(json);
-            System.out.println("hobby " + js);
+            
             List<String> list = db.getMailList(js.getString("hobby"));
-            return list;
+            System.out.println("hobby " + list.toString());
+            return list.toString();
         } catch (JSONException ex) {
             Logger.getLogger(DefaultController.class.getName()).log(Level.SEVERE, null, ex);
             return "";
         }
+    }
+    
+    @RequestMapping(value = "/getHobbiesService", method = RequestMethod.POST)
+    public @ResponseBody
+    String hobbiesService() {
+        List<String> list = db.getHobbies();
+        return list.toString();
     }
 
     private String getUtenteAttivo(Cookie[] cookies) {

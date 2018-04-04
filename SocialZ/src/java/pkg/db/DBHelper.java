@@ -122,7 +122,7 @@ public class DBHelper implements DB {
                         rs.getString("indirizzo"),
                         rs.getString("sesso").charAt(0),
                         rs.getString("dataNascita"),
-                        rs.getBytes("foto"),
+                        rs.getString("foto"),
                         rs.getString("telefono"),
                         rs.getBoolean("permesso"),
                         null) : null);
@@ -393,7 +393,7 @@ public class DBHelper implements DB {
         jdbcTemplate.update(sql, id);
     }
     
-    public void setImmagine(byte[] image, String utente) {
+    public void setImmagine(String image, String utente) {
         String sql = "UPDATE PERSONA "
                 + "SET foto = '"+image+"' "
                 + "WHERE email = '"+utente+"';";

@@ -14,31 +14,7 @@ $(document).ready(function () {
             break;
         }
     }
-    $(".ciao").click(function (){
-       $.ajax({
-                url: 'getImmagine',
-                type: 'POST',
-                //data: formData,
-                contentType: false,
-                processData: false,
-                success: function (data) {
-                    alert(data)
-                    $("#profile-picture").attr("src","data:image/jpeg;base64,"+data);
-                    alert()
-                },
-                statusCode: {
-                    404: function (content) {
-                        alert('cannot find resource');
-                    },
-                    500: function (content) {
-                        alert('internal server error');
-                    }
-                },
-                error: function (req, status, errorObj) {
-                    alert(status + errorObj)
-                }
-            }); 
-    });
+    loadImmagineProfilo();
     $(".passVisibility").click(function () {
         if ($(".passVisibility").attr("id") === "open") {
             $(".passVisibility").attr("src", "img/closed_eye.png");
@@ -52,14 +28,12 @@ $(document).ready(function () {
 
     });
     $(".fabImg").click(function () {
-        alert($(".fabImg").attr("id"))
         if ($(".fabImg").attr("id") === "cambiaImmagine") {
             $("#buttonContainer").append("<input type=\"file\"/ accept=\"image/*\" id=\"immagine\"/>");
             $(".fabImg").attr("id", "cambiaImmagineDone");
         } else {
             var formData = new FormData();
             formData.append('image', $('#immagine')[0].files[0]);
-            alert(formData)
             $.ajax({
                 url: 'caricaImmagine',
                 type: 'POST',
@@ -67,8 +41,10 @@ $(document).ready(function () {
                 contentType: false,
                 processData: false,
                 success: function (data) {
-                    $(".profile-picture").attr("src","img/"+utente+".png");
-                    alert("Richiesta inoltrata con successo");
+                    $(".profile-picture").attr("src", "img/" + utente + ".png");
+                    $("#immagine").remove();
+                    alert("Immagine cambiata con successo");
+                    location.reload();
                 },
                 statusCode: {
                     404: function (content) {
@@ -232,6 +208,31 @@ function eliminaHobby(hobby) {
         },
         error: function (req, status, errorObj) {
             alert(status + errorObj);
+        }
+    });
+}
+
+function loadImmagineProfilo() {
+    $.ajax({
+        url: 'getImmagine',
+        type: 'POST',
+        contentType: false,
+        processData: false,
+        success: function (data) {
+            if( data !== ""){
+                $("#profile-picture").attr("src", "data:image/jpeg;base64," + data);
+            }
+        },
+        statusCode: {
+            404: function (content) {
+                alert('cannot find resource');
+            },
+            500: function (content) {
+                alert('internal server error');
+            }
+        },
+        error: function (req, status, errorObj) {
+            alert(status + errorObj)
         }
     });
 }

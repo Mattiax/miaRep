@@ -13,6 +13,7 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/areaPersonale.css">
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-3.3.1.js"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/areaPersonale.js"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/js/imageLoaderHamburger.js"></script>
         <title>Area personale</title>
     </head>
     <body>
@@ -21,7 +22,7 @@
         <label id="trigger" for="menu-toggle"></label>
         <label id="burger" for="menu-toggle"></label>
         <ul id="menu">
-            <li><img  width="50" src="img/no_photo.png"><a id="immagineProfilo" href="personalArea" >Profilo</a></li>
+            <li><img id="immagineProfilo" width="200" height="200" src="img/no_photo.png"><a href="personalArea" >Profilo</a></li>
             <li><a href="messages">Messaggi</a></li>
             <li><a href="messaggiGruppo">Gruppi</a></li>
             <li><a href="richieste">Richieste</a></li>
@@ -29,13 +30,12 @@
         </ul>
         <div class="container">
             <div class="header">
-                <img id="profile-picture" src="img/no_photo.png"/>
+                <img id="profile-picture" width="200" height="200" src="img/no_photo.png"/>
                 <h class="header-text">${nome} ${cognome}</h>
                 <div id="buttonContainer">
                 <button class="fabImg" id="cambiaImmagine"><img id="newImg" src="img/img.png" width="30"></button>
                 </div>
             </div>
-                <button class="ciao" id="cambiaImmagine"></button>
             <button class="fab" id="modify">
                 <img id="fabImg" src="img/modify_pencil.png" width="30">
             </button>

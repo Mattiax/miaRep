@@ -1,7 +1,9 @@
 package com.example.matti.socialzandroid;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.json.JSONObject;
 
@@ -11,11 +13,21 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-class DoPOST extends AsyncTask<String,String,String> {
+class DoPOST extends AsyncTask {
+
+    private Context c;
+
+    DoPOST(Context c){
+        this.c=c;
+    }
 
     @Override
-    protected String doInBackground(String... strings) {
+    protected Object doInBackground(Object... objects) {
+        String hobby=String.valueOf(objects[0]);
         try {
             URL url = new URL("http://192.168.1.2:8080/SocialZ/mailList");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -26,7 +38,7 @@ class DoPOST extends AsyncTask<String,String,String> {
             conn.setDoInput(true);
 
             JSONObject jsonParam = new JSONObject();
-            jsonParam.put("hobby", "pallavolo");
+            jsonParam.put("hobby", hobby);
 
             Log.i("JSON", jsonParam.toString());
             DataOutputStream os = new DataOutputStream(conn.getOutputStream());
@@ -41,18 +53,39 @@ class DoPOST extends AsyncTask<String,String,String> {
 
             InputStream in=conn.getInputStream();
             BufferedReader rd = new BufferedReader(new InputStreamReader(in));
-            StringBuilder response = new StringBuilder(); // or StringBuffer if Java version 5+
-            String line;
-            while ((line = rd.readLine()) != null) {
-                response.append(line);
-                response.append('\r');
+
+            String result=rd.readLine();
+            Log.d("ris",result);
+            if(result.length()<3){
+                MailListHobby mo = new MailListHobby(null, hobby);
+                List<MailListHobby> ret = new ArrayList<>();
+                ret.add(mo);
+                return ret;
+            }else {
+                result = result.substring(1, result.length() - 1);//.replaceAll("\"","");
+                List<String> ris = Arrays.asList(result.split("\\s*,\\s*"));
+                Log.d("list ris", "" + ris.size());
+                rd.close();
+                conn.disconnect();
+                MailListHobby mo = new MailListHobby(ris, hobby);
+                List<MailListHobby> ret = new ArrayList<>();
+                ret.add(mo);
+                return ret;
             }
-            rd.close();
-            conn.disconnect();
-            return response.toString();
         } catch (Exception e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    @Override
+    protected void onPostExecute(Object s) {
+        super.onPostExecute(s);
+        List<MailListHobby> ris=(List<MailListHobby>) s;
+        if(ris!=null) {
+            MainActivity.expandableListAdapter = new ListAdapter(c, ris);
+            Log.d("List", "" + ((List<MailListHobby>) s).size());
+            MainActivity.listView.setAdapter(MainActivity.expandableListAdapter);
         }
     }
 }

@@ -13,6 +13,7 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/hamburger.css">
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-3.3.1.js"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/messaggi.js"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/js/imageLoaderHamburger.js"></script>
         <title>Chat</title>
     </head>
 
@@ -22,7 +23,7 @@
         <label id="trigger" for="menu-toggle"></label>
         <label id="burger" for="menu-toggle"></label>
         <ul id="menu">
-            <li><img  width="50" src="img/no_photo.png"><a id="immagineProfilo" href="personalArea" >Profilo</a></li>
+            <li><img id="immagineProfilo" width="200" height="200" src="img/no_photo.png"><a href="personalArea" >Profilo</a></li>
             <li><a href="messages">Messaggi</a></li>
             <li><a href="messaggiGruppo">Gruppi</a></li>
             <li><a href="richieste">Richieste</a></li>

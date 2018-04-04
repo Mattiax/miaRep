@@ -138,7 +138,7 @@ function addRowHandlers() {
 }
 
 function showMessages(email) {
-     $("#componiMessaggio").removeClass("disabled");
+    $("#componiMessaggio").addClass("disabled");
     $("#storicoChat").text("");
     $.ajax({
         url: 'getConvGruppo',
@@ -148,10 +148,12 @@ function showMessages(email) {
                 $('#storicoChat').append("<p>Non fai parte di questo gruppo</p><p><button id=\"partecipaBtn\">PARTECIPA</button></p>");
             } else {
                 var obj = jQuery.parseJSON(data);
-                if($.isEmptyObject(obj)){
+                if ($.isEmptyObject(obj)) {
                     $('#storicoChat').append("<p>Hai già richiesto la partecipazione a questo gruppo</p>");
+                } else {
+                    $("#componiMessaggio").removeClass("disabled");
+                    makeTable(obj);
                 }
-                makeTable(obj);
             }
         },
         statusCode: {
