@@ -1,42 +1,26 @@
 package pkg.controllori;
 
-import com.sun.mail.iap.Response;
-import java.awt.Image;
-import java.awt.Point;
-import java.awt.Transparency;
-import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
-import java.awt.image.ComponentColorModel;
-import java.awt.image.DataBuffer;
-import java.awt.image.DataBufferByte;
-import java.awt.image.Raster;
-import java.awt.image.WritableRaster;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Base64;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
-import javax.imageio.ImageIO;
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
-import javax.swing.ImageIcon;
-import javax.ws.rs.Consumes;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,27 +30,20 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.multipart.MultipartFile;
 import pkg.db.DB;
-import pkg.db.DBHelper;
 import pkg.oggetti.Messaggio;
 import pkg.oggetti.Richiesta;
 import pkg.oggetti.Utente;
-import sun.misc.IOUtils;
 
 @Controller
 public class DefaultController {
 
-    private String image;
+    private String percorso = "D:\\Windows\\Desktop\\miaRep\\SocialZ\\foto";
+
     @Autowired
     private DB db;
 
@@ -101,28 +78,42 @@ public class DefaultController {
 
     @RequestMapping(value = "/doLogin", method = RequestMethod.POST)
     public String logIn(HttpServletRequest request, ModelMap map, HttpServletResponse response) {
-
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         System.out.println("login" + request.getParameter("amm") + email + password);
-        if (request.getParameter("amm") != null) {
-            if (db.isAmministratoreSocial(email) > -1) {
-                response.addCookie(new Cookie("mittente", email));
-                List<Richiesta> list = db.getRichiesteAmm(email);
-                map.addAttribute("listaRichieste", list);
-                return "amministratoreSocial";
+        try {
+            Utente u = db.getUser(email, password);
+            if (db.isRegistrato(email, password) > -1) {
+                if (u != null) {
+                    response.addCookie(new Cookie("mittente", email));
+                    if (u.getImage() != null) {
+                        eliminaImmagine(u.getEmail());
+                        scriviImmagineTemp(u.getImage(), u.getEmail());
+                    }
+                    if (request.getParameter("amm") != null) {
+                        if (db.isAmministratoreSocial(email) > -1) {
+
+                            List<Richiesta> list = db.getRichiesteAmm(email);
+                            map.addAttribute("listaRichieste", list);
+                            return "amministratoreSocial";
+                        } else {
+                            return "index";
+                        }
+                    } else {
+                        List<Utente> lst = db.getAllUsers(email);
+                        System.out.println(lst.size());
+                        map.addAttribute("listaUtenti", lst);
+                        return "redirect:/messages";
+                    }
+                } else {
+                    return "sigin";
+                }
+            } else {
+                return "sigin";
             }
-        }
-        if (db.isRegistrato(email, password) > -1) {
-            image=db.getUser(email, password).getImage();
-            //salvaImmagine(db.getUser(email, password).getImage(), email);
-            response.addCookie(new Cookie("mittente", email));
-            List<Utente> lst = db.getAllUsers(email);
-            System.out.println(lst.size());
-            map.addAttribute("listaUtenti", lst);
-            return "messages";
-        } else {
-            return "index";
+        } catch (Exception e) {
+            map.addAttribute("errore","Errore imprevisto \n"+e.getMessage());
+            return "errore";
         }
     }
 
@@ -247,6 +238,7 @@ public class DefaultController {
 
     @RequestMapping(value = "/messages")
     public String message(HttpServletRequest request, ModelMap map) {
+        System.out.println("aaaaaa");
         List<Utente> lst = db.getAllUsers(getUtenteAttivo(request.getCookies()));
         System.out.println(lst.size());
         map.addAttribute("listaUtenti", lst);
@@ -322,24 +314,18 @@ public class DefaultController {
 
     @RequestMapping(value = "/doSignin", method = RequestMethod.POST)
     public String signIn(HttpServletRequest request, ModelMap map) {
-        /*Part s;
-        try {
-            s = request.getPart("immagine");
-            InputStream imageInputStream = s.getInputStream();
-       //read imageInputStream
-       
-       s.write("img");
-            String fileName = Paths.get(s.getSubmittedFileName()).getFileName().toString();
-        System.out.println(fileName);
-        } catch (Exception ex) {
-            Logger.getLogger(DefaultController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-         */
-        System.out.println("reg   " + request.getParameterValues("hobbies")[0]);
+        //System.out.println("reg   " + request.getParameterValues("hobbies")[0]);
         Utente temp = new Utente(request.getParameter("email"), request.getParameter("password"),
                 request.getParameter("nome"), request.getParameter("cognome"), request.getParameter("indirizzo").equals("") ? null : request.getParameter("indirizzo"),
                 request.getParameter("sesso").charAt(0), request.getParameter("dataNascita"), null, request.getParameter("telefono").equals("") ? null : request.getParameter("telefono"), (request.getParameter("privacy").equals("T") ? true : false), request.getParameterValues("hobbies"));
-        db.sigIn(temp);
+        try {
+            db.sigIn(temp);
+        } catch (Exception e) {
+            if (e.getMessage().contains("SQLITE_CONSTRAINT_PRIMARYKEY")) {
+                map.addAttribute("errore", "Sembra che questa email sia già registrata");
+                return "errore";
+            }
+        }
         return "index";
     }
 
@@ -394,6 +380,7 @@ public class DefaultController {
     @RequestMapping(value = "/esci")
     public String esci(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
+        eliminaImmagine(getUtenteAttivo(request.getCookies()));
         if (session != null) {
             System.out.println("logout");
             session.invalidate();
@@ -465,10 +452,11 @@ public class DefaultController {
         db.rimuoviGruppo(nome);
         return new ResponseEntity<>("OK", new HttpHeaders(), HttpStatus.OK);
     }
-    
+
     @RequestMapping(value = "/getImmagine", method = RequestMethod.POST)
-    public @ResponseBody String immaginea() {
-        return image;
+    public @ResponseBody
+    String immaginea(HttpServletRequest request) {
+        return getImmagineProfilo(getUtenteAttivo(request.getCookies()));
     }
 
     @RequestMapping(value = "/caricaImmagine", method = RequestMethod.POST)
@@ -489,37 +477,18 @@ public class DefaultController {
                 for (int length = 0; (length = input.read(buffer)) > 0;) {
                     output.write(buffer, 0, length);
                 }
-                image=Base64.getEncoder().encodeToString(output.toByteArray());
-                db.setImmagine(image, getUtenteAttivo(request.getCookies()));
+                String utente = getUtenteAttivo(request.getCookies());
+                String immagine = Base64.getEncoder().encodeToString(output.toByteArray());
+                eliminaImmagine(utente);
+                System.out.println("FATTO REG ORA FOTO FUNZIONE" + immagine);
+                scriviImmagineTemp(immagine, utente);
+                db.setImmagine(immagine, getUtenteAttivo(request.getCookies()));
             }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
         return new ResponseEntity<>("OK", new HttpHeaders(), HttpStatus.OK);
     }
-    
-    //"D:\\Windows\\Desktop\\miaRep" + File.separator+ utente + ".png"
-
-   /* private void salvaImmagine(byte[] im, String utente) {
-        if (im != null) {
-            try {
-                int width = 1;
-                int height = 2;
-
-                DataBuffer buffer = new DataBufferByte(im, im.length);
-
-//3 bytes per pixel: red, green, blue
-                WritableRaster raster = Raster.createInterleavedRaster(buffer, width, height, 3 * width, 3, new int[]{0, 1, 2}, (Point) null);
-                ColorModel cm = new ComponentColorModel(ColorModel.getRGBdefault().getColorSpace(), false, true, Transparency.OPAQUE, DataBuffer.TYPE_BYTE);
-                BufferedImage image = new BufferedImage(cm, raster, true, null);
-
-                ImageIO.write(image, "png", new File("D:\\Windows\\Desktop\\miaRep" + File.separator+ utente + ".png"));
-            } catch (Exception e) {
-
-            }
-        }
-    }*/
-
 
     @RequestMapping(value = "/mailList")
     public @ResponseBody
@@ -533,7 +502,7 @@ public class DefaultController {
                 json = hobby;
             }
             JSONObject js = new JSONObject(json);
-            
+
             List<String> list = db.getMailList(js.getString("hobby"));
             System.out.println("hobby " + list.toString());
             return list.toString();
@@ -542,7 +511,7 @@ public class DefaultController {
             return "";
         }
     }
-    
+
     @RequestMapping(value = "/getHobbiesService", method = RequestMethod.POST)
     public @ResponseBody
     String hobbiesService() {
@@ -561,4 +530,39 @@ public class DefaultController {
         return "";
     }
 
+    private void scriviImmagineTemp(String immagine, String utente) {
+        System.out.println("carico ");
+        File file = new File(percorso + utente + ".txt");
+        BufferedWriter writer;
+        try {
+            writer = new BufferedWriter(new FileWriter(file));
+            writer.write(immagine);
+            writer.flush();
+            writer.close();
+        } catch (IOException ex) {
+            Logger.getLogger(DefaultController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    private String getImmagineProfilo(String utente) {
+        String foto = "";
+        try {
+            BufferedReader in = new BufferedReader(new FileReader(percorso + utente + ".txt"));
+            foto = in.readLine();
+            in.close();
+            System.out.println("getfoto");
+        } catch (Exception x) {
+            Logger.getLogger(DefaultController.class.getName()).log(Level.SEVERE, null, x);
+        }
+        return foto;
+    }
+
+    private void eliminaImmagine(String utente) {
+        try {
+            new File(percorso + utente + ".txt").delete();
+        } catch (Exception e) {
+
+        }
+    }
 }

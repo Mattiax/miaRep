@@ -96,11 +96,6 @@
                     <label class="form-element-label">Conferma password</label>
                     <small id="eqPass2"></small>
                 </div>
-                <div class="form-element">
-                    <input id="immagine" name="immagine" class="form-element-field" type="file" />
-                    <div class="form-element-bar"></div>
-                    <label class="form-element-label">Immagine</label>
-                </div>
             </fieldset>
             <fieldset class="form-fieldset">
                 <legend class="form-legend">Visibilità dati non sensibili</legend>
@@ -117,7 +112,6 @@
                         <span>Non accetto</span>
                     </label>
                 </div>
-                <input type="button" id="ciao" value="asds">
             </fieldset>
             <div class="form-actions">
                 <button class="form-btn" type="submit">Iscriviti</button>

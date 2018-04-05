@@ -24,7 +24,7 @@
         <h1>Accedi</h1>
         <form class="form-card" id="logIn" action="doLogin" method="POST">  
             <fieldset class="form-fieldset">
-                <legend class="form-legend">Dati sensibili</legend>
+                <legend class="form-legend">Accedi</legend>
 
                 <div class="form-element">
                     <input id="email" name="email" class="form-element-field" type="email" placeholder=" " required/>

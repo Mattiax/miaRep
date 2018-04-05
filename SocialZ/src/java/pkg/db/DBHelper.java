@@ -51,6 +51,7 @@ public class DBHelper implements DB {
     private void collegaHobby(String user, String[] hobby) {
         String sql = "INSERT INTO ELENCOHOBBIES(email,hobby) "
                 + " VALUES (?,?);";
+        if(hobby!=null)
         for (int i = 0; i < hobby.length; i++) {
             jdbcTemplate.update(sql, user, hobby[i]);
         }

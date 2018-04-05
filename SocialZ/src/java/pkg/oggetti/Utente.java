@@ -5,6 +5,8 @@
  */
 package pkg.oggetti;
 
+import java.util.Base64;
+
 
 /**
  *

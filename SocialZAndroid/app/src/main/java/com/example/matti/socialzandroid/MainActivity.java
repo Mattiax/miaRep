@@ -14,9 +14,16 @@ import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
 import org.json.JSONObject;
+import org.ksoap2.SoapEnvelope;
+import org.ksoap2.serialization.SoapObject;
+import org.ksoap2.serialization.SoapPrimitive;
+import org.ksoap2.serialization.SoapSerializationEnvelope;
+import org.ksoap2.transport.HttpTransportSE;
+import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -106,4 +113,25 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-}
+    private class LongNetworkOperation extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            SoapObject so = new SoapObject("","");//name space nome web service //name webmethod
+            so.addProperty("name", "Arjun");
+            SoapSerializationEnvelope sse = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+            sse.setOutputSoapObject(so);
+            HttpTransportSE hse = new HttpTransportSE("http://192.168.1.2:8080/SocialZ/getHobbiesService");
+
+            try {
+                hse.call(action, sse);//action linsieme di namespace e name
+                SoapPrimitive primitive = (SoapPrimitive)sse.getResponse();
+                Toast.makeText(getApplicationContext(),primitive.toString() , Toast.LENGTH_SHORT);
+            } catch(IOException e) {
+                e.printStackTrace();
+            } catch (XmlPullParserException e) {
+                e.printStackTrace();
+            }
+        }
+    }
