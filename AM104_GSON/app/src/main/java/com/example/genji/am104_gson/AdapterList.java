@@ -34,32 +34,27 @@ public class AdapterList extends BaseExpandableListAdapter {
     }
 
     @Override
-    public int getChildrenCount(int i) {//2
-        Log.d("getChildrenCount", "" + list.get(i).getMatches().size());
+    public int getChildrenCount(int i) {
         return list.get(i).getMatches().size();
     }
 
     @Override
     public Object getGroup(int i) {
-        Log.d("getGroup", "i " + i + " list i " + list.get(i).getMatches());
         return list.get(i);
     }
 
     @Override
     public Object getChild(int i, int i1) {
-        Log.d("getChild", "i " + i + " i1 " + i1 + " list matches i " + list.get(i).getMatches().get(i1));
         return i1;
     }
 
     @Override
-    public long getGroupId(int i) {//1
-        Log.d("getGroupId", "" + i);
+    public long getGroupId(int i) {
         return i;
     }
 
     @Override
     public long getChildId(int i, int i1) {
-        Log.d("getChildId", "i " + i + " i1 " + i1);
         return i1;
     }
 
@@ -134,7 +129,7 @@ public class AdapterList extends BaseExpandableListAdapter {
     }
 
     static class ViewHolder {
-        ImageView img;
+        public ImageView img;
         public TextView team1;
         public TextView score1;
         public TextView team2;

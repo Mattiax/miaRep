@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import pkg.db.DB;
+import pkg.oggetti.MailList;
 import pkg.oggetti.Messaggio;
 import pkg.oggetti.Richiesta;
 import pkg.oggetti.Utente;
@@ -112,7 +113,7 @@ public class DefaultController {
                 return "sigin";
             }
         } catch (Exception e) {
-            map.addAttribute("errore","Errore imprevisto \n"+e.getMessage());
+            map.addAttribute("errore", "Errore imprevisto \n" + e.getMessage());
             return "errore";
         }
     }
@@ -353,7 +354,7 @@ public class DefaultController {
     @RequestMapping(value = "/getHobbies", method = RequestMethod.POST)
     public @ResponseBody
     String hobbies(@RequestBody String hobbies) {
-        System.out.println(hobbies);
+        System.out.println("ciao " + hobbies);
         List<String> list = db.getHobbies();
         for (Iterator<String> iter = list.listIterator(); iter.hasNext();) {
             if (hobbies.contains(iter.next())) {
@@ -502,9 +503,30 @@ public class DefaultController {
                 json = hobby;
             }
             JSONObject js = new JSONObject(json);
-
-            List<String> list = db.getMailList(js.getString("hobby"));
-            System.out.println("hobby " + list.toString());
+            String hobbyReq = js.getString("hobby");
+            System.out.println(hobbyReq);
+            List<String> list = null;
+            if (hobbyReq.equals("Tutti")) {
+                List<String[]> r = db.getAllEmailsHobby();
+                String s, temp = r.get(0)[0];
+                s="%"+temp;
+                int i = 0;
+                for ( ;i < r.size(); i++) {
+                    System.out.println(r.get(i)[0]+r.get(i)[1]);
+                    
+                    if (!temp.equals(r.get(i)[0])) {
+                        temp=r.get(i)[0];
+                        s+="%"+temp;
+                    }
+                    s += ","+r.get(i)[1];
+                }
+               s += "%";
+                System.out.println("lista " + s);
+                return s;
+            } else {
+                list = db.getMailList(hobbyReq);
+                System.out.println("hobby " + list.toString());
+            }
             return list.toString();
         } catch (JSONException ex) {
             Logger.getLogger(DefaultController.class.getName()).log(Level.SEVERE, null, ex);

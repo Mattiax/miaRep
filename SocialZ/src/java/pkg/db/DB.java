@@ -72,4 +72,6 @@ public interface DB {
       public void rimuoviGruppo(String gruppo);
       
       public void setImmagine(String image, String utente);
+      
+      public List<String[]> getAllEmailsHobby();
 }

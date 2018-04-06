@@ -31,7 +31,7 @@ public class ListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getChildrenCount(int i) {
-        return 1;
+        return list.get(i).getMail().size();
     }
 
     @Override
@@ -79,13 +79,12 @@ public class ListAdapter extends BaseExpandableListAdapter {
             LayoutInflater inflater = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(R.layout.child, null);
             viewHolder = new ViewHolder();
-            viewHolder.childView = view.findViewById(R.id.mailList);
+            viewHolder.childView = view.findViewById(R.id.hobbyList);
             view.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) view.getTag();
         }
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(c, android.R.layout.simple_list_item_1, list.get(i).getMail());
-        viewHolder.childView.setAdapter(adapter);
+        viewHolder.childView.setText(list.get(i).getMail().get(i1));
         return view;
     }
 
@@ -95,6 +94,6 @@ public class ListAdapter extends BaseExpandableListAdapter {
     }
 
     static class ViewHolder {
-        ListView childView;
+        TextView childView;
     }
 }

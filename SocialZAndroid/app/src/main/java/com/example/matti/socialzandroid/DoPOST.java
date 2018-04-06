@@ -62,14 +62,34 @@ class DoPOST extends AsyncTask {
                 ret.add(mo);
                 return ret;
             }else {
-                result = result.substring(1, result.length() - 1);//.replaceAll("\"","");
-                List<String> ris = Arrays.asList(result.split("\\s*,\\s*"));
-                Log.d("list ris", "" + ris.size());
-                rd.close();
-                conn.disconnect();
-                MailListHobby mo = new MailListHobby(ris, hobby);
-                List<MailListHobby> ret = new ArrayList<>();
-                ret.add(mo);
+                List<MailListHobby> ret= new ArrayList<>();
+                if(result.charAt(0) == '%') {
+                    Log.d("Ciao", "ad");
+                    MailListHobby mail;
+                    String temp= result.substring(1);
+
+                    try {
+                        for (int i = 0; i < result.length() / 2; i++) {
+                            mail = new MailListHobby();
+                            String titolo = temp.substring(0, temp.indexOf(","));
+                            String emails = temp.substring(temp.indexOf(",")+1, temp.indexOf("%"));
+                            temp = temp.substring(temp.indexOf("%") + 1);
+                            mail.setHobby(titolo);
+                            mail.setMail(Arrays.asList(emails.split("\\,*,\\,*")));
+                            ret.add(mail);
+                        }
+                    }catch(Exception e){
+
+                    }
+                }else {
+                    result = result.substring(1, result.length() - 1);//.replaceAll("\"","");
+                    List<String> ris = Arrays.asList(result.split("\\s*,\\s*"));
+                    Log.d("list ris", "" + ris.size());
+                    rd.close();
+                    conn.disconnect();
+                    MailListHobby mo = new MailListHobby(ris, hobby);
+                    ret.add(mo);
+                }
                 return ret;
             }
         } catch (Exception e) {

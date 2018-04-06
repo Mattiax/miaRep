@@ -69,6 +69,7 @@ public class hobbyMailList {
     
     @WebMethod(operationName = "getHobbiesWeb")
     public List<String> getHobbies(@WebParam(name = "hobby") String hobby) {
+        System.out.println("get hobby");
         final String urls = "http://localhost:8080/SocialZ/getHobbiesService";
         HttpURLConnection connection = null;
         List<String> list;

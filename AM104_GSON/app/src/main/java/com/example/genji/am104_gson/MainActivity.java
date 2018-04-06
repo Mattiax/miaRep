@@ -42,42 +42,36 @@ public class MainActivity extends AppCompatActivity {
     private ImageView image;
     private ProgressBar waiting;
     private ArrayList<Round> rounds = new ArrayList<>();
-    String squadraCuore;
+    private String squadraCuore;
+    private OnClickListener clickError;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        Log.d("MainActivity", "call RFInterface.getEmbeddedService()");
         mService = RFService.retrofit.create(RFService.class);
         expList = findViewById(R.id.simpleList);
         TextView tv = new TextView(this);
         tv.setText(getResources().getString(R.string.header));
         waiting = findViewById(R.id.waitingResponse);
         image = findViewById(R.id.ball);
-        squadraCuore="";
+        squadraCuore = "";
         image.setVisibility(View.INVISIBLE);
-        final EditText input= findViewById(R.id.editText);
-        Button ok=findViewById(R.id.button);
-        GetResponse a = new GetResponse();
-        try {
-            a.execute();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        ok.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(input.getText().toString().length()>0){
-                    squadraCuore=input.getText().toString().trim().toLowerCase();
-                    if(!rounds.isEmpty()){
-                        adapter= new AdapterList(MainActivity.this, rounds,squadraCuore);
-                        expList.setAdapter(adapter);
-                    }
+        final EditText input = findViewById(R.id.editText);
+        Button ok = findViewById(R.id.button);
+        executeRequest();
+        ok.setOnClickListener(view -> {
+            if (input.getText().toString().length() > 0) {
+                squadraCuore = input.getText().toString().trim().toLowerCase();
+                if (!rounds.isEmpty()) {
+                    adapter = new AdapterList(MainActivity.this, rounds, squadraCuore);
+                    expList.setAdapter(adapter);
+                    input.setText("");
                 }
             }
         });
+
+        clickError= view -> executeRequest();
     }
 
     class GetResponse extends AsyncTask<Void, Void, Void> {
@@ -90,41 +84,50 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void getRFResponse() {
-        mService.getPojo().enqueue(new Callback<Pojo>() {
 
+        mService.getPojo().enqueue(new Callback<Pojo>() {
 
             @Override
             public void onResponse(Call<Pojo> call, Response<Pojo> response) {
-
-                Log.d("MainActivity", "onresponse()");
-
                 if (response.isSuccessful()) {
-                    Log.d("MainActivity", "onresponse.isSuccessful()");
-                    Toast.makeText(MainActivity.this, "get response", Toast.LENGTH_SHORT);
                     rounds = (ArrayList<Round>) response.body().getRounds();
-                    adapter = new AdapterList(MainActivity.this, rounds,squadraCuore);
+                    adapter = new AdapterList(MainActivity.this, rounds, squadraCuore);
                     expList.setAdapter(adapter);
                     waiting.setVisibility(View.INVISIBLE);
-                    Animation animation1 =
-                            AnimationUtils.loadAnimation(getApplicationContext(), R.anim.bounce);
+                    Animation animation1 = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.bounce);
+                    image.setImageResource(R.drawable.simple_ball);
                     image.startAnimation(animation1);
                     image.setVisibility(View.VISIBLE);
-
                 } else {
                     int statusCode = response.code();
-                    Toast.makeText(MainActivity.this, getString(R.string.error)+statusCode, Toast.LENGTH_LONG).show();
-                    Log.d("MainActivity", "handle request errors");
+                    Toast.makeText(MainActivity.this, getString(R.string.error) + statusCode, Toast.LENGTH_LONG).show();
+                    setErrorImage();
                 }
             }
 
             @Override
             public void onFailure(Call<Pojo> call, Throwable t) {
-                showErrorMessage();
+                Toast.makeText(MainActivity.this, getString(R.string.error), Toast.LENGTH_SHORT).show();
+                setErrorImage();
             }
         });
     }
 
-    void showErrorMessage() {
-        Log.d("MainActivity", "Error");
+    private void setErrorImage(){
+        image.setImageResource(R.drawable.error);
+        image.setOnClickListener(clickError);
+        image.setVisibility(View.VISIBLE);
+        waiting.setVisibility(View.INVISIBLE);
+    }
+
+    private void executeRequest(){
+        try {
+            waiting.setVisibility(View.VISIBLE);
+            image.setVisibility(View.INVISIBLE);
+            image.setOnClickListener(null);
+            new GetResponse().execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

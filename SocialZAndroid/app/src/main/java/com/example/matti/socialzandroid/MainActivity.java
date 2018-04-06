@@ -44,8 +44,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        dropDown= findViewById(R.id.hobbies);
-        listView=findViewById(R.id.list);
+        dropDown = findViewById(R.id.hobbies);
+        listView = findViewById(R.id.list);
 
         new GetHobbies().execute();
         dropDown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -69,33 +69,22 @@ public class MainActivity extends AppCompatActivity {
             try {
                 list = new ArrayList<>();
                 url = new URL("http://192.168.1.2:8080/SocialZ/getHobbiesService");
-
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
-                conn.setRequestProperty("Accept","application/json");
+                conn.setRequestProperty("Accept", "application/json");
                 conn.setDoOutput(true);
                 conn.setDoInput(true);
-
                 JSONObject jsonParam = new JSONObject();
-                jsonParam.put("hobby", "");
-
-                Log.i("JSON", jsonParam.toString());
                 DataOutputStream os = new DataOutputStream(conn.getOutputStream());
-                //os.writeBytes(URLEncoder.encode(jsonParam.toString(), "UTF-8"));
                 os.writeBytes(jsonParam.toString());
-
                 os.flush();
                 os.close();
-
-                Log.i("STATUS", String.valueOf(conn.getResponseCode()));
-                Log.i("MSG" , conn.getResponseMessage());
-
                 InputStream in = conn.getInputStream();
                 BufferedReader rd = new BufferedReader(new InputStreamReader(in));
-                String result=rd.readLine();
-                result=result.substring(1,result.length()-1).replaceAll("\"","");
-                list = Arrays.asList(result.split("\\s*,\\s*"));
+                String result = rd.readLine();
+                result = result.substring(1, result.length() - 1).replaceAll("\"", "");
+                list.addAll(Arrays.asList(result.split("\\s*,\\s*")));
                 list.add("Tutti");
                 rd.close();
                 conn.disconnect();
@@ -108,30 +97,37 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Object o) {
             super.onPostExecute(o);
-            adapter = new ArrayAdapter<>(MainActivity.this,android.R.layout.simple_list_item_1,list);
+            adapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, list);
             dropDown.setAdapter(adapter);
         }
     }
 
-    private class LongNetworkOperation extends AsyncTask<String, Void, String> {
+    /*private class CallSOAP extends AsyncTask<String, Void, String> {
+
+        String NAMESPACE = "hobbyMailList";
+        String METHOD_NAME = "getHobbiesWeb";
+        String SOAP_ACTION = NAMESPACE + METHOD_NAME;
+        String URL = "http://192.168.1.2:8080/SocialZ/hobbyMailList";
 
         @Override
         protected String doInBackground(String... params) {
 
-            SoapObject so = new SoapObject("","");//name space nome web service //name webmethod
-            so.addProperty("name", "Arjun");
-            SoapSerializationEnvelope sse = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+            SoapObject so = new SoapObject(NAMESPACE, METHOD_NAME);//name space nome web service //name webmethod
+            so.addProperty("hobby", "pallavolo");
+            SoapSerializationEnvelope sse = new SoapSerializationEnvelope(SoapEnvelope.VER10);
             sse.setOutputSoapObject(so);
-            HttpTransportSE hse = new HttpTransportSE("http://192.168.1.2:8080/SocialZ/getHobbiesService");
+            HttpTransportSE hse = new HttpTransportSE(URL);
 
             try {
-                hse.call(action, sse);//action linsieme di namespace e name
-                SoapPrimitive primitive = (SoapPrimitive)sse.getResponse();
-                Toast.makeText(getApplicationContext(),primitive.toString() , Toast.LENGTH_SHORT);
-            } catch(IOException e) {
+                hse.call("/getHobbiesWeb", sse);//action linsieme di namespace e name
+                SoapPrimitive primitive = (SoapPrimitive) sse.getResponse();
+                Toast.makeText(getApplicationContext(), primitive.toString(), Toast.LENGTH_SHORT);
+            } catch (IOException e) {
                 e.printStackTrace();
             } catch (XmlPullParserException e) {
                 e.printStackTrace();
             }
+            return null;
         }
-    }
+    }*/
+}

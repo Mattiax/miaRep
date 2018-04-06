@@ -8,6 +8,10 @@ public class MailListHobby {
     private List<String> mail;
     private String hobby;
 
+    public MailListHobby() {
+
+    }
+
     public MailListHobby(List<String> mail, String hobby) {
         if (mail==null) {
             List<String> temp = new ArrayList<>();

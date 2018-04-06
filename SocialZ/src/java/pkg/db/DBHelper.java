@@ -406,4 +406,18 @@ public class DBHelper implements DB {
                 + "WHERE nome = ?";
         jdbcTemplate.update(sql, gruppo);
     }
+    
+        public List<String[]> getAllEmailsHobby() {
+         String sql = "SELECT hobby,ELENCOHOBBIES.email "
+                + "FROM ELENCOHOBBIES,PERSONA "
+                + "WHERE ELENCOHOBBIES.email=PERSONA.email AND permesso = 1 "
+                 + "ORDER BY hobby;";
+        List<String[]> ris = jdbcTemplate.query(sql, new RowMapper<String[]>() {
+            @Override
+            public String[] mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new String[]{rs.getString("hobby"),rs.getString("email")};
+            }
+        });
+        return ris;
+    }
 }

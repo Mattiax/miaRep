@@ -7,5 +7,4 @@
  * Author:  MATTI
  * Created: 1-apr-2018
  */
-DELETE FROM ELENCOHOBBIES 
-WHERE email="cane@cane.it" AND hobby="pallamano"
+SELECT hobby,ELENCOHOBBIES.email FROM ELENCOHOBBIES,PERSONA WHERE ELENCOHOBBIES.email=PERSONA.email AND permesso = 1 ORDER BY hobby;
