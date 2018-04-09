@@ -9,41 +9,40 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  *
  * @author MATTI
  */
-public class MailList implements Serializable{
+public class MailList implements Serializable {
 
-    HashMap<String, List<String>> list;
+    private JSONObject ris;
 
     public MailList() {
-        
+
     }
-    
+
     public MailList(List<String[]> lista) {
-        if (!lista.isEmpty()) {
-            list = new HashMap<>();
+        ris = new JSONObject();
+        try {
+            JSONArray a = new JSONArray();
             String hobby = lista.get(0)[0];
-            List<String> lisTemp = new ArrayList<>();
             for (int i = 0; i < lista.size(); i++) {
-                lisTemp.add(lista.get(i)[1]);
-                if (!lista.get(i)[0].equals(hobby)) {
-                    list.put(hobby, lisTemp);
-                    lisTemp = new ArrayList<>();
+                if (!hobby.equals(lista.get(i)[0])) {
+                    ris.put(hobby, a);
+                    a = new JSONArray();
                     hobby = lista.get(i)[0];
                 }
+                a.put(lista.get(i)[1]);
             }
+            ris.put(hobby, a);
+        } catch (Exception e) {
         }
     }
 
-    public HashMap<String, List<String>> getList() {
-        return list;
+    public JSONObject getJSON() {
+        return ris;
     }
-
-    public void setList(HashMap<String, List<String>> list) {
-        this.list = list;
-    }
-    
 }

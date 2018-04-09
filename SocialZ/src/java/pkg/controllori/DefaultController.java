@@ -499,23 +499,14 @@ public class DefaultController {
             String hobbyReq = js.getString("hobby");
             List<String> list = null;
             if (hobbyReq.equals("Tutti")) {
-                List<String[]> r = db.getAllEmailsHobby();
-                String s, temp = r.get(0)[0];
-                s="%"+temp;
-                int i = 0;
-                for ( ;i < r.size(); i++) {                 
-                    if (!temp.equals(r.get(i)[0])) {
-                        temp=r.get(i)[0];
-                        s+="%"+temp;
-                    }
-                    s += ","+r.get(i)[1];
-                }
-               s += "%";
+                 MailList a=db.getAllEmailsHobby();
+                 JSONObject j=a.getJSON();
+               String s = "%";
                 //System.out.println("lista " + s);
-                return s;
+                System.out.println(j.toString());
+                return j.toString();
             } else {
                 list = db.getMailList(hobbyReq);
-                //System.out.println("hobby " + list.toString());
             }
             return list.toString();
         } catch (JSONException ex) {

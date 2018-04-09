@@ -17,6 +17,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
+import pkg.oggetti.MailList;
 import pkg.oggetti.Messaggio;
 import pkg.oggetti.Richiesta;
 import pkg.oggetti.Utente;
@@ -44,7 +45,7 @@ public class DBHelper implements DB {
     }
 
     private void collegaHobby(String user, String[] hobby) {
-        String sql = "INSERT INTO ELENCOHOBBIES(email,hobby) "
+        String sql = "INSERT INTO HOBBYPRATICATO(email,hobby) "
                 + " VALUES (?,?);";
         if(hobby!=null)
         for (int i = 0; i < hobby.length; i++) {
@@ -61,7 +62,7 @@ public class DBHelper implements DB {
 
     public long salvaMess(Messaggio m) {
         GeneratedKeyHolder holder = new GeneratedKeyHolder();
-        String sql = "INSERT INTO MESSAGGI(mittente,destinatario,messaggio,allegato,dataOra) "
+        String sql = "INSERT INTO MESSAGGIO(mittente,destinatario,messaggio,allegato,dataOra) "
                 + " VALUES (?,?,?,?,?);";
         jdbcTemplate.update(new PreparedStatementCreator() {
             @Override
@@ -80,13 +81,13 @@ public class DBHelper implements DB {
     }
 
     public void eliminaMess(int id) {
-        String sql = "DELETE FROM MESSAGGI "
+        String sql = "DELETE FROM MESSAGGIO "
                 + "WHERE id=?;";
         jdbcTemplate.update(sql, id);
     }
 
     public void eliminaMessGruppo(int id) {
-        String sql = "DELETE FROM MESSAGGIGRUPPI "
+        String sql = "DELETE FROM MESSAGGIOGRUPPO "
                 + "WHERE id=?;";
         jdbcTemplate.update(sql, id);
     }
@@ -149,7 +150,7 @@ public class DBHelper implements DB {
     }
 
     public List<Messaggio> getConversazione(String mittente, String destinatario) {
-        String sql = "SELECT * FROM MESSAGGI "
+        String sql = "SELECT * FROM MESSAGGIO "
                 + "WHERE (mittente = '" + mittente + "' AND destinatario ='" + destinatario + "') OR (destinatario = '" + mittente + "' AND mittente ='" + destinatario + "');";
         List<Messaggio> ris = jdbcTemplate.query(sql, new RowMapper<Messaggio>() {
             @Override
@@ -168,7 +169,7 @@ public class DBHelper implements DB {
     public long aggiungiMessaggioGruppo(Messaggio m) {
         GeneratedKeyHolder holder = new GeneratedKeyHolder();
         System.out.println(m.getDestinatario());
-        String sql = "INSERT INTO MESSAGGIGRUPPI(mittente,destinatario,messaggio,allegato,dataOra) "
+        String sql = "INSERT INTO MESSAGGIOGRUPPO(mittente,destinatario,messaggio,allegato,dataOra) "
                 + " VALUES (?,?,?,?,?);";
         jdbcTemplate.update(new PreparedStatementCreator() {
             @Override
@@ -187,7 +188,7 @@ public class DBHelper implements DB {
 
     public int isPartecipante(String mittente, String destinatario) {
         System.out.println(mittente + destinatario);
-        String sql = "SELECT email FROM PARTECIPANTI "
+        String sql = "SELECT email FROM PARTECIPANTE "
                 + "WHERE email = ? AND nome = ? ;";
         try {
             return jdbcTemplate.queryForObject(sql, Integer.class, mittente, destinatario);
@@ -210,7 +211,7 @@ public class DBHelper implements DB {
     public List<Messaggio> getConversazioneGruppo(String mittente, String destinatario) {
 
         String sql = "SELECT id,mittente,destinatario,messaggio,dataOra,allegato "
-                + "FROM MESSAGGIGRUPPI,PARTECIPANTI "
+                + "FROM MESSAGGIOGRUPPO,PARTECIPANTE "
                 + "WHERE email = '" + mittente + "' AND PARTECIPANTI.nome='" + destinatario + "' AND destinatario = '" + destinatario + "';";
         List<Messaggio> ris = jdbcTemplate.query(sql, new RowMapper<Messaggio>() {
             @Override
@@ -237,18 +238,18 @@ public class DBHelper implements DB {
         String sql = "INSERT INTO GRUPPO(nome,descrizione) "
                 + " VALUES (?,?);";
         jdbcTemplate.update(sql, nome, descrizione);
-        sql = "INSERT INTO PARTECIPANTI(nome,email) "
+        sql = "INSERT INTO PARTECIPANTE(nome,email) "
                 + " VALUES (?,?);";
         for (int i = 0; i < partecipanti.length; i++) {
             jdbcTemplate.update(sql, nome, partecipanti[i]);
         }
-        sql = "INSERT INTO AMMINISTRATORIGRUPPO(nomeGruppo,email) "
+        sql = "INSERT INTO AMMINISTRATOREGRUPPO(nomeGruppo,email) "
                 + " VALUES (?,?);";
         jdbcTemplate.update(sql, nome, amministratore);
     }
 
     public List<String> getHobbies() {
-        String sql = "SELECT * FROM HOBBIES;";
+        String sql = "SELECT * FROM HOBBY;";
         List<String> ris = jdbcTemplate.query(sql, new RowMapper<String>() {
             @Override
             public String mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -259,7 +260,7 @@ public class DBHelper implements DB {
     }
 
     public List<String> getHobbiesPersona(String utente) {
-        String sql = "SELECT hobby FROM ELENCOHOBBIES "
+        String sql = "SELECT hobby FROM HOBBYPRATICATO "
                 + "WHERE email = '" + utente + "';";
         List<String> ris = jdbcTemplate.query(sql, new RowMapper<String>() {
             @Override
@@ -286,14 +287,14 @@ public class DBHelper implements DB {
         String sql = "DELETE FROM RICHIESTA "
                 + "WHERE idRichiesta=?;";
         jdbcTemplate.update(sql, id);
-        sql = "INSERT INTO PARTECIPANTI (nome,email) VALUES(?,?)";
+        sql = "INSERT INTO PARTECIPANTE (nome,email) VALUES(?,?)";
         jdbcTemplate.update(sql, gruppo, richiedente);
     }
 
     public List<String> getMailList(String hobby) {
-        String sql = "SELECT ELENCOHOBBIES.email "
-                + "FROM ELENCOHOBBIES,PERSONA "
-                + "WHERE hobby = '" + hobby + "' AND ELENCOHOBBIES.email=PERSONA.email AND permesso = 1;";
+        String sql = "SELECT HOBBYPRATICATO.email "
+                + "FROM HOBBYPRATICATO,PERSONA "
+                + "WHERE hobby = '" + hobby + "' AND HOBBYPRATICATO.email=PERSONA.email AND permesso = 1;";
         List<String> ris = jdbcTemplate.query(sql, new RowMapper<String>() {
             @Override
             public String mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -305,7 +306,7 @@ public class DBHelper implements DB {
 
     public void nuovoHobby(String hobby) {
         System.out.println("agg " + hobby);
-        String sql = "SELECT * FROM AMMINISTRATORISOCIAL;";
+        String sql = "SELECT * FROM AMMINISTRATORESOCIAL;";
         List<String> ris = jdbcTemplate.query(sql, new RowMapper<String>() {
             @Override
             public String mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -322,7 +323,7 @@ public class DBHelper implements DB {
     }
 
     public int isAmministratoreSocial(String email) {
-        String sql = "SELECT email FROM AMMINISTRATORISOCIAL "
+        String sql = "SELECT email FROM AMMINISTRATORESOCIAL "
                 + "WHERE email = ? ;";
         try {
             return jdbcTemplate.queryForObject(sql, Integer.class, email);
@@ -354,7 +355,7 @@ public class DBHelper implements DB {
     
     public void eliminaCollegamentoHobby(String utente,String hobby) {
         System.out.println(utente+hobby);
-        String sql = "DELETE FROM ELENCOHOBBIES "
+        String sql = "DELETE FROM HOBBYPRATICATO "
                 + "WHERE email = ? AND hobby = ? ;";
         jdbcTemplate.update(sql,utente,hobby);
     }
@@ -373,7 +374,7 @@ public class DBHelper implements DB {
     }
 
     public void aggiungiHobby(int id, String hobby) {
-        String sql = "INSERT INTO HOBBIES (hobby) VALUES(?)";
+        String sql = "INSERT INTO HOBBY (hobby) VALUES(?)";
         jdbcTemplate.update(sql, hobby);
         sql = "DELETE FROM RICHIESTAAMMINISTRATORES "
                 + "WHERE idRichiesta = ?";
@@ -392,16 +393,16 @@ public class DBHelper implements DB {
         String sql = "DELETE FROM GRUPPO "
                 + "WHERE nome = ?";
         jdbcTemplate.update(sql, gruppo);
-        sql = "DELETE FROM MESSAGGIGRUPPI "
+        sql = "DELETE FROM MESSAGGIOGRUPPO "
                 + "WHERE destinatario = ?";
         jdbcTemplate.update(sql, gruppo);
-        sql = "DELETE FROM AMMINISTRATORIGRUPPO "
+        sql = "DELETE FROM AMMINISTRATOREGRUPPO "
                 + "WHERE nomeGruppo = ?;";
         jdbcTemplate.update(sql, gruppo);
-        sql = "DELETE FROM PARTECIPANTI "
+        sql = "DELETE FROM PARTECIPANTE "
                 + "WHERE nome = ?";
         jdbcTemplate.update(sql, gruppo);
-        sql = "DELETE FROM RICHIESTE "
+        sql = "DELETE FROM RICHIESTA "
                 + "WHERE destinatario = ?";
         jdbcTemplate.update(sql, gruppo);
     }
@@ -413,16 +414,16 @@ public class DBHelper implements DB {
         sql = "DELETE FROM MESSAGGI "
                 + "WHERE mittente = ? OR destinatario = ?";
         jdbcTemplate.update(sql, utente,utente);
-        sql = "DELETE FROM MESSAGGIGRUPPI "
+        sql = "DELETE FROM MESSAGGIOGRUPPO "
                 + "WHERE mittente = ?";
         jdbcTemplate.update(sql, utente);
-        sql = "DELETE FROM PARTECIPANTI "
+        sql = "DELETE FROM PARTECIPANTE "
                 + "WHERE email = ?";
         jdbcTemplate.update(sql, utente);
-        sql = "DELETE FROM ELENCOHOBBIES "
+        sql = "DELETE FROM HOBBYPRATICATO "
                 + "WHERE email = ?;";
         jdbcTemplate.update(sql, utente);
-        sql = "DELETE FROM AMMINISTRATORIGRUPPO "
+        sql = "DELETE FROM AMMINISTRATOREGRUPPO "
                 + "WHERE email = ?;";
         jdbcTemplate.update(sql, utente);
         sql = "DELETE FROM RICHIESTA "
@@ -430,10 +431,10 @@ public class DBHelper implements DB {
         jdbcTemplate.update(sql, utente);
     }
     
-        public List<String[]> getAllEmailsHobby() {
-         String sql = "SELECT hobby,ELENCOHOBBIES.email "
-                + "FROM ELENCOHOBBIES,PERSONA "
-                + "WHERE ELENCOHOBBIES.email=PERSONA.email AND permesso = 1 "
+        public MailList getAllEmailsHobby() {
+         String sql = "SELECT hobby,HOBBYPRATICATO.email "
+                + "FROM HOBBYPRATICATO,PERSONA "
+                + "WHERE HOBBYPRATICATO.email=PERSONA.email AND permesso = 1 "
                  + "ORDER BY hobby;";
         List<String[]> ris = jdbcTemplate.query(sql, new RowMapper<String[]>() {
             @Override
@@ -441,6 +442,7 @@ public class DBHelper implements DB {
                 return new String[]{rs.getString("hobby"),rs.getString("email")};
             }
         });
-        return ris;
+        
+        return new MailList(ris);
     }
 }

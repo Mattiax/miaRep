@@ -7,6 +7,7 @@ package pkg.db;
 
 import java.util.ArrayList;
 import java.util.List;
+import pkg.oggetti.MailList;
 import pkg.oggetti.Messaggio;
 import pkg.oggetti.Richiesta;
 import pkg.oggetti.Utente;
@@ -73,7 +74,7 @@ public interface DB {
       
       public void setImmagine(String image, String utente);
       
-      public List<String[]> getAllEmailsHobby();
+      public MailList getAllEmailsHobby();
       
       public void rimuoviUtente(String utente);
 }
