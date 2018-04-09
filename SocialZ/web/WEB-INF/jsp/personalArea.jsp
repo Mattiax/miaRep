@@ -4,7 +4,7 @@
     Author     : mattia.musone
 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%> 
 <!DOCTYPE html>
 <html>
     <head>
@@ -14,6 +14,8 @@
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-3.3.1.js"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/areaPersonale.js"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/imageLoaderHamburger.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.js"></script>
         <title>Area personale</title>
     </head>
     <body>
@@ -33,7 +35,7 @@
                 <img id="profile-picture" width="200" height="200" src="img/no_photo.png"/>
                 <h class="header-text">${nome} ${cognome}</h>
                 <div id="buttonContainer">
-                <button class="fabImg" id="cambiaImmagine"><img id="newImg" src="img/img.png" width="30"></button>
+                    <button class="fabImg" id="cambiaImmagine"><img id="newImg" src="img/img.png" width="30"></button>
                 </div>
             </div>
             <button class="fab" id="modify">
@@ -122,6 +124,7 @@
                         </tr>
                     </table>
                 </div>
+                <button class="eliminaProfilo" id="cambiaImmagine"><img id="newImg" src="img/bin.png" width="30"></button>
             </div>
         </div>
     </body>

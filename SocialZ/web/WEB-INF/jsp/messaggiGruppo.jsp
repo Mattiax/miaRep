@@ -54,8 +54,8 @@
                 <span id="dest" value="" hidden="true"></span>
                 <textarea id="inputMess" rows="4" cols="50"></textarea>
                 <button type="submit" id="invioMess">></button>
-                <a id="nuovoGruppo" name="nuovoGruppo" href="nuovoGruppo" >+</a>
             </div>
+            <a id="nuovoGruppo" name="nuovoGruppo" href="nuovoGruppo" >+</a>
         </div>
     </body>
 </html>

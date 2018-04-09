@@ -5,21 +5,16 @@
  */
 package pkg.db;
 
-import java.awt.image.BufferedImage;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import javax.sql.DataSource;
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
-import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import pkg.oggetti.Messaggio;
@@ -231,15 +226,6 @@ public class DBHelper implements DB {
         return ris;
     }
 
-    /*private String getAmministratore(String gruppo) {
-        String sql = "SELECT email FROM AMMINISTRATORIGRUPPO "
-                + "WHERE nomeGruppo = ? AND nome = ? ;";
-        try{
-         return jdbcTemplate.queryForObject(sql,Integer.class,mittente,destinatario);
-        }catch(EmptyResultDataAccessException e){
-            return-1;
-        }
-    }*/
     public void richiestaPartecipazioneGruppo(Messaggio m) {
         System.out.println(m.getDestinatario());
         String sql = "INSERT INTO RICHIESTA(descrizione,amministratore,richiedente,destinatario) "
@@ -358,7 +344,7 @@ public class DBHelper implements DB {
     public void updateUtente(Utente u) {
         System.out.println("fddf "+u.toString());
         String sql = "UPDATE PERSONA "
-                + "SET nome = '"+u.getNome()+"' , cognome = '"+u.getCognome()+"' , password = '"+u.getPassword()+"' ,indirizzo = '"+u.getIndirizzo()+"' , telefono = '"+u.getTelefono()+ "', permesso = '"+u.getPermesso()+"' "
+                + "SET nome = '"+u.getNome()+"' , cognome = '"+u.getCognome()+"' , password = '"+u.getPassword()+"' ,indirizzo = "+(u.getIndirizzo()==null?null:"'"+u.getIndirizzo()+"'")+" , telefono = "+(u.getTelefono()==null?null:"'"+u.getIndirizzo()+"'")+ ", permesso = '"+u.getPermesso()+"' "
                 + "WHERE email = '"+u.getEmail()+"';";
         jdbcTemplate.execute(sql);
         if (u.getHobbies() != null) {
@@ -402,9 +388,46 @@ public class DBHelper implements DB {
     }
     
     public void rimuoviGruppo(String gruppo) {
+        System.out.println("gruppo eliminato"+gruppo);
         String sql = "DELETE FROM GRUPPO "
                 + "WHERE nome = ?";
         jdbcTemplate.update(sql, gruppo);
+        sql = "DELETE FROM MESSAGGIGRUPPI "
+                + "WHERE destinatario = ?";
+        jdbcTemplate.update(sql, gruppo);
+        sql = "DELETE FROM AMMINISTRATORIGRUPPO "
+                + "WHERE nomeGruppo = ?;";
+        jdbcTemplate.update(sql, gruppo);
+        sql = "DELETE FROM PARTECIPANTI "
+                + "WHERE nome = ?";
+        jdbcTemplate.update(sql, gruppo);
+        sql = "DELETE FROM RICHIESTE "
+                + "WHERE destinatario = ?";
+        jdbcTemplate.update(sql, gruppo);
+    }
+    
+    public void rimuoviUtente(String utente) {
+        String sql = "DELETE FROM PERSONA "
+                + "WHERE email = ?";
+        jdbcTemplate.update(sql, utente);
+        sql = "DELETE FROM MESSAGGI "
+                + "WHERE mittente = ? OR destinatario = ?";
+        jdbcTemplate.update(sql, utente,utente);
+        sql = "DELETE FROM MESSAGGIGRUPPI "
+                + "WHERE mittente = ?";
+        jdbcTemplate.update(sql, utente);
+        sql = "DELETE FROM PARTECIPANTI "
+                + "WHERE email = ?";
+        jdbcTemplate.update(sql, utente);
+        sql = "DELETE FROM ELENCOHOBBIES "
+                + "WHERE email = ?;";
+        jdbcTemplate.update(sql, utente);
+        sql = "DELETE FROM AMMINISTRATORIGRUPPO "
+                + "WHERE email = ?;";
+        jdbcTemplate.update(sql, utente);
+        sql = "DELETE FROM RICHIESTA "
+                + "WHERE mittente = ?";
+        jdbcTemplate.update(sql, utente);
     }
     
         public List<String[]> getAllEmailsHobby() {

@@ -6,7 +6,7 @@
 
 $(document).ready(function () {
    
-    $("#trigger").click(function() {
+    $("#menu").click(function() {
         $.ajax({
         url: 'getImmagine',
         type: 'POST',

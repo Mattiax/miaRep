@@ -69,8 +69,12 @@ $(document).ready(function () {
             $(".fab").attr("id", "done");
             var selected = $("#permTd").text();
             $("#permTd").text("");
-            $("#permTd").append("<select id=\"permesso\"><option value=\"false\">No</option><option value=\"true\">Sì</option></select>");
-            $("#permesso").val(selected);
+            $("#permTd").append("<select id=\"permesso\"><option value=\"0\">No</option><option value=\"1\">Sì</option></select>");
+            if (selected === "true") {
+                $("#permesso").val(1);
+            } else {
+                $("#permesso").val(0);
+            }
         } else {
             $(".form-element").addClass("disabled");
             $(".hobbies").addClass("disabled");
@@ -98,6 +102,23 @@ $(document).ready(function () {
     $(".eliminaHobby").click(function () {
         var hobby = $(this).parent().children();
         eliminaHobby(hobby);
+    });
+    $(".eliminaProfilo").click(function () {
+        $.confirm({
+            title: 'ELIMINA PROFILO',
+            content: 'Sei sicuro di voler eliminare il tuo profilo?',
+            buttons: {
+                ELIMINA: {btnClass: 'btn-red',
+                    action: function () {
+                        $.alert('Ci dispiace :(');
+                        eliminaProfilo();
+                    }
+                },
+                Annulla: function () {
+                    $.alert('Grazie per essere rimasto con noi!');
+                }
+            }
+        });
     });
 });
 
@@ -139,64 +160,68 @@ function getHobbies() {
 }
 
 function cambioDati() {
-    var json = "{utente:" + utente;
-    json += ",nome:" + $("#nome").val();
-    json += ",cognome:" + $("#cognome").val();
-    json += ",password:" + $("#password").val();
-    var temp = $("#telefono").val().toString();
-    if (temp === "") {
-        json += ",telefono:\"\"";
+    var password = $("#password").val();
+    if (password.length < 6) {
+        alert("La password deve essere lunga almeno 6 caratteri")
     } else {
-        json += ",telefono:" + temp;
-    }
-    temp = $("#indirizzo").val();
-    if (temp === "") {
-        json += ",indirizzo:\"\"";
-    } else {
-        json += ",indirizzo:" + temp;
-    }
-    json += ",permesso:" + $("#permesso").val();
-    if (typeof hobbies !== "undefined") {
-        json += ",hobbies:[";
-        for (var i in hobbies) {
-            json += hobbies[i] + ",";
+        var json = "{utente:" + utente;
+        json += ",nome:" + $("#nome").val();
+        json += ",cognome:" + $("#cognome").val();
+        json += ",password:" + password;
+        var temp = $("#telefono").val().toString();
+        if (temp === "") {
+            json += ",telefono:\"\"";
+        } else {
+            json += ",telefono:" + temp;
         }
-        json += "]";
-        json = json.replace(",]", "]");
-    }
-    json += "}";
-    $.ajax({
-        url: 'setNewData',
-        type: 'POST',
-        contentType: "application/json",
-        data: json,
-        success: function (data) {
-            alert("Dati modificati con successo");
-            location.reload();
-        },
-        statusCode: {
-            404: function (content) {
-                alert('cannot find resource');
-            },
-            500: function (content) {
-                alert('internal server error');
+        temp = $("#indirizzo").val();
+        if (temp === "") {
+            json += ",indirizzo:\"\"";
+        } else {
+            json += ",indirizzo:" + temp;
+        }
+        json += ",permesso:" + $("#permesso").val();
+        if (typeof hobbies !== "undefined") {
+            json += ",hobbies:[";
+            for (var i in hobbies) {
+                json += hobbies[i] + ",";
             }
-        },
-        error: function (req, status, errorObj) {
-            alert(status + errorObj);
+            json += "]";
+            json = json.replace(",]", "]");
         }
-    });
+        json += "}";
+        $.ajax({
+            url: 'setNewData',
+            type: 'POST',
+            contentType: "application/json",
+            data: json,
+            success: function (data) {
+                alert("Dati modificati con successo");
+                location.reload();
+            },
+            statusCode: {
+                404: function (content) {
+                    alert('cannot find resource');
+                },
+                500: function (content) {
+                    alert('internal server error');
+                }
+            },
+            error: function (req, status, errorObj) {
+                alert(status + errorObj);
+            }
+        });
+    }
 }
 
 function eliminaHobby(hobby) {
     $.ajax({
         url: 'eliminaHobby',
         type: 'POST',
-        data: {utente: utente, hobby: hobby.text()},
+        data: {hobby: hobby.text(), utente: utente},
         success: function (data) {
             alert("Dati modificati con successo");
             hobby.remove();
-            //location.reload();
         },
         statusCode: {
             404: function (content) {
@@ -219,9 +244,34 @@ function loadImmagineProfilo() {
         contentType: false,
         processData: false,
         success: function (data) {
-            if( data !== ""){
+            if (data !== "") {
                 $("#profile-picture").attr("src", "data:image/jpeg;base64," + data);
             }
+        },
+        statusCode: {
+            404: function (content) {
+                alert('cannot find resource');
+            },
+            500: function (content) {
+                alert('internal server error');
+            }
+        },
+        error: function (req, status, errorObj) {
+            alert(status + errorObj)
+        }
+    });
+}
+
+function eliminaProfilo() {
+    $.ajax({
+        url: 'eliminaUtente',
+        type: 'POST',
+        data: {nome: utente},
+        success: function (data) {
+            $.ajax({
+                url: 'index',
+                type: 'POST'
+            });
         },
         statusCode: {
             404: function (content) {

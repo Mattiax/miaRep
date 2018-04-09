@@ -95,9 +95,12 @@ and open the template in the editor.
 
 #chatDiv{
     padding-bottom: 1%;
+    margin-right: 10px;
 }
 
 #nuovoGruppo{
+    position: absolute;
+    top: 0;
     background-color:#EA4335;
     color:white;
     font-size:30px;
@@ -105,29 +108,28 @@ and open the template in the editor.
     height:50px;
     width:50px;
     border:none;
-    margin-right: 10px;
+    margin-left: 90%;
     box-shadow:0px 1px 2px rgba(0,0,0,0.5);
     text-align: center;
-    float:right;
 }
 
 #storicoChat{
-margin-left: 1%;
+    margin-left: 1%;
 }
 
 #invioMess {
-    width: 3%;
-    height: 6%;
+    width: 40px;
+    height: 40px;
     background-color: #009900;
     border-radius: 50%;
-
-    font-size: 50px;
+    border:none;
+    font-size: 30px;
     text-align: center;
     color: white;
     text-align: center;
-
     position: fixed;
-    right: 10%;
+    right: 50px;
+    bottom: 50px;
 }
 
 #scriviMessaggio:hover {
@@ -136,7 +138,7 @@ margin-left: 1%;
 
 #inputMess {
     margin-left: 10px;
-    width: 50%;
+    width: 60%;
     position: fixed;
     -webkit-box-sizing: content-box;
     -moz-box-sizing: content-box;
@@ -162,7 +164,7 @@ tr{
 }
 
 table{
-     width: 100%;
+    width: 100%;
 }
 th{
     text-align: left;

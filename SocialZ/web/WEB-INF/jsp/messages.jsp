@@ -53,7 +53,7 @@
             <div class="split down disabled" id="componiMessaggio" >
                 <span id="dest" value="" hidden="true"></span>
                 <textarea id="inputMess" rows="4" cols="50"></textarea>
-                <input type="submit" id="invioMess" value=">">
+                <button type="submit" id="invioMess">></button>
             </div>
         </div>
     </body>

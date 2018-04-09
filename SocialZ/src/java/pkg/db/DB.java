@@ -74,4 +74,6 @@ public interface DB {
       public void setImmagine(String image, String utente);
       
       public List<String[]> getAllEmailsHobby();
+      
+      public void rimuoviUtente(String utente);
 }

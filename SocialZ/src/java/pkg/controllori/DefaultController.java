@@ -81,7 +81,7 @@ public class DefaultController {
     public String logIn(HttpServletRequest request, ModelMap map, HttpServletResponse response) {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
-        System.out.println("login" + request.getParameter("amm") + email + password);
+        //System.out.println("login" + request.getParameter("amm") + email + password);
         try {
             Utente u = db.getUser(email, password);
             if (db.isRegistrato(email, password) > -1) {
@@ -102,15 +102,15 @@ public class DefaultController {
                         }
                     } else {
                         List<Utente> lst = db.getAllUsers(email);
-                        System.out.println(lst.size());
+                        //System.out.println(lst.size());
                         map.addAttribute("listaUtenti", lst);
                         return "redirect:/messages";
                     }
                 } else {
-                    return "sigin";
+                    return "index";
                 }
             } else {
-                return "sigin";
+                return "index";
             }
         } catch (Exception e) {
             map.addAttribute("errore", "Errore imprevisto \n" + e.getMessage());
@@ -120,16 +120,16 @@ public class DefaultController {
 
     @RequestMapping(value = "/nuovoGruppo", method = RequestMethod.GET)
     public String nuovoGruppo(HttpServletRequest request, ModelMap map) {
-        System.out.println("gruppo");
+        //System.out.println("gruppo");
         List<Utente> lst = db.getAllUsers(getUtenteAttivo(request.getCookies()));
-        System.out.println(lst.size());
+        //System.out.println(lst.size());
         map.addAttribute("listaUtenti", lst);
         return "nuovoGruppo";
     }
 
     @RequestMapping(value = "/creaGruppo", method = RequestMethod.POST)
     public void crea(@RequestBody String partecipanti) {
-        System.out.println(partecipanti);
+        //System.out.println(partecipanti);
         try {
             JSONObject ob = new JSONObject(partecipanti);
             String nome = ob.getString("nomeGruppo");
@@ -145,7 +145,7 @@ public class DefaultController {
             for (int i = 0; i < a.length(); i++) {
                 partecipantiList[i] = a.getString(i);
             }
-            System.out.println(descrizione);
+            //System.out.println(descrizione);
             db.creaGruppo(amministratore, nome, descrizione, partecipantiList);
         } catch (JSONException ex) {
             Logger.getLogger(DefaultController.class.getName()).log(Level.SEVERE, null, ex);
@@ -158,7 +158,7 @@ public class DefaultController {
 
         Utente u = db.getUser(user, "");
         if (u == null) {
-            return "signin";
+            return "redirect:/signin";
         }
         map.addAttribute("nome", u.getNome());
         map.addAttribute("cognome", u.getCognome());
@@ -175,7 +175,7 @@ public class DefaultController {
 
     @RequestMapping(value = "/signin")
     public String signIn(ModelMap map) {
-        System.out.println("signin");
+        //System.out.println("signin");
         map.addAttribute("listaHobbies", db.getHobbies());
         return "signin";
     }
@@ -183,7 +183,7 @@ public class DefaultController {
     @RequestMapping(value = "/salvaMessaggio", method = RequestMethod.POST)
     public @ResponseBody
     String salvaMess(String mittente, String destinatario, String messaggio) {
-        System.out.println("saving" + mittente + destinatario + messaggio);
+        //System.out.println("saving" + mittente + destinatario + messaggio);
         Messaggio m = new Messaggio(mittente, destinatario, messaggio, Calendar.getInstance().getTime().toString());
         long id = db.salvaMess(m);
         JSONObject json = new JSONObject();
@@ -197,7 +197,7 @@ public class DefaultController {
 
     @RequestMapping(value = "/richiestaPartecipazione", method = RequestMethod.POST)
     public ResponseEntity<String> richiestaPart(String mittente, String destinatario, String messaggio) {
-        System.out.println("saving" + mittente + destinatario + messaggio);
+        //System.out.println("saving" + mittente + destinatario + messaggio);
         Messaggio m = new Messaggio(mittente, destinatario, messaggio, Calendar.getInstance().getTime().toString());
         db.richiestaPartecipazioneGruppo(m);
         return new ResponseEntity<>("OK", new HttpHeaders(), HttpStatus.OK);
@@ -206,7 +206,7 @@ public class DefaultController {
     @RequestMapping(value = "/salvaMessaggioGruppo", method = RequestMethod.POST)
     public @ResponseBody
     String salvaMessGruppo(String mittente, String destinatario, String messaggio) {
-        System.out.println("saving" + mittente + destinatario + messaggio);
+        //System.out.println("saving" + mittente + destinatario + messaggio);
         Messaggio m = new Messaggio(mittente, destinatario, messaggio, Calendar.getInstance().getTime().toString());
         long id = db.aggiungiMessaggioGruppo(m);
         JSONObject json = new JSONObject();
@@ -220,14 +220,12 @@ public class DefaultController {
 
     @RequestMapping(value = "/eliminaMessaggio", method = RequestMethod.POST)
     public ResponseEntity<String> eliminaMess(int id) {
-        System.out.println("deleting");
         db.eliminaMess(id);
         return new ResponseEntity<>("OK", new HttpHeaders(), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/eliminaMessaggioGruppo", method = RequestMethod.POST)
     public ResponseEntity<String> eliminaMessGrupp(int id) {
-        System.out.println("deleting");
         db.eliminaMessGruppo(id);
         return new ResponseEntity<>("OK", new HttpHeaders(), HttpStatus.OK);
     }
@@ -239,9 +237,7 @@ public class DefaultController {
 
     @RequestMapping(value = "/messages")
     public String message(HttpServletRequest request, ModelMap map) {
-        System.out.println("aaaaaa");
         List<Utente> lst = db.getAllUsers(getUtenteAttivo(request.getCookies()));
-        System.out.println(lst.size());
         map.addAttribute("listaUtenti", lst);
         return "messages";
     }
@@ -249,7 +245,7 @@ public class DefaultController {
     @RequestMapping(value = "/messaggiGruppo", method = RequestMethod.GET)
     public String messGruppo(HttpServletRequest request, ModelMap map) {
         List<String[]> lst = db.getGruppi();
-        System.out.println(request.getParameter("mittente"));
+        //System.out.println(request.getParameter("mittente"));
         map.addAttribute("listaGruppi", lst);
         return "messaggiGruppo";
     }
@@ -257,7 +253,7 @@ public class DefaultController {
     @RequestMapping(value = "/mostraMessaggio")
     public @ResponseBody
     String getMessaggio(String mittente, String destinatario) {
-        System.out.println(mittente + destinatario);
+        //System.out.println(mittente + destinatario);
         List<Messaggio> msg = db.getConversazione(mittente, destinatario);
         return creaJSONMessaggio(msg);
     }
@@ -265,9 +261,9 @@ public class DefaultController {
     @RequestMapping(value = "/getConvGruppo")
     public @ResponseBody
     String getConvGruppo(String mittente, String destinatario) {
-        System.out.println("conversazione gruppo  " + mittente + destinatario + db.isPartecipante(mittente, destinatario));
+        //System.out.println("conversazione gruppo  " + mittente + destinatario + db.isPartecipante(mittente, destinatario));
         if (db.isPartecipante(mittente, destinatario) < 0) {
-            System.out.println("non partecipo");
+           // System.out.println("non partecipo");
             if (db.hasRichiestaPartecipazione(mittente, destinatario) > 0) {
                 return "{}";
             } else {
@@ -291,7 +287,6 @@ public class DefaultController {
                 ja.put(js);
             } else {
                 for (int i = 0; i < msg.size(); i++) {
-                    System.out.println(msg.get(i).getMessaggio());
                     js = new JSONObject();
                     js.put("mittente", msg.get(i).getMittente());
                     js.put("destinatario", msg.get(i).getDestinatario());
@@ -309,7 +304,7 @@ public class DefaultController {
                     .getLogger(DefaultController.class
                             .getName()).log(Level.SEVERE, null, ex);
         }
-        System.out.println(js.toString());
+        //System.out.println(js.toString());
         return js.toString();
     }
 
@@ -333,7 +328,7 @@ public class DefaultController {
     @RequestMapping(value = "/richieste")
     public String richieste(HttpServletRequest request, ModelMap map) {
         List<Richiesta> lst = db.getRichieste(getUtenteAttivo(request.getCookies()));
-        System.out.println(request.getParameter("mittente"));
+       // System.out.println(request.getParameter("mittente"));
         map.addAttribute("listaRichieste", lst);
         return "richieste";
     }
@@ -342,7 +337,7 @@ public class DefaultController {
     public @ResponseBody
     void approva(String id, String richiedente, String gruppo) {
         db.approvaRichiesta(Integer.parseInt(id), richiedente, gruppo);
-        System.out.println("approva  " + id);
+        //System.out.println("approva  " + id);
     }
 
     @RequestMapping(value = "/nuovoHobby")
@@ -354,7 +349,6 @@ public class DefaultController {
     @RequestMapping(value = "/getHobbies", method = RequestMethod.POST)
     public @ResponseBody
     String hobbies(@RequestBody String hobbies) {
-        System.out.println("ciao " + hobbies);
         List<String> list = db.getHobbies();
         for (Iterator<String> iter = list.listIterator(); iter.hasNext();) {
             if (hobbies.contains(iter.next())) {
@@ -371,10 +365,9 @@ public class DefaultController {
             js = new JSONObject();
             js.put("hobbies", ja);
         } catch (JSONException ex) {
-            System.out.println("errore json");
+           // System.out.println("errore json");
             ex.printStackTrace();
         }
-        System.out.println(js.toString());
         return js.toString();
     }
 
@@ -383,7 +376,7 @@ public class DefaultController {
         HttpSession session = request.getSession(false);
         eliminaImmagine(getUtenteAttivo(request.getCookies()));
         if (session != null) {
-            System.out.println("logout");
+            //System.out.println("logout");
             session.invalidate();
             Cookie[] cookies = request.getCookies();
             if (cookies != null) {
@@ -401,7 +394,6 @@ public class DefaultController {
     @RequestMapping(value = "/setNewData", method = RequestMethod.POST)
     public @ResponseBody
     ResponseEntity aggiungi(@RequestBody String dati) {
-        System.out.println(dati);
         try {
             JSONObject ob = new JSONObject(dati);
             String email = ob.getString("utente");
@@ -409,9 +401,8 @@ public class DefaultController {
             String cognome = ob.getString("cognome");
             String password = ob.getString("password");
             String indirizzo = ob.getString("indirizzo");
-            System.out.println(indirizzo.equals("") ? null : indirizzo);
-            String telefono = "" + ob.getInt("telefono");
-            boolean datiPers = ob.getBoolean("permesso");
+            String telefono = "" + ob.getString("telefono");
+            boolean datiPers = ob.getInt("permesso")==1?true:false;
             Utente u;
             try {
                 JSONArray a = ob.getJSONArray("hobbies");
@@ -430,10 +421,10 @@ public class DefaultController {
         return new ResponseEntity<>("OK", new HttpHeaders(), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/eliminaHobby", method = RequestMethod.POST)
+    @RequestMapping(value = "/eliminaHobby")
     public @ResponseBody
     ResponseEntity eliminaHobby(String utente, String hobby) {
-        System.out.println(utente);
+        //System.out.println("dati "+utente+" hobby "+hobby);
         db.eliminaCollegamentoHobby(utente, hobby);
         return new ResponseEntity<>("OK", new HttpHeaders(), HttpStatus.OK);
     }
@@ -441,7 +432,6 @@ public class DefaultController {
     @RequestMapping(value = "/inserisciNuovoHobby", method = RequestMethod.POST)
     public @ResponseBody
     ResponseEntity nuovoHobby(int id, String hobby) {
-        System.out.println(id + hobby);
         db.aggiungiHobby(id, hobby);
         return new ResponseEntity<>("OK", new HttpHeaders(), HttpStatus.OK);
     }
@@ -449,8 +439,14 @@ public class DefaultController {
     @RequestMapping(value = "/eliminaGruppo", method = RequestMethod.POST)
     public @ResponseBody
     ResponseEntity eliminaGruppo(String nome) {
-        System.out.println(nome);
         db.rimuoviGruppo(nome);
+        return new ResponseEntity<>("OK", new HttpHeaders(), HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = "/eliminaUtente", method = RequestMethod.POST)
+    public @ResponseBody
+    ResponseEntity eliminaUtente(String nome) {
+        db.rimuoviUtente(nome);
         return new ResponseEntity<>("OK", new HttpHeaders(), HttpStatus.OK);
     }
 
@@ -463,7 +459,6 @@ public class DefaultController {
     @RequestMapping(value = "/caricaImmagine", method = RequestMethod.POST)
     public @ResponseBody
     ResponseEntity immagine(HttpServletRequest request) {
-        System.out.println("aaaa");
         try {
             Part im = null;
             for (Part part : request.getParts()) {
@@ -481,7 +476,6 @@ public class DefaultController {
                 String utente = getUtenteAttivo(request.getCookies());
                 String immagine = Base64.getEncoder().encodeToString(output.toByteArray());
                 eliminaImmagine(utente);
-                System.out.println("FATTO REG ORA FOTO FUNZIONE" + immagine);
                 scriviImmagineTemp(immagine, utente);
                 db.setImmagine(immagine, getUtenteAttivo(request.getCookies()));
             }
@@ -499,21 +493,17 @@ public class DefaultController {
             try {
                 json = hobby.substring(hobby.indexOf("{"));
             } catch (StringIndexOutOfBoundsException ei) {
-                System.out.println("error");
                 json = hobby;
             }
             JSONObject js = new JSONObject(json);
             String hobbyReq = js.getString("hobby");
-            System.out.println(hobbyReq);
             List<String> list = null;
             if (hobbyReq.equals("Tutti")) {
                 List<String[]> r = db.getAllEmailsHobby();
                 String s, temp = r.get(0)[0];
                 s="%"+temp;
                 int i = 0;
-                for ( ;i < r.size(); i++) {
-                    System.out.println(r.get(i)[0]+r.get(i)[1]);
-                    
+                for ( ;i < r.size(); i++) {                 
                     if (!temp.equals(r.get(i)[0])) {
                         temp=r.get(i)[0];
                         s+="%"+temp;
@@ -521,11 +511,11 @@ public class DefaultController {
                     s += ","+r.get(i)[1];
                 }
                s += "%";
-                System.out.println("lista " + s);
+                //System.out.println("lista " + s);
                 return s;
             } else {
                 list = db.getMailList(hobbyReq);
-                System.out.println("hobby " + list.toString());
+                //System.out.println("hobby " + list.toString());
             }
             return list.toString();
         } catch (JSONException ex) {
@@ -553,7 +543,6 @@ public class DefaultController {
     }
 
     private void scriviImmagineTemp(String immagine, String utente) {
-        System.out.println("carico ");
         File file = new File(percorso + utente + ".txt");
         BufferedWriter writer;
         try {
@@ -573,7 +562,7 @@ public class DefaultController {
             BufferedReader in = new BufferedReader(new FileReader(percorso + utente + ".txt"));
             foto = in.readLine();
             in.close();
-            System.out.println("getfoto");
+            //System.out.println("getfoto");
         } catch (Exception x) {
             Logger.getLogger(DefaultController.class.getName()).log(Level.SEVERE, null, x);
         }

@@ -20,6 +20,7 @@ table{
     text-indent: 50px;
 }
 
+.eliminaProfilo,
 .fab,
 .fabImg{
     background-color:#EA4335;
@@ -62,6 +63,7 @@ table{
     margin-top:15px;
 }
 
+.eliminaProfilo,
 .fabImg,
 .fab:hover{
     box-shadow:0px 4px 4px rgba(0,0,0,0.5);
@@ -74,9 +76,7 @@ table{
 }
 
 #profile-picture{
-  
     border-radius:10%;
-  
 }
 
 .info{
@@ -193,4 +193,8 @@ textarea.form-element-field {
 .disabled {
     pointer-events: none;
     opacity: 0.4;
+}
+
+.eliminaProfilo{
+    float: right;
 }

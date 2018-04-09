@@ -11,6 +11,8 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/hamburger.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/richieste.css">
+        <script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-3.3.1.js"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/js/richiesteAmm.js"></script>
         <title>Utenti</title>
     </head>
     <body>
@@ -25,18 +27,18 @@
             <li><a href="esci">Esci</a></li>
         </ul>
         <h1>Utenti</h1>
-                <table>
-                    <th>Nome</th>
-                    <th>Cognome</th>
-                    <th>Email</th>
-                        <c:forEach var="l" items="${listaUtenti}" varStatus="status" >
-                        <tr>
-                            <td>${l.getNome()}</td>
-                            <td>${l.getCognome()}</td>
-                            <td>${l.getEmail()}</td>
-                            <td><button id="approvaRichiesta">Elimina</button></td>
-                        </tr>
-                    </c:forEach>  
-                </table>
+        <table>
+            <th>Nome</th>
+            <th>Cognome</th>
+            <th>Email</th>
+                <c:forEach var="l" items="${listaUtenti}" varStatus="status" >
+                <tr>
+                    <td>${l.getNome()}</td>
+                    <td>${l.getCognome()}</td>
+                    <td class="email">${l.getEmail()}</td>
+                    <td><button class="eliminaUtente">Elimina</button></td>
+                </tr>
+            </c:forEach>  
+        </table>
     </body>
 </html>

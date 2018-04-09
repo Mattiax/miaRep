@@ -9,7 +9,7 @@
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/index.css"/>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-3.3.1.js"></script>
         <script type="text/javascript" src="${pageContext.request.contextPath}/js/index.js"></script>
-        <title>Esempio di gestione tramite Spring MVC</title>
+        <title>SocialZ</title>
     </head>
     <body>
         <ul class="tabs text-center">

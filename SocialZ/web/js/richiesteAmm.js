@@ -12,20 +12,72 @@ $(document).ready(function () {
             break;
         }
     }
-    $(".approvaRichiesta").click(function (){
-        var parent=$(this).parent().parent();
-       var id=$(this).parent().parent().children(".nRichiesta").text(); 
-       var richiesta=$(this).parent().parent().children(".richiesta").text(); 
-       approva(id,richiesta,parent);
+    $(".approvaRichiesta").click(function () {
+        var parent = $(this).parent().parent();
+        var id = $(this).parent().parent().children(".nRichiesta").text();
+        var richiesta = $(this).parent().parent().children(".richiesta").text();
+        approva(id, richiesta, parent);
     });
-    $(".eliminaGruppo").click(function (){
-        var parent=$(this).parent().parent();
-       var id=$(this).parent().parent().children(".nome").text(); 
-       approva(id,parent);
+    $(".eliminaGruppo").click(function () {
+        var parent = $(this).parent().parent();
+        var id = $(this).parent().parent().children(".nome").text();
+        alert(id)
+        eliminaGruppo(id);
+    });
+    $(".eliminaUtente").click(function () {
+        var parent = $(this).parent().parent();
+        var id = $(this).parent().parent().children(".email").text();
+        eliminaUtente(id,parent);
     });
 });
 
-function approva(id,parent){
+function approva(id, parent) {
+    alert(id)
+    $.ajax({
+        url: 'eliminaGruppo',
+        type: 'POST',
+        data: {nome: id},
+        success: function (data) {
+            parent.remove();
+        },
+        statusCode: {
+            404: function (content) {
+                alert('cannot find resource');
+            },
+            500: function (content) {
+                alert('internal server error');
+            }
+        },
+        error: function (req, status, errorObj) {
+            alert(status + errorObj)
+        }
+    });
+}
+
+function eliminaUtente(id, parent) {
+    alert(id)
+    $.ajax({
+        url: 'eliminaUtente',
+        type: 'POST',
+        data: {nome: id},
+        success: function (data) {
+            parent.remove();
+        },
+        statusCode: {
+            404: function (content) {
+                alert('cannot find resource');
+            },
+            500: function (content) {
+                alert('internal server error');
+            }
+        },
+        error: function (req, status, errorObj) {
+            alert(status + errorObj)
+        }
+    });
+}
+
+function eliminaGruppo(id, parent) {
     alert(id)
     $.ajax({
         url: 'eliminaGruppo',
