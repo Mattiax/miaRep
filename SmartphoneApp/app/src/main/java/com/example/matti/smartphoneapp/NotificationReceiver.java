@@ -32,19 +32,7 @@ import notificationobject.NotificationObject;
 
 public class NotificationReceiver {
 
-
-    BluetoothAdapter bluetooth;
-    Handler handler;
-
-    NotificationReceiver(Context c){
-        bluetooth = BluetoothAdapter.getDefaultAdapter();
-        handler = new Handler() {
-            public void handleMessage(android.os.Message msg) {
-                //Toast.makeText(Speak.this, (String) msg.obj, Toast.LENGTH_SHORT).show();
-
-            }
-        };
-
+   /* NotificationReceiver(){
         //LocalBroadcastManager.getInstance(c).registerReceiver(new BroadcastReceiverNot(), new IntentFilter("Msg"));
     }
 
@@ -62,12 +50,12 @@ public class NotificationReceiver {
 
             byte[] byteArray = intent.getByteArrayExtra("icon");
             NotificationObject no=new NotificationObject(title,text, SimpleDateFormat.getDateTimeInstance().toString(),byteArray);
-            SenderBT sb= new SenderBT();
-            sb.execute(no);
-        }
-    }
+            /*SenderBT sb= new SenderBT();
+            sb.execute(no);*/
+      /*  }
+    }*/
 
-    public class SenderBT extends AsyncTask<Object,Object,Object>{
+    /*public class SenderBT extends AsyncTask<Object,Object,Object>{
 
         @Override
         protected Object doInBackground(Object... objects) {
@@ -79,5 +67,5 @@ public class NotificationReceiver {
             }catch(ClassCastException | IOException e){}
             return null;
         }
-    }
+    }*/
 }

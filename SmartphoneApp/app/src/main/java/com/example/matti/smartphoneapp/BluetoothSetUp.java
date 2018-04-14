@@ -39,6 +39,7 @@ public class BluetoothSetUp extends AppCompatActivity {
     private BluetoothAdapter bluetooth;
     private MyAdapter adapter;
     private ProgressBar bar;
+    private Bluetooth bt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +48,7 @@ public class BluetoothSetUp extends AppCompatActivity {
         list = findViewById(R.id.listB);
         bar = findViewById(R.id.progressBar);
         bluetoothScan = new ArrayList<>();
-        bluetooth = BluetoothAdapter.getDefaultAdapter();
+        bluetooth = Bluetooth.getAdapter();
         adapter = new MyAdapter(BluetoothSetUp.this, R.id.listB,bluetoothScan);
         list.setAdapter(adapter);
 
@@ -57,7 +58,6 @@ public class BluetoothSetUp extends AppCompatActivity {
         filter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-        filter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
         registerReceiver(receiver, filter);
 
         if (bluetooth.isEnabled()) {
@@ -106,11 +106,12 @@ public class BluetoothSetUp extends AppCompatActivity {
                 if (device.getBondState() == BluetoothDevice.BOND_BONDED) {
                     try {
                         bluetooth.cancelDiscovery();
-                        BluetoothSocket socket = device.createRfcommSocketToServiceRecord(UUID.fromString("fa87c0d0-afac-11de-8a39-0800200c9a66"));
+                        Bluetooth.setSocket(device);
+                        BluetoothSocket socket = Bluetooth.getSocket();
                         socket.connect();
                         Toast.makeText(context, "Connesso a: " + socket.getRemoteDevice().getName(), Toast.LENGTH_SHORT).show();
-                        new ConnectedThread(socket);
-                        new NotificationReceiver(getApplicationContext());
+                        //new ConnectedThread(socket);
+                        //new NotificationReceiver(getApplicationContext());
                         startActivity(new Intent(BluetoothSetUp.this, MainActivity.class));
                         finish();
                     } catch (IOException e) {

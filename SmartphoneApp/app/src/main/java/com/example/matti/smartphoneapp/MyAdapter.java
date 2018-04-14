@@ -32,12 +32,12 @@ public class MyAdapter extends ArrayAdapter {
     @Nullable
     @Override
     public Object getItem(int position) {
-        return super.getItem(position);
+        return list.get(position);
     }
 
     @Override
     public int getCount() {
-        return super.getCount();
+        return list.size();
     }
 
     @Override

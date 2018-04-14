@@ -2,6 +2,7 @@ package com.example.matti.svegliamultifunzione;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.LoaderManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -10,6 +11,8 @@ import android.content.pm.ResolveInfo;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
@@ -46,7 +49,7 @@ public class HomePage extends Activity implements Observer {
     static Adapter adapter;
     static AdapterApp adapterApp;
     NotificationService s;
-    TextView city, weatherIcon, temp, hum, tempMin,tempMax;
+    TextView city, weatherIcon, temp, hum, tempMin, tempMax;
     static Context c;
     FusedLocationProviderClient location;
     static List<ApplicationInfo> appList;
@@ -54,6 +57,11 @@ public class HomePage extends Activity implements Observer {
             PackageManager.GET_SHARED_LIBRARY_FILES |
             PackageManager.GET_UNINSTALLED_PACKAGES;
     Button btn;
+    LocationManager locationManager;
+    LocationListener loc;
+    Function.placeIdTask asyncTask;
+
+
 
 
     @Override
@@ -87,11 +95,11 @@ public class HomePage extends Activity implements Observer {
         for(ApplicationInfo app : tempA) {
             if((app.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
                 appList.remove(app);
-                Log.d("SYSTEM","REMOVEDD");
+               // Log.d("SYSTEM","REMOVEDD");
             }else if ((app.flags & ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) != 0)
             {
                 appList.remove(app);
-                Log.d("SYSTEM","REMOVEDD");
+                //Log.d("SYSTEM","REMOVEDD");
             }
         }
         Toast.makeText(c, "number "+appList.size(), Toast.LENGTH_SHORT).show();
@@ -109,18 +117,11 @@ public class HomePage extends Activity implements Observer {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
         }
-        final Function.placeIdTask asyncTask = new Function.placeIdTask(new Function.AsyncResponse() {
-            public void processFinish(String sCity, String description, String temperature, String humidity, String weather_pressure, String pdatedOn, String iconText, String sun_rise, String tempMini,String tempMaxi) {
-                city.setText(sCity);
-                temp.setText(temperature);
-                hum.setText("Humidity: " + humidity);
-                weatherIcon.setText(Html.fromHtml(iconText));
-                tempMin.setText(tempMini);
-                tempMax.setText(tempMaxi);
+        initializeAT();
 
-            }
-        });
-        location.getLastLocation()
+
+
+       /* location.getLastLocation()
                 .addOnSuccessListener(this, new OnSuccessListener<Location>() {
                     @Override
                     public void onSuccess(Location location) {
@@ -133,7 +134,7 @@ public class HomePage extends Activity implements Observer {
                             Toast.makeText(HomePage.this, "errore", Toast.LENGTH_SHORT).show();
                         }
                     }
-                });
+                });*/
         pApplication.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -153,16 +154,72 @@ public class HomePage extends Activity implements Observer {
                 }
             }
         });
+        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        Log.d("CALLING","POSITION");
+        getLocation();
+    }
 
+    private void initializeAT(){
+        asyncTask = new Function.placeIdTask(new Function.AsyncResponse() {
+            public void processFinish(String sCity, String description, String temperature, String humidity, String weather_pressure, String pdatedOn, String iconText, String sun_rise, String tempMini,String tempMaxi) {
+                city.setText(sCity);
+                temp.setText(temperature);
+                hum.setText("Humidity: " + humidity);
+                weatherIcon.setText(Html.fromHtml(iconText));
+                tempMin.setText(tempMini);
+                tempMax.setText(tempMaxi);
+
+            }
+        });
+    }
+
+    private void getLocation() {
+        try {
+            // Define a listener that responds to wifi location updates
+            loc = new LocationListener() {
+                public void onLocationChanged(Location location) {
+                    if (location != null) {
+                        Toast.makeText(HomePage.this, "ok", Toast.LENGTH_SHORT).show();
+                        initializeAT();
+                        asyncTask.execute(String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()));
+                    }else{
+                        Toast.makeText(HomePage.this, "errore", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                public void onStatusChanged(String provider, int status, Bundle extras) {
+                    Log.d("LOCATION", "location found 1");
+                }
+
+                public void onProviderEnabled(String provider) {
+                    Log.d("LOCATION", "location found 2");
+                }
+
+                public void onProviderDisabled(String provider) {
+                    Log.d("LOCATION", "location found 3");
+                }
+            };
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, loc);
+        }catch(Exception e){
+            Log.e("LOCATION", "Location Exception: " + e.getMessage());
+        }
     }
 
     @Override
     public void update(Observable observable, final Object o) {
         list.add((NotificationObject) o);
-        new Update().execute();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                adapter.clear();
+                adapter.addAll(list);
+                adapter.notifyDataSetChanged();
+            }
+        });
+        //new Update().execute();
     }
 
-    class Update extends AsyncTask<Void, Void, Void> {
+    /*class Update extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected Void doInBackground(Void... voids) {
@@ -176,5 +233,5 @@ public class HomePage extends Activity implements Observer {
             });
             return null;
         }
-    }
+    }*/
 }

@@ -2,7 +2,7 @@
     <string name="app_name">SmartphoneApp</string>
     <string name="need_permission">L\'applicazione richiede dei permessi</string>
     <string name="need_notification_permission">L\'applicazione richiede l\'accesso alle notifiche per poter funzionare correttamente</string>
-    <string name="permission_denied">L\'applicazione non funzionerà se non garantisci l\'accesso alle notifiche</string>
+    <string name="permission_denied">L\'applicazione non funzionerà se non garantisci i permessi necessari</string>
     <string name="title">Trasmpp</string>
     <string name="description_app">Gestisci la tua Smart-Sveglia tramite questa applicazione dedicata</string>
     <string name="sync_complete">La tua Smart-Sveglia è stata associata correttamente</string>

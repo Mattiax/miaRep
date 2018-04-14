@@ -1,5 +1,6 @@
 package com.example.matti.smartphoneapp;
 
+import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -8,9 +9,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -30,16 +36,17 @@ import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final static int REQUEST_NOTIFICATION_LISTENER_SETTINGS = 0;
+    private final static int REQUEST_NOTIFICATION_LISTENER_SETTINGS = 0, REQUEST_POSITION_ACCESS=1;
     private ImageView permissionDenied;
     private Animation anim;
-    private BluetoothAdapter bluetooth;
+   // private BluetoothAdapter bluetooth;
     private Button newDevice;
     private TextView needConf;
 //fai una classe bluetooth
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        new Bluetooth(this);
         setContentView(R.layout.activity_main);
         newDevice=findViewById(R.id.addDevice);
         needConf=findViewById(R.id.needConf);
@@ -47,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
         anim = AnimationUtils.loadAnimation(getApplicationContext(),
                 R.anim.rotate);
         permissionDenied.setVisibility(View.INVISIBLE);
+        checkLocationPermission();
         if (!isNotReadable()) {
             askForPermission();
         }else{
@@ -65,6 +73,16 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this,BluetoothSetUp.class));
             }
         });
+    }
+
+    void checkLocationPermission(){
+        if (Build.VERSION.SDK_INT >= 23) { // from Android 6.0
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
+            } else {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_POSITION_ACCESS);
+            }
+        }
     }
 
     void askForPermission() {
@@ -101,8 +119,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startConnection(){
-        bluetooth = BluetoothAdapter.getDefaultAdapter();
-        Object[] paired = bluetooth.getBondedDevices().toArray();
+        BluetoothAdapter bt = Bluetooth.getAdapter();
+        Object[] paired = bt.getBondedDevices().toArray();
         BluetoothDevice device = null;
         for (int i = 0; i < paired.length; i++) {
             device = (BluetoothDevice) paired[i];
@@ -110,17 +128,21 @@ public class MainActivity extends AppCompatActivity {
                 break;
             }
         }
+
         if(device!=null&&device.getName().equals("SvegliaMultifunzione")) {
             needConf.setText(getResources().getString(R.string.sync_complete));
             try {
-                new NotificationReceiver(getApplicationContext());
-                BluetoothSocket socket = device.createRfcommSocketToServiceRecord(UUID.fromString("fa87c0d0-afac-11de-8a39-0800200c9a66"));
+               //new NotificationReceiver(getApplicationContext());
+                Bluetooth.setSocket(device);
+                BluetoothSocket socket = Bluetooth.getSocket();
                 socket.connect();
+                Bluetooth.setOutputStream();
                 Toast.makeText(MainActivity.this, "Connesso " + socket.getRemoteDevice().getName(), Toast.LENGTH_SHORT).show();
-                new ConnectedThread(socket);
+                //new ConnectedThread(socket);
                 //socket.close();
                 //startActivity(new Intent(MainActivity.this, MainActivity.class));
                 //finish();
+                new BluetoothReceiver();
             } catch (Exception e) {
                 Toast.makeText(MainActivity.this, "failMain\n" + e.getMessage(), Toast.LENGTH_LONG).show();
             }
@@ -145,6 +167,15 @@ public class MainActivity extends AppCompatActivity {
                     startConnection();
                 }
                 break;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if(requestCode==REQUEST_POSITION_ACCESS){
+            if(grantResults[0]  != PackageManager.PERMISSION_GRANTED){
+                Toast.makeText(this, getString(R.string.permission_denied), Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }

@@ -16,6 +16,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import notificationobject.NotificationObject;
 
@@ -24,10 +25,11 @@ import notificationobject.NotificationObject;
  */
 
 public class NotificationService extends NotificationListenerService {
+
+    Bluetooth bt;
     Context context;
 
     @Override
-
     public void onCreate() {
         super.onCreate();
         context = getApplicationContext();
@@ -57,29 +59,23 @@ public class NotificationService extends NotificationListenerService {
         Log.i("Title",title);
         Log.i("Text",text);
 
-        Intent msgrcv = new Intent("Msg");
-        msgrcv.putExtra("package", pack);
-        msgrcv.putExtra("ticker", ticker);
-        msgrcv.putExtra("title", title);
-        msgrcv.putExtra("text", text);
         byte[] byteArray = null;
         if(id != null) {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             id.compress(Bitmap.CompressFormat.PNG, 100, stream);
             byteArray = stream.toByteArray();
-            msgrcv.putExtra("icon",byteArray);
         }
-        NotificationObject no=new NotificationObject(title,text, SimpleDateFormat.getDateTimeInstance().toString(),byteArray);
-        SenderBT sb= new SenderBT();
-        sb.execute(no);
+        NotificationObject no=new NotificationObject(title,text, "",byteArray);
+        new Bluetooth.SendNotification().execute(no);
+        //new SenderBT().execute(no);
         //LocalBroadcastManager.getInstance(context).sendBroadcast(msgrcv);
     }
 
-    public class SenderBT extends AsyncTask<Object,Object,Object> {
+    /*public class SenderBT extends AsyncTask<Object,Object,Object> {
 
         @Override
         protected Object doInBackground(Object... objects) {
-            NotificationObject ob =null;
+            NotificationObject ob;
             try{
                 ob  =(NotificationObject)objects[0];
                 ConnectedThread.write(ob);
@@ -87,7 +83,7 @@ public class NotificationService extends NotificationListenerService {
             }catch(ClassCastException | IOException e){}
             return null;
         }
-    }
+    }*/
     
     @Override
     public void onNotificationRemoved(StatusBarNotification sbn) {
