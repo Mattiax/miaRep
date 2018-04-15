@@ -31,8 +31,9 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import android.widget.Button;
 import com.example.matti.svegliamultifunzione.R;
+import com.google.android.things.device.DeviceManager;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -54,6 +55,7 @@ public class WifiSetup extends Fragment {
     WiFiAdapter adapter;
     ProgressBar wifiScan;
     IntentFilter intentFilter;
+    Button r;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,6 +85,7 @@ public class WifiSetup extends Fragment {
         wifiList = rootView.findViewById(R.id.wifiList);
         wifiScan= rootView.findViewById(R.id.scanning);
         connected.setVisibility(View.INVISIBLE);
+        r = rootView.findViewById(R.id.restart);
         adapter = new WiFiAdapter(getActivity(), R.layout.wifi_setup);
         wifiList.setAdapter(adapter);
         wifiScan.setVisibility(View.VISIBLE);
@@ -97,6 +100,12 @@ public class WifiSetup extends Fragment {
         }else{
             wifiScan.setVisibility(View.VISIBLE);
         }
+        r.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //new DeviceManager().reboot();
+            }
+        });
         return rootView;
     }
 

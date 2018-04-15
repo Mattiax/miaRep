@@ -20,8 +20,8 @@ import java.util.Locale;
 
 public class Function {
 
-    private static final String OPEN_WEATHER_MAP_URL =
-            "http://api.openweathermap.org/data/2.5/weather?lat=%s&lon=%s&units=metric";
+    private static final String OPEN_WEATHER_MAP_URL ="http://api.openweathermap.org/data/2.5/weather?zip=%s,%s";
+           // "http://api.openweathermap.org/data/2.5/weather?lat=%s&lon=%s&units=metric";
 
     private static final String OPEN_WEATHER_MAP_API = "99880aac9d0c465facc7a39b7ec63733";
 
@@ -69,6 +69,7 @@ public class Function {
 
         public AsyncResponse delegate = null;//Call back interface
 
+
         public placeIdTask(AsyncResponse asyncResponse) {
             Log.d("DELEGATE","ISDELEGATING");
             delegate = asyncResponse;//Assigning call back interfacethrough constructor
@@ -99,7 +100,7 @@ public class Function {
                     DateFormat df = DateFormat.getDateTimeInstance();
 
 
-                    String city = json.getString("name").toUpperCase(Locale.US) + ", " + json.getJSONObject("sys").getString("country");
+                    String city = json.getString("name").toUpperCase(Locale.ITALY) + ", " + json.getJSONObject("sys").getString("country");
                     String description = details.getString("description").toUpperCase(Locale.US);
                     String temperature = String.format("%.2f", main.getDouble("temp"))+ "°";
                     String humidity = main.getString("humidity") + "%";
@@ -129,6 +130,7 @@ public class Function {
     public static JSONObject getWeatherJSON(String lat, String lon){
         try {
             URL url = new URL(String.format(OPEN_WEATHER_MAP_URL, lat, lon));
+            Log.d("URL",url.toString());
             HttpURLConnection connection =
                     (HttpURLConnection)url.openConnection();
 

@@ -35,6 +35,7 @@
                     <td class="nRichiesta">${l.getId()}</td>
                     <td class="richiesta">${l.getRichiesta()}</td>
                     <td><button class="approvaRichiesta">Approva</button></td>
+                    <td><button class="eliminaRichiesta">Elimina</button></td>
                 </tr>
             </c:forEach>  
         </table>

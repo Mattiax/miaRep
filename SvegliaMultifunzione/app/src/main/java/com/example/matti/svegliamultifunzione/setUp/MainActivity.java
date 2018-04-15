@@ -78,8 +78,10 @@ public class MainActivity extends AppCompatActivity {
                     return new StartUp();
                 case 1:
                     return new WifiSetup();
-                case 2:
+                case 3:
                     return new BluetoothSetup();
+                case 2:
+                    return new FinishStartup();
                 default:
                     break;
             }
@@ -88,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return 3;
+            return 4;
         }
     }
 }

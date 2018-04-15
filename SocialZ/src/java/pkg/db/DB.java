@@ -77,4 +77,6 @@ public interface DB {
       public MailList getAllEmailsHobby();
       
       public void rimuoviUtente(String utente);
+      
+      public void eliminaRichiesta(int id);
 }

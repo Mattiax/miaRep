@@ -47,6 +47,14 @@ button{
     transition: background-color .5s;
 }
 
-button:hover, button:focus {
+button:hover {
     background-color: #27ae60;
+}
+
+.eliminaRichiesta{
+    background-color: red;
+}
+
+.eliminaRichiesta:hover {
+    background-color: darkred;
 }

@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -13,7 +12,6 @@ import java.util.Base64;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.http.Cookie;
@@ -265,6 +263,7 @@ public class DefaultController {
         if (db.isPartecipante(mittente, destinatario) < 0) {
            // System.out.println("non partecipo");
             if (db.hasRichiestaPartecipazione(mittente, destinatario) > 0) {
+                //System.out.println("richiesta effettuata");
                 return "{}";
             } else {
                 return null;
@@ -344,6 +343,13 @@ public class DefaultController {
     public @ResponseBody
     void richiestaHobby(String hobby) {
         db.nuovoHobby(hobby);
+    }
+    
+     @RequestMapping(value = "/eliminaRichiesta")
+    public @ResponseBody
+    void eliminaRic(int id) {
+         System.out.println("elimina "+id);
+        db.eliminaRichiesta(id);
     }
 
     @RequestMapping(value = "/getHobbies", method = RequestMethod.POST)
@@ -544,7 +550,6 @@ public class DefaultController {
         } catch (IOException ex) {
             Logger.getLogger(DefaultController.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 
     private String getImmagineProfilo(String utente) {
@@ -564,7 +569,6 @@ public class DefaultController {
         try {
             new File(percorso + utente + ".txt").delete();
         } catch (Exception e) {
-
         }
     }
 }

@@ -41,11 +41,6 @@
                     <div class="form-element-bar"></div>
                     <label class="form-element-label" >Descrizione gruppo</label>
                 </div>
-                <div class="form-element">
-                    <input id="immagine" name="immagine" class="form-element-field" type="file" accept="image/*"/>
-                    <div class="form-element-bar"></div>
-                    <label class="form-element-label">Immagine</label>
-                </div>
             </fieldset>
             <fieldset class="form-fieldset">
                 <legend class="form-legend">Partecipanti</legend>

@@ -18,11 +18,16 @@ $(document).ready(function () {
         var richiesta = $(this).parent().parent().children(".richiesta").text();
         approva(id, richiesta, parent);
     });
+    $(".eliminaRichiesta").click(function () {
+        var parent = $(this).parent().parent();
+        var id = $(this).parent().parent().children(".nRichiesta").text();
+        eliminaRichiesta(id, parent);
+    });
     $(".eliminaGruppo").click(function () {
         var parent = $(this).parent().parent();
         var id = $(this).parent().parent().children(".nome").text();
         alert(id)
-        eliminaGruppo(id);
+        eliminaGruppo(id,parent);
     });
     $(".eliminaUtente").click(function () {
         var parent = $(this).parent().parent();
@@ -31,12 +36,34 @@ $(document).ready(function () {
     });
 });
 
-function approva(id, parent) {
-    alert(id)
+function approva(id,hobby, parent) {
+    hobby=hobby.substr(hobby.indexOf("#%=")+3);
     $.ajax({
-        url: 'eliminaGruppo',
+        url: 'inserisciNuovoHobby',
         type: 'POST',
-        data: {nome: id},
+        data: {id: id, hobby:hobby},
+        success: function (data) {
+            parent.remove();
+        },
+        statusCode: {
+            404: function (content) {
+                alert('cannot find resource');
+            },
+            500: function (content) {
+                alert('internal server error');
+            }
+        },
+        error: function (req, status, errorObj) {
+            alert(status + errorObj)
+        }
+    });
+}
+
+function eliminaRichiesta(id, parent) {
+    $.ajax({
+        url: 'eliminaRichiesta',
+        type: 'POST',
+        data: {id: id},
         success: function (data) {
             parent.remove();
         },

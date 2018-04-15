@@ -3,10 +3,17 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/D:/Windows/Desktop/miaRep/SocialZ/web/css/richieste.css</file>
             <file>file:/D:/Windows/Desktop/miaRep/SocialZ/src/java/pkg/db/DB.java</file>
+            <file>file:/D:/Windows/Desktop/miaRep/SocialZ/web/WEB-INF/jsp/messaggiGruppo.jsp</file>
             <file>file:/D:/Windows/Desktop/miaRep/SocialZ/src/java/pkg/controllori/DefaultController.java</file>
+            <file>file:/D:/Windows/Desktop/miaRep/SocialZ/web/js/richiesteAmm.js</file>
+            <file>file:/D:/Windows/Desktop/miaRep/SocialZ/web/WEB-INF/jsp/amministratoreSocial.jsp</file>
+            <file>file:/D:/Windows/Desktop/miaRep/SocialZ/web/WEB-INF/SQLCreator.sql</file>
+            <file>file:/D:/Windows/Desktop/miaRep/SocialZ/web/WEB-INF/jsp/nuovoGruppo.jsp</file>
             <file>file:/D:/Windows/Desktop/miaRep/SocialZ/src/java/pkg/db/DBHelper.java</file>
             <file>file:/D:/Windows/Desktop/miaRep/SocialZ/web/js/messaggiGruppo.js</file>
+            <file>file:/D:/Windows/Desktop/miaRep/SocialZ/web/js/messaggi.js</file>
         </group>
     </open-files>
 </project-private>

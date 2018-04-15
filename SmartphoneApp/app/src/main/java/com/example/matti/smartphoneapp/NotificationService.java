@@ -11,6 +11,7 @@ import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -65,7 +66,8 @@ public class NotificationService extends NotificationListenerService {
             id.compress(Bitmap.CompressFormat.PNG, 100, stream);
             byteArray = stream.toByteArray();
         }
-        NotificationObject no=new NotificationObject(title,text, "",byteArray);
+        Log.i("Text",sbn.getPostTime()+"");
+        NotificationObject no=new NotificationObject(title,text, sbn.getPostTime()+"",byteArray);
         new Bluetooth.SendNotification().execute(no);
         //new SenderBT().execute(no);
         //LocalBroadcastManager.getInstance(context).sendBroadcast(msgrcv);

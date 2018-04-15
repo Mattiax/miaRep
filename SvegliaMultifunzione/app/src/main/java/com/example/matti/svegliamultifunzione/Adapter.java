@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import notificationobject.NotificationObject;
@@ -58,7 +62,19 @@ public class Adapter extends ArrayAdapter {
         TextView data=view.findViewById(R.id.ApplicationDataReceive);
         viewHolder.name.setText(o.getName());
         viewHolder.message.setText(o.getMessage());
-        data.setText(o.getTime());
+        Calendar cal= Calendar.getInstance();
+        Log.d("TIME",""+o.getTime());
+        try {
+            long x=Long.parseLong(o.getTime());
+            cal.setTimeInMillis(x);
+            if (cal.getTime().getDay()==Calendar.getInstance().getTime().getDay()) {
+                data.setText(cal.getTime().getHours() +":"+ cal.getTime().getMinutes());
+            } else {
+                data.setText("" + cal.getTime());
+            }
+        }catch(NullPointerException e){
+            data.setText("");
+        }
         if(o.getIcon()!=null) {
             viewHolder.image.setImageBitmap( BitmapFactory.decodeByteArray(o.getIcon(), 0, o.getIcon().length));
         }else{

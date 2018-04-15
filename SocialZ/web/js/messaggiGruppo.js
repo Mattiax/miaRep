@@ -138,7 +138,7 @@ function addRowHandlers() {
 }
 
 function showMessages(email) {
-    $("#componiMessaggio").addClass("disabled");
+    $("#componiMessaggio").removeClass("disabled");
     $("#storicoChat").text("");
     $.ajax({
         url: 'getConvGruppo',

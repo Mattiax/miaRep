@@ -174,6 +174,12 @@ public class HomePage extends Activity implements Observer {
     }
 
     private void getLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            //ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+            Toast.makeText(c, "true", Toast.LENGTH_LONG).show();
+        }else{
+            Toast.makeText(c, "false", Toast.LENGTH_LONG).show();
+        }
         try {
             // Define a listener that responds to wifi location updates
             loc = new LocationListener() {
@@ -181,7 +187,7 @@ public class HomePage extends Activity implements Observer {
                     if (location != null) {
                         Toast.makeText(HomePage.this, "ok", Toast.LENGTH_SHORT).show();
                         initializeAT();
-                        asyncTask.execute(String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()));
+                        asyncTask.execute("30173", "it");
                     }else{
                         Toast.makeText(HomePage.this, "errore", Toast.LENGTH_SHORT).show();
                     }
@@ -196,7 +202,8 @@ public class HomePage extends Activity implements Observer {
                 }
 
                 public void onProviderDisabled(String provider) {
-                    Log.d("LOCATION", "location found 3");
+                    tempMax.setText(provider);
+                    Log.d("LOCATION", "location found 3"+provider);
                 }
             };
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, loc);
