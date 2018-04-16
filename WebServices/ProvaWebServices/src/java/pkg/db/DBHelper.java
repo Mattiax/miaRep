@@ -10,11 +10,9 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import pkg.oggetti.MailList;
 
 /**
  *
@@ -35,27 +33,32 @@ public class DBHelper {
 		return conn;
 	}
 
-	public static String getAllEmailsHobby() {
+	public static String getAllEmailsHobby(String hobby) {
 		String sql = "SELECT hobby,HOBBYPRATICATO.email "
 				+ "FROM HOBBYPRATICATO,PERSONA "
-				+ "WHERE HOBBYPRATICATO.email=PERSONA.email AND permesso = 1 "
+				+ "WHERE ";
+		if(!hobby.isEmpty()){
+				sql+= "HOBBYPRATICATO.hobby = ? AND ";
+		}else{
+			sql+="HOBBYPRATICATO.email=PERSONA.email AND permesso = 1 "
 				+ "ORDER BY hobby;";
+		}
 		JSONObject ris = null;
 		try {
 			PreparedStatement st = getConnection().prepareStatement(sql);
 			ResultSet rs = st.executeQuery();
 			ris = new JSONObject();
 			JSONArray temp = new JSONArray();
-			String hobby = rs.getString("hobby");
+			String hobbyTemp = rs.getString("hobby");
 			while (rs.next()) {
-				if (!hobby.equals(rs.getString("hobby"))) {
-					ris.put(hobby, temp);
+				if (!hobbyTemp.equals(rs.getString("hobby"))) {
+					ris.put(hobbyTemp, temp);
 					temp = new JSONArray();
-					hobby = rs.getString("hobby");
+					hobbyTemp = rs.getString("hobby");
 				}
 				temp.put(rs.getString("email"));
 			}
-			ris.put(hobby, temp);
+			ris.put(hobbyTemp, temp);
 		} catch (SQLException | JSONException e) {}
 		return ris.toString();
 	}

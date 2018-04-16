@@ -19,10 +19,12 @@ public class Maillist {
 
 	/**
 	 * This is a sample web service operation
+	 * @param hobby
+	 * @return 
 	 */
 	@WebMethod(operationName = "hello")
-	public String hello(@WebParam(name = "name") String txt) {
-		String ris=DBHelper.getAllEmailsHobby();
+	public String hello(@WebParam(name = "name") String hobby) {
+		String ris=DBHelper.getAllEmailsHobby(hobby);
 		System.out.println(ris);
 		return ris;
 	}
