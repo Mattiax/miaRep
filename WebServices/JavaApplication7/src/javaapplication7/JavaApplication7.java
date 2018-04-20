@@ -16,13 +16,13 @@ public class JavaApplication7 {
 	 */
 	public static void main(String[] args) {
 		// TODO code application logic here
-		System.out.println(hello(""));
+		System.out.println(getHobbies());
 	}
 
-	private static String hello(java.lang.String name) {
-		pkg.web.Maillist_Service service = new pkg.web.Maillist_Service();
-		pkg.web.Maillist port = service.getMaillistPort();
-		return port.hello(name);
-	}
+    private static String getHobbies() {
+        pkg.web.Maillist_Service service = new pkg.web.Maillist_Service();
+        pkg.web.Maillist port = service.getMaillistPort();
+        return port.getHobbies();
+    }
 	
 }

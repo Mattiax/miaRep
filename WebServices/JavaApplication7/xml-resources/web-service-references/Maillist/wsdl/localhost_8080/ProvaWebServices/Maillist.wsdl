@@ -4,21 +4,40 @@
 <xsd:import namespace="http://web.pkg/" schemaLocation="http://localhost:8080/ProvaWebServices/Maillist?xsd=1"/>
 </xsd:schema>
 </types>
-<message name="hello">
-<part name="parameters" element="tns:hello"/>
+<message name="getMailList">
+<part name="parameters" element="tns:getMailList"/>
 </message>
-<message name="helloResponse">
-<part name="parameters" element="tns:helloResponse"/>
+<message name="getMailListResponse">
+<part name="parameters" element="tns:getMailListResponse"/>
+</message>
+<message name="getHobbies">
+<part name="parameters" element="tns:getHobbies"/>
+</message>
+<message name="getHobbiesResponse">
+<part name="parameters" element="tns:getHobbiesResponse"/>
 </message>
 <portType name="Maillist">
-<operation name="hello">
-<input wsam:Action="http://web.pkg/Maillist/helloRequest" message="tns:hello"/>
-<output wsam:Action="http://web.pkg/Maillist/helloResponse" message="tns:helloResponse"/>
+<operation name="getMailList">
+<input wsam:Action="http://web.pkg/Maillist/getMailListRequest" message="tns:getMailList"/>
+<output wsam:Action="http://web.pkg/Maillist/getMailListResponse" message="tns:getMailListResponse"/>
+</operation>
+<operation name="getHobbies">
+<input wsam:Action="http://web.pkg/Maillist/getHobbiesRequest" message="tns:getHobbies"/>
+<output wsam:Action="http://web.pkg/Maillist/getHobbiesResponse" message="tns:getHobbiesResponse"/>
 </operation>
 </portType>
 <binding name="MaillistPortBinding" type="tns:Maillist">
 <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
-<operation name="hello">
+<operation name="getMailList">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+</operation>
+<operation name="getHobbies">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>

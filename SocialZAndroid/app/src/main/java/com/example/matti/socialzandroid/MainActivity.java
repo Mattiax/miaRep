@@ -63,31 +63,36 @@ public class MainActivity extends AppCompatActivity {
 
     public class GetHobbies extends AsyncTask {
 
+        private final String NAMESPACE = "http://192.168.1.2:8080/ProvaWebServices/Maillist";
+        private final String URL = "http://192.168.1.2:8080/ProvaWebServices/Maillist";
+        private final String SOAP_ACTION = "";//errore
+        private final String METHOD_NAME = "getHobbies";
+
         @Override
         protected Object doInBackground(Object[] objects) {
             URL url = null;
             try {
                 list = new ArrayList<>();
-                url = new URL("http://192.168.1.2:8080/SocialZ/getHobbiesService");
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("POST");
-                conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
-                conn.setRequestProperty("Accept", "application/json");
-                conn.setDoOutput(true);
-                conn.setDoInput(true);
-                JSONObject jsonParam = new JSONObject();
-                DataOutputStream os = new DataOutputStream(conn.getOutputStream());
-                os.writeBytes(jsonParam.toString());
-                os.flush();
-                os.close();
-                InputStream in = conn.getInputStream();
-                BufferedReader rd = new BufferedReader(new InputStreamReader(in));
-                String result = rd.readLine();
-                result = result.substring(1, result.length() - 1).replaceAll("\"", "");
-                list.addAll(Arrays.asList(result.split("\\s*,\\s*")));
-                list.add("Tutti");
-                rd.close();
-                conn.disconnect();
+                url = new URL("http://192.168.1.2:8080/ProvaWebServices/Maillist");
+                SoapObject request = new SoapObject(NAMESPACE, METHOD_NAME);
+                //Create envelope
+                SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(
+                        SoapEnvelope.VER11);
+                envelope.dotNet = true;
+                //Set output SOAP object
+                envelope.setOutputSoapObject(request);
+                //Create HTTP call object
+                HttpTransportSE androidHttpTransport = new HttpTransportSE(URL);
+                try {
+                    //Invole web service
+                    androidHttpTransport.call(SOAP_ACTION, envelope);
+                    //Get the response
+                    SoapPrimitive response = (SoapPrimitive) envelope.getResponse();
+                    //Assign it to fahren static variable
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }

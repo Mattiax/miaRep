@@ -17,15 +17,24 @@ import pkg.db.DBHelper;
 @WebService(serviceName = "Maillist")
 public class Maillist {
 
-	/**
-	 * This is a sample web service operation
-	 * @param hobby
-	 * @return 
-	 */
-	@WebMethod(operationName = "hello")
-	public String hello(@WebParam(name = "name") String hobby) {
-		String ris=DBHelper.getAllEmailsHobby(hobby);
-		System.out.println(ris);
-		return ris;
-	}
+    /**
+     * This is a sample web service operation
+     *
+     * @param hobby
+     * @return
+     */
+    @WebMethod(operationName = "getMailList")
+    public String getMailList(@WebParam(name = "hobby") String hobby) {
+        String ris = DBHelper.getAllEmailsHobby(hobby);
+        System.out.println(ris);
+        return ris;
+    }
+
+    /**
+     * Web service operation
+     */
+    @WebMethod(operationName = "getHobbies")
+    public String getHobbies() {
+        return DBHelper.getHobbies();
+    }
 }
