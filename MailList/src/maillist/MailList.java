@@ -16,6 +16,7 @@ import java.util.List;
  */
 public class MailList implements Serializable {
 
+    private static final long serialVersionUID = 14846351854186L;
 	LinkedHashMap<String, List<String>> mailList;
 
 	public MailList() {
