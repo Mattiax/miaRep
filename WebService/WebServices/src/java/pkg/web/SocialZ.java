@@ -9,6 +9,7 @@ import javax.jws.WebService;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import pkg.db.DBHelper;
+import pkg.oggetti.Risposta;
 
 /**
  *
@@ -36,5 +37,14 @@ public class SocialZ {
     public String getHobbies() {
         System.out.println("Getting hobbies");
         return DBHelper.getHobbies();
+    }
+	
+	/**
+     * Web service operation
+     */
+    @WebMethod(operationName = "registrazione")
+    public Risposta registrati() {
+        System.out.println("Getting hobbies");
+        return null;
     }
 }
