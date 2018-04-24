@@ -5,16 +5,12 @@
  */
 package pkg.oggetti;
 
-import java.io.Serializable;
-
 /**
  *
  * @author mattia.musone
  */
-public class Risposta implements Serializable{
+public class Risposta{
 
 	public static int OK = 0, UNIQUE_FAIL = 1, GENERAL_ERROR = 2;
-
-	public Risposta() {
-	}
+	
 }

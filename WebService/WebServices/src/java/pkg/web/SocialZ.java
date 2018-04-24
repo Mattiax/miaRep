@@ -25,9 +25,8 @@ public class SocialZ {
      */
     @WebMethod(operationName = "getMailList")
     public String getMailList(@WebParam(name = "hobby") String hobby) {
-        String ris = DBHelper.getAllEmailsHobby(hobby);
-        System.out.println(ris);
-        return ris;
+        System.out.println("getting mail list");
+        return DBHelper.getAllEmailsHobby(hobby);
     }
 
     /**
@@ -43,8 +42,17 @@ public class SocialZ {
      * Web service operation
      */
     @WebMethod(operationName = "registrazione")
-    public Risposta registrati() {
-        System.out.println("Getting hobbies");
-        return null;
+    public int registrati() {
+        System.out.println("registrazione");
+        return DBHelper.registrati();
+    }
+	
+	/**
+     * Web service operation
+     */
+    @WebMethod(operationName = "cercaPersona")
+    public String cercaPersona(@WebParam(name = "email") String email) {
+        System.out.println("cerca persona");
+        return DBHelper.getPersona(email);
     }
 }
