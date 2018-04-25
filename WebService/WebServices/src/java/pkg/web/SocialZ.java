@@ -42,9 +42,9 @@ public class SocialZ {
      * Web service operation
      */
     @WebMethod(operationName = "registrazione")
-    public int registrati() {
+    public int registrati(@WebParam(name = "dati") String json) {
         System.out.println("registrazione");
-        return DBHelper.registrati();
+        return DBHelper.registrati(json);
     }
 	
 	/**

@@ -14,6 +14,6 @@ import java.io.Serializable;
 public class Risposta implements Serializable{
 
     private static final long serialVersionUID = 14821941854186L;
-    public static int OK=0,UNIQUE_FAIL=1,GENERAL_ERROR=2;
+    public static int OK=0,UNIQUE_FAIL=1,GENERAL_ERROR=2,JSON_ERROR=3;
     
 }
