@@ -16,6 +16,7 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
@@ -28,10 +29,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.matti.svegliamultifunzione.weather.Function;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.things.userdriver.location.GpsDriver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +37,7 @@ import java.util.Observer;
 
 import notificationobject.NotificationObject;
 
-public class HomePage extends Activity implements Observer {
+public class HomePage extends FragmentActivity implements Observer {
 
     private static Observer p;
     ListView notificationList;
@@ -51,7 +48,6 @@ public class HomePage extends Activity implements Observer {
     NotificationService s;
     TextView city, weatherIcon, temp, hum, tempMin, tempMax;
     static Context c;
-    FusedLocationProviderClient location;
     static List<ApplicationInfo> appList;
     int flags = PackageManager.GET_META_DATA |
             PackageManager.GET_SHARED_LIBRARY_FILES |
@@ -60,8 +56,6 @@ public class HomePage extends Activity implements Observer {
     LocationManager locationManager;
     LocationListener loc;
     Function.placeIdTask asyncTask;
-
-
 
 
     @Override
@@ -78,63 +72,43 @@ public class HomePage extends Activity implements Observer {
         temp = findViewById(R.id.temperature);
         hum = findViewById(R.id.humidity);
         tempMin = findViewById(R.id.tempMin);
-        btn=findViewById(R.id.btn);
+        btn = findViewById(R.id.btn);
         tempMax = findViewById(R.id.tempMax);
-        location = LocationServices.getFusedLocationProviderClient(this);
         notificationList = findViewById(R.id.notificationList);
         pApplication = findViewById(R.id.applicationList);
-        adapter = new Adapter(getApplicationContext(), R.layout.activity_home_page,list);
+        adapter = new Adapter(getApplicationContext(), R.layout.activity_home_page, list);
 
         notificationList.setAdapter(adapter);
 
         p = this;
 
         //Toast.makeText(c, ""+appList.size(), Toast.LENGTH_SHORT).show();
-        List<ApplicationInfo> tempA=getPackageManager().getInstalledApplications(flags);
-        appList= getPackageManager().getInstalledApplications(flags);
-        for(ApplicationInfo app : tempA) {
-            if((app.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
+        List<ApplicationInfo> tempA = getPackageManager().getInstalledApplications(flags);
+        appList = getPackageManager().getInstalledApplications(flags);
+        for (ApplicationInfo app : tempA) {
+            if ((app.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
                 appList.remove(app);
-               // Log.d("SYSTEM","REMOVEDD");
-            }else if ((app.flags & ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) != 0)
-            {
+                // Log.d("SYSTEM","REMOVEDD");
+            } else if ((app.flags & ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) != 0) {
                 appList.remove(app);
                 //Log.d("SYSTEM","REMOVEDD");
             }
         }
-        Toast.makeText(c, "number "+appList.size(), Toast.LENGTH_SHORT).show();
-        adapterApp = new AdapterApp(getApplicationContext(), R.layout.activity_home_page,getPackageManager(),appList);
+        Toast.makeText(c, "number " + appList.size(), Toast.LENGTH_SHORT).show();
+        adapterApp = new AdapterApp(getApplicationContext(), R.layout.activity_home_page, getPackageManager(), appList);
 
         /*final ArrayAdapter<ApplicationInfo> gridViewArrayAdapter = new ArrayAdapter
                 (this,android.R.layout.simple_list_item_1, getPackageManager().getInstalledApplications(PackageManager.GET_META_DATA));*/
 
         // Data bind GridView with ArrayAdapter (String Array elements)
         pApplication.setAdapter(adapterApp);
-         adapterApp.addAll(appList);
-
+        adapterApp.addAll(appList);
 
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
         }
-        initializeAT();
 
-
-
-       /* location.getLastLocation()
-                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        //Toast.makeText(HomePage.this, "getted", Toast.LENGTH_SHORT).show();
-                        // Got last known location. In some rare situations this can be null.
-                        if (location != null) {
-                            Toast.makeText(HomePage.this, "ok", Toast.LENGTH_SHORT).show();
-                            asyncTask.execute(String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()));
-                        }else{
-                            Toast.makeText(HomePage.this, "errore", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });*/
         pApplication.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -145,6 +119,7 @@ public class HomePage extends Activity implements Observer {
                 }
             }
         });
+
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -155,62 +130,12 @@ public class HomePage extends Activity implements Observer {
             }
         });
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        Log.d("CALLING","POSITION");
-        getLocation();
+        Log.d("CALLING", "POSITION");
+
+        //getSupportFragmentManager().beginTransaction().replace(R.id.weather,new WeatherFrag()).commit();
     }
 
-    private void initializeAT(){
-        asyncTask = new Function.placeIdTask(new Function.AsyncResponse() {
-            public void processFinish(String sCity, String description, String temperature, String humidity, String weather_pressure, String pdatedOn, String iconText, String sun_rise, String tempMini,String tempMaxi) {
-                city.setText(sCity);
-                temp.setText(temperature);
-                hum.setText("Humidity: " + humidity);
-                weatherIcon.setText(Html.fromHtml(iconText));
-                tempMin.setText(tempMini);
-                tempMax.setText(tempMaxi);
 
-            }
-        });
-    }
-
-    private void getLocation() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            //ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
-            Toast.makeText(c, "true", Toast.LENGTH_LONG).show();
-        }else{
-            Toast.makeText(c, "false", Toast.LENGTH_LONG).show();
-        }
-        try {
-            // Define a listener that responds to wifi location updates
-            loc = new LocationListener() {
-                public void onLocationChanged(Location location) {
-                    if (location != null) {
-                        Toast.makeText(HomePage.this, "ok", Toast.LENGTH_SHORT).show();
-                        initializeAT();
-                        asyncTask.execute("30173", "it");
-                    }else{
-                        Toast.makeText(HomePage.this, "errore", Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-                public void onStatusChanged(String provider, int status, Bundle extras) {
-                    Log.d("LOCATION", "location found 1");
-                }
-
-                public void onProviderEnabled(String provider) {
-                    Log.d("LOCATION", "location found 2");
-                }
-
-                public void onProviderDisabled(String provider) {
-                    tempMax.setText(provider);
-                    Log.d("LOCATION", "location found 3"+provider);
-                }
-            };
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, loc);
-        }catch(Exception e){
-            Log.e("LOCATION", "Location Exception: " + e.getMessage());
-        }
-    }
 
     @Override
     public void update(Observable observable, final Object o) {
@@ -223,22 +148,5 @@ public class HomePage extends Activity implements Observer {
                 adapter.notifyDataSetChanged();
             }
         });
-        //new Update().execute();
     }
-
-    /*class Update extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    adapter.clear();
-                    adapter.addAll(list);
-                    adapter.notifyDataSetChanged();
-                }
-            });
-            return null;
-        }
-    }*/
 }

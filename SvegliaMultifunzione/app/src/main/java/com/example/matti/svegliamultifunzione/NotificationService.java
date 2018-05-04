@@ -34,55 +34,33 @@ import static com.example.matti.svegliamultifunzione.Bluetooth.getSocket;
 
 public class NotificationService extends Observable implements Runnable {
 
-    private Handler handler;
-    public NotificationObject ob;
+    private ObjectInputStream inStream;
 
     public NotificationService() {
-        AsyncTask.execute(this);
+        try {
+            inStream = new ObjectInputStream(Bluetooth.getSocket().getInputStream());
+            AsyncTask.execute(this);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    @Override
     public void run() {
-        Log.d("async","RUNNINGGGGGGGGGGGGGGGGGGGG");
-        new Thread(new ConnectedThread(getSocket())).start();
-       // Thread.currentThread().interrupt();
-    }
-
-    private class ConnectedThread extends Thread {
-
-        private ObjectInputStream inStream;
-        protected BluetoothSocket socket;
-
-        ConnectedThread(BluetoothSocket socket) {
-            this.socket = socket;
+        Log.d("Notification", "RUNNINGGGGGGGGGGGGGGGGGGGG");
+        while (true) {
             try {
-                inStream = new ObjectInputStream(socket.getInputStream());
-                Log.d("READER","CREATEDDDDDDDDDDDDDDDDDDDDDD");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        public void run() {
-            Log.d("Notification","RUNNINGGGGGGGGGGGGGGGGGGGG");
-            while (true) {
                 try {
-                    try {
-                        NotificationObject o = (NotificationObject) inStream.readObject();
-                        setChanged();
-                        notifyObservers(o);
-                        //HomePage.handler.obtainMessage(0,o).sendToTarget();
-                        //handler.obtainMessage(0, o).sendToTarget();
-                        Log.d("NOTIFICAAAAAAAA", "ARIVATAAAAAAAA");
-                    } catch (ClassCastException e) {
-                        e.printStackTrace();
-                    }
-                } catch (IOException | ClassNotFoundException e) {
+                    NotificationObject o = (NotificationObject) inStream.readObject();
+                    setChanged();
+                    notifyObservers(o);
+                    Log.d("NOTIFICAAAAAAAA", "ARIVATAAAAAAAA");
+                } catch (ClassCastException e) {
                     e.printStackTrace();
-                    Thread.currentThread().interrupt();
                 }
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+                Thread.currentThread().interrupt();
             }
         }
-
     }
 }

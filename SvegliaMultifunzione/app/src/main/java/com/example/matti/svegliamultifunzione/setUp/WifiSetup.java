@@ -55,7 +55,6 @@ public class WifiSetup extends Fragment {
     WiFiAdapter adapter;
     ProgressBar wifiScan;
     IntentFilter intentFilter;
-    Button r;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -70,11 +69,27 @@ public class WifiSetup extends Fragment {
         intentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
         intentFilter.addAction(WifiManager.EXTRA_SUPPLICANT_CONNECTED);
         getContext().registerReceiver(reciver, intentFilter);
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
         if (!manager.isWifiEnabled()) {
             askForWifi();
+        }else {
+            nState = connManager.getActiveNetworkInfo();
+            if(nState!=null&&nState.isConnected()){
+                wifiScan.setVisibility(View.INVISIBLE);
+                connected.setVisibility(View.VISIBLE);
+                connected.setText(getString(R.string.wifi_name)+ manager.getConnectionInfo().getSSID());
+            }
         }
-
+        wifiList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                connectToWiFi(temp.get(i).SSID);
+            }
+        });
     }
 
     @Nullable
@@ -85,27 +100,10 @@ public class WifiSetup extends Fragment {
         wifiList = rootView.findViewById(R.id.wifiList);
         wifiScan= rootView.findViewById(R.id.scanning);
         connected.setVisibility(View.INVISIBLE);
-        r = rootView.findViewById(R.id.restart);
         adapter = new WiFiAdapter(getActivity(), R.layout.wifi_setup);
         wifiList.setAdapter(adapter);
         wifiScan.setVisibility(View.VISIBLE);
-        wifiList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                connectToWiFi(temp.get(i).SSID);
-            }
-        });
-        if(!connManager.getActiveNetworkInfo().isConnected()){
-            wifiScan.setVisibility(View.INVISIBLE);
-        }else{
-            wifiScan.setVisibility(View.VISIBLE);
-        }
-        r.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //new DeviceManager().reboot();
-            }
-        });
+
         return rootView;
     }
 
@@ -127,8 +125,8 @@ public class WifiSetup extends Fragment {
                         wifiManager.addNetwork(conf);
                         manager.disconnect();
                         manager.enableNetwork(conf.networkId,true);
-                        manager.reconnect();
-                        getContext().unregisterReceiver(reciver);
+                        //manager.reconnect();
+                        //getContext().unregisterReceiver(reciver);
                     }
                 })
                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -158,7 +156,7 @@ public class WifiSetup extends Fragment {
                 } else if (nState.isConnected()) {
                     getContext().unregisterReceiver(this);
                     connected.setVisibility(View.VISIBLE);
-                    connected.setText(connected.getText().toString() + " " + manager.getConnectionInfo().getSSID());
+                    connected.setText(getString(R.string.wifi_name) + manager.getConnectionInfo().getSSID());
                 }
             }
 
@@ -185,5 +183,4 @@ public class WifiSetup extends Fragment {
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
     }
-
 }

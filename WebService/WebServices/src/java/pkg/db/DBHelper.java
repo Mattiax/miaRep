@@ -38,8 +38,9 @@ public class DBHelper {
     }
 
     public static String getHobbies() {
-        String sql = "SELECT * "
-                + "FROM HOBBY;";
+        String sql = "SELECT DISTINCT hobby "
+                + "FROM HOBBY NATURAL JOIN HOBBYPRATICATO NATURAL JOIN PERSONA "
+                + "WHERE PERSONA.permesso = 1;";
         String ris = "";
         try {
             PreparedStatement st = getConnection().prepareStatement(sql);
@@ -51,33 +52,33 @@ public class DBHelper {
         } catch (SQLException e) {
 
         }
+        System.out.println(ris);
         return ris;
     }
 
     public static int registrati(String json) {
-        
+
         String sql = "INSERT INTO PERSONA(email,password,nome,cognome,indirizzo,sesso,dataNascita,foto,telefono,permesso) "
                 + " VALUES (?,?,?,?,?,?,?,?,?,?);";
         try {
             System.out.println(json);
-            JSONObject data=new JSONObject(json);
+            JSONObject data = new JSONObject(json);
             PreparedStatement st = getConnection().prepareStatement(sql);
-            st.setString(1,data.getString("email"));
-            st.setString(2,data.getString("password"));
-            st.setString(3,data.getString("nome"));
-            st.setString(4,data.getString("cognome"));
-            st.setString(5,data.getString("indirizzo").isEmpty()?null:data.getString("indirizzo"));
-            st.setString(6,data.getString("sesso"));
-            st.setString(7,data.getString("dataNascita"));
-            st.setString(8,null);
-            st.setString(9,data.getString("telefono").isEmpty()?null:data.getString("telefono"));
-            st.setInt(10,data.getInt("privacy"));
+            st.setString(1, data.getString("email"));
+            st.setString(2, data.getString("password"));
+            st.setString(3, data.getString("nome"));
+            st.setString(4, data.getString("cognome"));
+            st.setString(5, data.getString("indirizzo").isEmpty() ? null : data.getString("indirizzo"));
+            st.setString(6, data.getString("sesso"));
+            st.setString(7, data.getString("dataNascita"));
+            st.setString(8, null);
+            st.setString(9, data.getString("telefono").isEmpty() ? null : data.getString("telefono"));
+            st.setInt(10, data.getInt("privacy"));
             st.executeUpdate();
-        }catch(JSONException js){
-             js.printStackTrace();
+        } catch (JSONException js) {
+            js.printStackTrace();
             return 3;
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             if (e.getMessage().contains("UNIQUE")) {
                 return Risposta.UNIQUE_FAIL;
@@ -108,7 +109,7 @@ public class DBHelper {
             }
             System.out.println(sql + hobby);
             ResultSet rs = st.executeQuery();
-            if(rs.isClosed()){
+            if (rs.isClosed()) {
                 return "{}";
             }
             ris = new JSONObject();
@@ -126,7 +127,7 @@ public class DBHelper {
                 temp.put(rs.getString("email"));
             }
             ris.put(hobbyTemp, temp);
-            ris.put("hobbies",hobbies);
+            ris.put("hobbies", hobbies);
             rs.close();
         } catch (SQLException | JSONException e) {
             e.printStackTrace();
@@ -148,20 +149,21 @@ public class DBHelper {
                 if (rs.getBoolean("permesso")) {
                     isVisible = true;
                     ris.put("email", rs.getString("email"));
-                    ris.put("password", rs.getString("password"));
                     ris.put("nome", rs.getString("nome"));
                     ris.put("cognome", rs.getString("cognome"));
-                    ris.put("indirizzo", rs.getString("indirizzo"));
+                    ris.put("indirizzo", rs.getString("indirizzo")==null?"":rs.getString("indirizzo"));
                     ris.put("sesso", rs.getString("sesso"));
                     ris.put("dataNascita", rs.getString("dataNascita"));
-                    ris.put("immagine", rs.getString("foto"));
-                    ris.put("telefono", rs.getString("telefono"));
+                    ris.put("immagine", rs.getString("foto")==null?"":rs.getString("foto"));
+                    ris.put("telefono", rs.getString("telefono")==null?"":rs.getString("telefono"));
                     ris.put("visibile", true);
                 } else {
                     isVisible = false;
                     ris.put("visibile", false);
                     ris.put("email", rs.getString("email"));
                 }
+            } else {
+                return "{}";
             }
             JSONArray hobbies = new JSONArray();
             if (isVisible) {
@@ -177,8 +179,9 @@ public class DBHelper {
             ris.put("hobbies", hobbies);
         } catch (JSONException | SQLException e) {
             e.printStackTrace();
-            return "";
+            return "{}";
         }
+        System.out.println(ris.toString());
         return ris.toString();
     }
 }
