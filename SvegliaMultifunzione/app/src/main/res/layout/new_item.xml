@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/title_news"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="52dp"
+        android:layout_marginTop="16dp"
+        android:text="TextView"
+        android:textAppearance="@android:style/TextAppearance.Material.Large"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+<com.android.volley.toolbox.NetworkImageView
+    android:id="@+id/image_news"
+    android:layout_width="100dp"
+    android:layout_height="100dp"
+    app:layout_constraintStart_toStartOf="@+id/title_news"
+    app:layout_constraintTop_toBottomOf="@+id/title_news" />
+
+   <!-- <ImageView
+        android:id="@+id/image_news"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="@+id/title_news"
+        app:layout_constraintTop_toBottomOf="@+id/title_news" />-->
+
+    <TextView
+        android:id="@+id/description_news"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="TextView"
+        app:layout_constraintBottom_toBottomOf="@+id/image_news"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/image_news"
+        app:layout_constraintTop_toTopOf="@+id/image_news" />
+
+    <TextView
+        android:id="@+id/source_news"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:text="TextView"
+        app:layout_constraintStart_toStartOf="@+id/description_news"
+        app:layout_constraintTop_toBottomOf="@+id/image_news" />
+
+    <TextView
+        android:id="@+id/author_news"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:text="TextView"
+        app:layout_constraintBottom_toBottomOf="@+id/source_news"
+        app:layout_constraintStart_toEndOf="@+id/source_news"
+        app:layout_constraintTop_toTopOf="@+id/source_news" />
+</android.support.constraint.ConstraintLayout>

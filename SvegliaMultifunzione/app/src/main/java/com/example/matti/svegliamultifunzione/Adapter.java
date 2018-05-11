@@ -43,8 +43,9 @@ public class Adapter extends ArrayAdapter {
         return super.getCount();
     }
 
+    @NonNull
     @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
+    public View getView(int i, View view, @NonNull ViewGroup viewGroup) {
         ViewHolder viewHolder;
 
         if(view==null){
@@ -61,20 +62,12 @@ public class Adapter extends ArrayAdapter {
         NotificationObject o= list.get(i);
         TextView data=view.findViewById(R.id.ApplicationDataReceive);
         viewHolder.name.setText(o.getName());
+        //viewHolder.name.setTextColor(o.getAppColor());
+        String hexColor = String.format("#%06X", (0xFFFFFF & o.getAppColor()));
         viewHolder.message.setText(o.getMessage());
         Calendar cal= Calendar.getInstance();
-        Log.d("TIME",""+o.getTime());
-        try {
-            long x=Long.parseLong(o.getTime());
-            cal.setTimeInMillis(x);
-            if (cal.getTime().getDay()==Calendar.getInstance().getTime().getDay()) {
-                data.setText(cal.getTime().getHours() +":"+ cal.getTime().getMinutes());
-            } else {
-                data.setText("" + cal.getTime());
-            }
-        }catch(NullPointerException e){
-            data.setText("");
-        }
+        Log.d("TIME",o.getTime());
+        data.setText(o.getTime());
         if(o.getIcon()!=null) {
             viewHolder.image.setImageBitmap( BitmapFactory.decodeByteArray(o.getIcon(), 0, o.getIcon().length));
         }else{

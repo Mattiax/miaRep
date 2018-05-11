@@ -1,6 +1,7 @@
 package com.example.matti.smartphoneapp;
 
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothClass;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
@@ -18,6 +19,7 @@ public class Bluetooth {
     private static BluetoothAdapter adapter;
     private static BluetoothSocket socket;
     private static ObjectOutputStream outputStream;
+    private static BluetoothDevice master;
 
     public Bluetooth(Context context) {
         adapter = BluetoothAdapter.getDefaultAdapter();
@@ -32,18 +34,32 @@ public class Bluetooth {
     }
 
     public static void setSocket(BluetoothDevice device) throws IOException {
-        socket = device.createRfcommSocketToServiceRecord(UUID.fromString("fa87c0d0-afac-11de-8a39-0800200c9a66"));
+        master=device;
+        socket = master.createRfcommSocketToServiceRecord(UUID.fromString("fa87c0d0-afac-11de-8a39-0800200c9a66"));
+    }
 
+    public static boolean tryReconnection() {
+        try {
+            Log.d("Bluetooth","ENTER");
+            socket = master.createRfcommSocketToServiceRecord(UUID.fromString("fa87c0d0-afac-11de-8a39-0800200c9a66"));
+            socket.connect();
+            Log.d("Bluetooth","Connected");
+            outputStream = new ObjectOutputStream(socket.getOutputStream());
+            return true;
+        }catch(NullPointerException | IOException e){
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public static void setOutputStream() throws IOException {
         outputStream = new ObjectOutputStream(socket.getOutputStream());
     }
 
-    public static class SendNotification extends AsyncTask {
+    public static class SendNotification extends AsyncTask<Object,Void,Void> {
 
         @Override
-        protected Object doInBackground(Object... objects) {
+        protected Void doInBackground(Object... objects) {
             NotificationObject o=(NotificationObject)objects[0];
             try {
                 Log.d("OUTPUT","PRINT");

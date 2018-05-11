@@ -16,13 +16,12 @@ import android.widget.TextView;
 
 import com.example.matti.svegliamultifunzione.R;
 
+import java.util.Map;
+
 public class WeatherFrag extends Fragment implements Function.AsyncResponse{
 
     private TextView city, weatherIcon, temp, hum, tempMin, tempMax, sunset, sunrise, pressure, update;
-    //private Function.placeIdTask asyncTask;
     private Context c;
-    private String cap;
-    private boolean isConfiguration;
     private SharedPreferences pref;
 
 
@@ -32,11 +31,13 @@ public class WeatherFrag extends Fragment implements Function.AsyncResponse{
         Log.d("WeatherFrag","onCreate");
         pref = getActivity().getPreferences(Context.MODE_PRIVATE);
         try {
-            cap = getArguments().getString("cap");
+            Map<String, ?> a=pref.getAll();
+            String cap = pref.getString("cap","");
+            Log.d("CAP",cap);
+            new Function.placeIdTask(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,cap,"it");
         }catch(NullPointerException e){
-
+            e.printStackTrace();
         }
-        isConfiguration=true;
     }
 
     @Nullable
@@ -59,16 +60,10 @@ public class WeatherFrag extends Fragment implements Function.AsyncResponse{
         return v;
     }
 
-    /*private void setCap(String cap) {
+    public void execute(String cap){
         SharedPreferences.Editor editor = pref.edit();
-        this.cap=cap;
         editor.putString("cap", cap);
         editor.apply();
-        execute(cap);
-    }
-*/
-    public void execute(String cap){
-        //setCap(cap);
         new Function.placeIdTask(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,cap,"it");
     }
 

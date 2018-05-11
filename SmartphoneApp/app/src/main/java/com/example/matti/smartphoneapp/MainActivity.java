@@ -3,6 +3,7 @@ package com.example.matti.smartphoneapp;
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -21,6 +22,8 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -39,10 +42,10 @@ public class MainActivity extends AppCompatActivity {
     private final static int REQUEST_NOTIFICATION_LISTENER_SETTINGS = 0, REQUEST_POSITION_ACCESS=1;
     private ImageView permissionDenied;
     private Animation anim;
-   // private BluetoothAdapter bluetooth;
     private Button newDevice;
     private TextView needConf;
-//fai una classe bluetooth
+    static Context c;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
                 R.anim.rotate);
         permissionDenied.setVisibility(View.INVISIBLE);
         checkLocationPermission();
+        c=this;
         if (!isNotReadable()) {
             askForPermission();
         }else{
@@ -66,13 +70,29 @@ public class MainActivity extends AppCompatActivity {
                 askForPermission();
             }
         });
-
         newDevice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(MainActivity.this,BluetoothSetUp.class));
             }
         });
+    }
+
+    public static void d(Bitmap m){
+        android.app.AlertDialog.Builder alertadd = new android.app.AlertDialog.Builder(c);
+        LayoutInflater factory = LayoutInflater.from(c);
+        final View view = factory.inflate(R.layout.a, null);
+        ImageView a=view.findViewById(R.id.dialog_imageview);
+        Log.d("bitmap",m.getNinePatchChunk().toString());
+        a.setImageBitmap(m);
+        alertadd.setView(view);
+        alertadd.setNeutralButton("Here!", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dlg, int sumthin) {
+
+            }
+        });
+
+        alertadd.show();
     }
 
     void checkLocationPermission(){
@@ -107,15 +127,12 @@ public class MainActivity extends AppCompatActivity {
 
     public boolean isNotReadable() {
         try {
-            if (Settings.Secure.getString(this.getContentResolver(), "enabled_notification_listeners").contains(getApplicationContext().getPackageName())) {
-                return true;
-            } else {
-                return false;
-            }
+            return Settings.Secure.getString(this.getContentResolver(), "enabled_notification_listeners").contains(getApplicationContext().getPackageName());
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
-        return false;
+
     }
 
     private void startConnection(){
@@ -142,7 +159,13 @@ public class MainActivity extends AppCompatActivity {
                 //socket.close();
                 //startActivity(new Intent(MainActivity.this, MainActivity.class));
                 //finish();
-                new BluetoothReceiver();
+                IntentFilter filter = new IntentFilter();
+                filter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
+                filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+                filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+                filter.addAction(BluetoothDevice.ACTION_FOUND);
+                registerReceiver(new BluetoothReceiver(),filter);
+
             } catch (Exception e) {
                 Toast.makeText(MainActivity.this, "failMain\n" + e.getMessage(), Toast.LENGTH_LONG).show();
             }
@@ -178,4 +201,5 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
 }

@@ -111,9 +111,16 @@ public class BluetoothSetup extends Fragment {
         @Override
         public void run() {
             try {
-               boolean b= new Bluetooth.Connect().execute().get();
-               startActivity(new Intent(getContext(),HomePage.class));
-               Log.d("RIS",""+b);
+               //boolean b= new Bluetooth.Connect().execute().get();
+                Bluetooth.enableServerSocket();
+               Intent homePage=new Intent(getContext(),HomePage.class);
+               Bundle cap=new Bundle();
+               cap.putString("cap",getActivity().getPreferences(Context.MODE_PRIVATE).getString("cap",""));
+               homePage.putExtras(cap);
+               startActivity(homePage);
+               getActivity().finish();
+               currentThread().interrupt();
+               //Log.d("RIS",""+b);
             } catch (Exception e) {
                 e.printStackTrace();
             }

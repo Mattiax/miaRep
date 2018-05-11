@@ -1,6 +1,5 @@
 package com.example.matti.smartphoneapp;
 
-import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -8,28 +7,18 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Handler;
-import android.os.ParcelUuid;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 
 public class BluetoothSetUp extends AppCompatActivity {
 
@@ -39,7 +28,6 @@ public class BluetoothSetUp extends AppCompatActivity {
     private BluetoothAdapter bluetooth;
     private MyAdapter adapter;
     private ProgressBar bar;
-    private Bluetooth bt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +83,6 @@ public class BluetoothSetUp extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
-            //Toast.makeText(context, action.toString(), Toast.LENGTH_SHORT).show();
             if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
                 bar.setVisibility(View.VISIBLE);
                 bluetoothScan.clear();
@@ -110,8 +97,6 @@ public class BluetoothSetUp extends AppCompatActivity {
                         BluetoothSocket socket = Bluetooth.getSocket();
                         socket.connect();
                         Toast.makeText(context, "Connesso a: " + socket.getRemoteDevice().getName(), Toast.LENGTH_SHORT).show();
-                        //new ConnectedThread(socket);
-                        //new NotificationReceiver(getApplicationContext());
                         startActivity(new Intent(BluetoothSetUp.this, MainActivity.class));
                         finish();
                     } catch (IOException e) {
@@ -119,25 +104,15 @@ public class BluetoothSetUp extends AppCompatActivity {
                     }
                 }
             } else if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                bluetoothScan.add((BluetoothDevice)intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE));
-                adapter.clear();
-                adapter.addAll(bluetoothScan);
-                adapter.notifyDataSetChanged();
-            }
-                /*else if (action.contains("STATE_CHANGED")) {
-                int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1);
-
-                switch (state) {
-                    case BluetoothAdapter.STATE_OFF:
-                        break;
-
-                    case BluetoothAdapter.STATE_TURNING_ON:
-                        break;
-
-                    case BluetoothAdapter.STATE_ON:
-                        break;
+                BluetoothDevice deviceTemp=intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                if(deviceTemp.getName()!=null&&!deviceTemp.getName().isEmpty()) {
+                    bluetoothScan.add(deviceTemp);
+                    adapter.clear();
+                    adapter.addAll(bluetoothScan);
+                    adapter.notifyDataSetChanged();
                 }
-            }*/
+            }
+
         }
     };
 

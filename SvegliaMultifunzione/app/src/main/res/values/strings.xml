@@ -9,6 +9,8 @@
     <string name="weather_temperature_min">Min: </string>
     <string name="weather_temperature_now">Ora: </string>
     <string name="weather_sunset">Alba: </string>
+    <string name="weather">Meteo</string>
+    <string name="news">Ultime notizie</string>
     <string name="weather_sunrise">Tramonto: </string>
     <string name="weather_update_on">Aggiornato alle: </string>
     <string name="weather_humidity">Umidità: </string>
@@ -16,4 +18,6 @@
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyABMuD4f_ykUjTNpMehPmOV6J6eqmpY8yM</string>
     <string name="wifi_name">Sei attualmente connesso a:</string>
     <string name="select_wifi">Seleziona la rete wifi </string>
+    <string name="no_city_config">Non è stata selezionata alcuna città </string>
+    <string name="news_key">b166bc49d84740ad99e0dd0d85980d1f</string>
 </resources>

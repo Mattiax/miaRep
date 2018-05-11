@@ -36,11 +36,23 @@ public class Bluetooth {
         return socket;
     }
 
-    public static class Connect extends AsyncTask<Boolean, Boolean, Boolean> {
+    public static void setVisible(Context c){adapter.setName(c.getString(R.string.app_name)); }
+
+    public static void enableServerSocket() {
+        Log.d("PROVAAAAAAAAAAAAA", "THREADDDDDDDDDDDD");
+        try {
+            socket = serverSocket.accept();
+            Log.d("PROVAAAAAAAAAAAAA", "connesso");
+            //new NotificationService(HomePage.getHandler());
+        } catch (IOException e) {
+            Log.d("Bluetooth", "errore");
+            e.printStackTrace();
+        }
+    /*public static class Connect extends AsyncTask<Boolean, Boolean, Boolean> {
 
         @Override
         protected Boolean doInBackground(Boolean... booleans) {
-            try {
+
                 Log.d("PROVAAAAAAAAAAAAA", "THREADDDDDDDDDDDD");
                 socket = serverSocket.accept();
                 Log.d("PROVAAAAAAAAAAAAA", "connesso");
@@ -52,5 +64,6 @@ public class Bluetooth {
                 return false;
             }
         }
+    }*/
     }
 }

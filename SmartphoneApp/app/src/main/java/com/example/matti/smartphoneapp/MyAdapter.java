@@ -56,7 +56,7 @@ public class MyAdapter extends ArrayAdapter {
         }
         BluetoothDevice bd = list.get(i);
         viewHolder.name.setText(bd.getName());
-        viewHolder.image.setImageResource(R.drawable.bluetooth);
+        viewHolder.image.setImageResource(R.drawable.ic_bluetooth);
         return view;
     }
 

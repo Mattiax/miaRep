@@ -3,7 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/AM104_GSON.iml" filepath="$PROJECT_DIR$/AM104_GSON.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/AM104_GSON-app.iml" filepath="$PROJECT_DIR$/app/AM104_GSON-app.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/miaRep-AM104_GSON.iml" filepath="$PROJECT_DIR$/miaRep-AM104_GSON.iml" />
     </modules>
   </component>
 </project>

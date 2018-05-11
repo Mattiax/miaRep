@@ -7,8 +7,10 @@ import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Message;
 import android.os.ParcelUuid;
 import android.util.Log;
 import android.widget.Toast;
@@ -31,35 +33,41 @@ import static com.example.matti.svegliamultifunzione.Bluetooth.getSocket;
 /**
  * Created by MATTI on 06/02/2018.
  */
-
-public class NotificationService extends Observable implements Runnable {
+public class NotificationService extends Thread {
 
     private ObjectInputStream inStream;
+    Handler postNot;
 
-    public NotificationService() {
+    public NotificationService(Handler postNot) {
         try {
             inStream = new ObjectInputStream(Bluetooth.getSocket().getInputStream());
-            AsyncTask.execute(this);
+            this.postNot=postNot;
+            this.start();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    @Override
     public void run() {
-        Log.d("Notification", "RUNNINGGGGGGGGGGGGGGGGGGGG");
-        while (true) {
+        super.run();
+        while(!currentThread().isInterrupted()) {
             try {
                 try {
-                    NotificationObject o = (NotificationObject) inStream.readObject();
-                    setChanged();
-                    notifyObservers(o);
+                    final NotificationObject o = (NotificationObject) inStream.readObject();
+                    postNot.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            HomePage.handle(o);
+                        }
+                    });
                     Log.d("NOTIFICAAAAAAAA", "ARIVATAAAAAAAA");
                 } catch (ClassCastException e) {
                     e.printStackTrace();
                 }
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
-                Thread.currentThread().interrupt();
+                currentThread().interrupt();
             }
         }
     }

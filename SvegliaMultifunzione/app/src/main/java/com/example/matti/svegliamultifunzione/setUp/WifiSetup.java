@@ -61,9 +61,6 @@ public class WifiSetup extends Fragment {
         super.onCreate(savedInstanceState);
         manager = (WifiManager) getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         connManager = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
-        }
         intentFilter = new IntentFilter();
         intentFilter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION);
         intentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
@@ -182,5 +179,13 @@ public class WifiSetup extends Fragment {
                 })
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        try {
+            getContext().unregisterReceiver(reciver);
+        }catch(IllegalArgumentException e){}
     }
 }
