@@ -1,0 +1,53 @@
+<resources>
+    <string name="wsdl">http://192.168.1.2:8080/WebServices/SocialZ?wsdl</string>
+    <string name="pkg_address">http://web.pkg/</string>
+    <string name="app_name">SocialZ</string>
+    <string name="title_activity_main2">SocialZ</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">SocialZ</string>
+    <string name="nav_header_subtitle">www.SocialZ.it</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="sign_in">Registrazione</string>
+    <string name="free_time">Tempo libero</string>
+    <string name="find_user">Cerca utente</string>
+    <string name="find_user_by_email">Cerca utente per email</string>
+    <string name="find_user_hint">esempio@esempio.it</string>
+    <string name="home">Home</string>
+    <string name="gender">Sesso</string>
+    <string name="not_exist">Persona inseistente</string>
+    <string name="privacy_error">La persona esiste,ma non permette di condividere i dati</string>
+    <string name="JSON_conversion_error">Errore di conversione</string>
+    <string name="title_activity_login">Sign in</string>
+    <string name="home_title">Benvenuto in </string>
+    <string name="home_description">L\'applicazione del social network dell\'ITIS C. Zuccante</string>
+    <string name="home_warning">L\'applicazione non possiede tutte le funzionalità del sito, per maggiori servizi, collegatevi al sito web!</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_personal">Dati personali</string>
+    <string name="prompt_account">Account</string>
+    <string name="prompt_privacy">Termini e condizioni sulla privacy</string>
+    <string name="prompt_privacy_description">Acconsento al sito di utilizzare dati personali all\'interno dello stesso nelle normative di legge</string>
+    <string name="prompt_password">Password</string>
+    <string name="prompt_name">Nome</string>
+    <string name="prompt_privacy_agree">Acconsento</string>
+    <string name="prompt_privacy_disagree">Non acconsento</string>
+    <string name="prompt_male">Maschio</string>
+    <string name="prompt_female">Femmina</string>
+    <string name="prompt_surname">Cognome</string>
+    <string name="prompt_birth">Data di nascita</string>
+    <string name="prompt_address">Indirizzo</string>
+    <string name="prompt_password_confirm">Conferma password</string>
+    <string name="prompt_phone_number">Telefono</string>
+    <string name="action_sign_in">Registrati</string>
+    <string name="error_invalid_email">L\'indirizzo email non è valido</string>
+    <string name="error_invalid_password">La password è troppo corta</string>
+    <string name="error_incorrect_password">La password non corrisponde</string>
+    <string name="error_field_required">Questo campo è obbligatorio</string>
+    <string name="general_error">Errore sconosciuto, non sei stato registrato</string>
+    <string name="error_already_registered">Questo indirizzo e-mail è già stato inserito</string>
+    <string name="success">Registrato con successo</string>
+    <string name="reset">Reset</string>
+</resources>
