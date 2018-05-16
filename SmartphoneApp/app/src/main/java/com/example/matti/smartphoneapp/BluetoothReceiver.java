@@ -3,6 +3,7 @@ package com.example.matti.smartphoneapp;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -18,19 +19,7 @@ import java.util.Timer;
 
 public class BluetoothReceiver extends BroadcastReceiver {
 
-    private boolean isConnected;
-    public static Handler handler = new Handler();
-   /* Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            if (!isConnected) {
-                tryReconnection();
-                Log.d("RUNNABLE", "RUN");
-                handler.postDelayed(runnable, 10000);
-            }
-        }
-    };*/
-    ;
+    private boolean isThreadAlive;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -39,13 +28,11 @@ public class BluetoothReceiver extends BroadcastReceiver {
         switch (intent.getAction()) {
             case "android.bluetooth.device.action.ACL_DISCONNECTED":
                 notifyDisconnection(context);
-                isConnected = false;
-                //handler=new Handler();
-                //handler.post(runnable);
+                if(!isThreadAlive)
                 tryReconnection();
+                isThreadAlive=true;
                 break;
             case "android.bluetooth.device.action.ACL_CONNECTED":
-               // handler.removeCallbacks(runnable);
                 break;
             case "android.bluetooth.device.action.FOUND":
                 BluetoothDevice deviceTemp = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
@@ -53,30 +40,27 @@ public class BluetoothReceiver extends BroadcastReceiver {
                     tryReconnection();
                 }
                 break;
+            case "android.bluetooth.adapter.action.STATE_CHANGED":
+                int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1);
+                switch (state) {
+                    case BluetoothAdapter.STATE_OFF:
+                        notifyBluetoothOff(context);
+                        break;
+                    case BluetoothAdapter.STATE_ON:
+                        break;
+                    default:
+                        break;
+                }
             default:
                 break;
         }
-        /*else if (action.contains("STATE_CHANGED")) {
-                int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1);
-
-                switch (state) {
-                    case BluetoothAdapter.STATE_OFF:
-                        break;
-
-                    case BluetoothAdapter.STATE_TURNING_ON:
-                        break;
-
-                    case BluetoothAdapter.STATE_ON:
-                        break;
-                }
-            }*/
     }
 
     private void notifyDisconnection(Context c) {
         int notifyID = 1;
         String CHANNEL_ID = "my_channel_01";// The id of the channel.
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            CharSequence name = "Notifica alla disconnessione";// The user-visible name of the channel.
+            CharSequence name = "Disconnessione";// The user-visible name of the channel.
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
 
             NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
@@ -103,13 +87,44 @@ public class BluetoothReceiver extends BroadcastReceiver {
         }
     }
 
+    private void notifyBluetoothOff(Context c) {
+        int notifyID = 1;
+        String CHANNEL_ID = "my_channel_02";// The id of the channel.
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            CharSequence name = "Bluetooth spento";// The user-visible name of the channel.
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+
+            NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
+            NotificationCompat.Builder notification = new NotificationCompat.Builder(c, CHANNEL_ID)
+                    .setContentTitle("Bluetooth spento")
+                    .setContentText("Senza bluetooth non riceverai le notifiche sulla sveglia")
+                    .setSmallIcon(R.drawable.ic_bluetooth_disconnected)
+                    .setChannelId(CHANNEL_ID)
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+            NotificationManager mNotificationManager =
+                    (NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager.createNotificationChannel(mChannel);
+            mNotificationManager.notify(notifyID, notification.build());
+
+        } else {
+            NotificationCompat.Builder notification = new NotificationCompat.Builder(c, "")
+                    .setSmallIcon(R.drawable.ic_bluetooth_disconnected)
+                    .setContentTitle("Bluetooth spento")
+                    .setContentText("Senza bluetooth non riceverai le notifiche sulla sveglia")
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(c);
+            notificationManager.notify(notifyID, notification.build());
+
+        }
+    }
+
     public void tryReconnection() {
-        new Runnable() {
+        new Thread(new Runnable() {
             @Override
             public void run() {
                 Bluetooth.tryReconnection();
+                isThreadAlive=false;
             }
-        }.run();
-
+        }).start();
     }
 }

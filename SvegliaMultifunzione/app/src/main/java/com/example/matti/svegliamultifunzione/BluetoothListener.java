@@ -13,16 +13,15 @@ public class BluetoothListener extends BroadcastReceiver {
         switch (intent.getAction()) {
             case "android.bluetooth.device.action.ACL_DISCONNECTED":
                 HomePage.disconnected(true);
-                new Runnable(){
+                new Thread(new Runnable(){
                     @Override
                     public void run() {
                         Bluetooth.enableServerSocket();
                     }
-                }.run();
+                }).start();
                 break;
             case "android.bluetooth.device.action.ACL_CONNECTED":
                 HomePage.disconnected(false);
-                Bluetooth.getSocket();
                 new NotificationService(HomePage.getHandler());
                 break;
             default:

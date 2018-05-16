@@ -40,7 +40,8 @@ public class NotificationService extends Thread {
 
     public NotificationService(Handler postNot) {
         try {
-            inStream = new ObjectInputStream(Bluetooth.getSocket().getInputStream());
+            BluetoothSocket s=Bluetooth.getSocket();
+            inStream = new ObjectInputStream(s.getInputStream());
             this.postNot=postNot;
             this.start();
         } catch (IOException e) {

@@ -109,13 +109,13 @@ public class NotificationService extends NotificationListenerService {
         NotificationObject no=new NotificationObject(title,text,applicationName==null?"Sconosciuto":applicationName,pack, sbn.getPostTime(),byteArray,bmp,color,id);
         new Bluetooth.SendNotification().execute(no);
 
-        Log.i("NOTIFICATION","\n\nSEND\n\n");
-        Log.i("Package",pack);
-        Log.i("Ticker",ticker);
-        Log.i("Title",title);
-        Log.i("Text",text);
-        Log.i("Color",String.format("#%06X", (0xFFFFFF & sbn.getNotification().color)));
-        Log.i("Group",applicationName);
+            Log.i("NOTIFICATION", "\n\nSEND\n\n");
+            Log.i("Package", pack);
+            Log.i("Ticker", ticker);
+            Log.i("Title", title);
+            Log.i("Text", text);
+            Log.i("Color", String.format("#%06X", (0xFFFFFF & sbn.getNotification().color)));
+            Log.i("Group", applicationName);
     }
     
     @Override

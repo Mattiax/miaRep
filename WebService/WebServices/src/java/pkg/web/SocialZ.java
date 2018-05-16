@@ -49,7 +49,7 @@ public class SocialZ {
 	
 	/**
      * Web service operation
-     */
+     */ 
     @WebMethod(operationName = "cercaPersona")
     public String cercaPersona(@WebParam(name = "email") String email) {
         System.out.println("cerca persona");

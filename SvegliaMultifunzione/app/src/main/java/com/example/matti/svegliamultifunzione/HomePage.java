@@ -2,10 +2,12 @@ package com.example.matti.svegliamultifunzione;
 
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.AnimationDrawable;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
@@ -15,6 +17,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TabHost;
@@ -111,6 +114,9 @@ public class HomePage extends FragmentActivity {
         filter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
         filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
         registerReceiver(new BluetoothListener(), filter);
+        AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        am.setStreamVolume(AudioManager.STREAM_MUSIC,am.getStreamMaxVolume(AudioManager.STREAM_MUSIC),0);
+        Log.d("VOLUME MAX",am.getStreamMaxVolume(AudioManager.STREAM_MUSIC)+"");
     }
 
     private void saveCap(String cap) {
@@ -124,6 +130,13 @@ public class HomePage extends FragmentActivity {
             Toast.makeText(this, "empty", Toast.LENGTH_SHORT).show();
             getSupportFragmentManager().beginTransaction().replace(R.id.weather, new SetCity()).commit();
         }
+        ImageView internet= findViewById(R.id.open_internet);
+        internet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(HomePage.this,WebViewAvtivity.class));
+            }
+        });
     }
 
     public static void disconnected(boolean isDisconnected) {

@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -47,6 +48,7 @@ public class RecViewNotAdapter extends RecyclerView.Adapter<RecViewNotAdapter.Vi
         Log.d("not app", new ArrayList<>(list.values()).get(i).toString());
 
             viewHolder.appName.setText(sample.getAppName());
+        viewHolder.appName.setTextColor(sample.getAppColor());
             String a="";
         if (sample.getAppIcon() != null) {
                 Log.d("IMAGE","OK");
@@ -89,6 +91,13 @@ public class RecViewNotAdapter extends RecyclerView.Adapter<RecViewNotAdapter.Vi
             messageList = v.findViewById(R.id.group_message_list);
             image = v.findViewById(R.id.group_image);
             messageList = v.findViewById(R.id.group_message_list);
+            messageList.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                        view.getParent().requestDisallowInterceptTouchEvent(true);
+                    return false;
+                }
+            });
             messages = new ArrayList<>();
         }
     }

@@ -45,6 +45,7 @@ public class RecViewAdapterNews extends RecyclerView.Adapter<RecViewAdapterNews.
             viewHolder.source.setText(art.isNull("name")?"":art.getString("name"));
             if(!art.isNull("urlToImage")) {
                 Log.d("URL",art.getString("urlToImage"));
+                viewHolder.image.setMaxHeight(300);
                 viewHolder.image.setImageUrl(art.getString("urlToImage"), MySingleton.getInstance(context).getImageLoader());
             }
         } catch (NullPointerException|JSONException e) {
